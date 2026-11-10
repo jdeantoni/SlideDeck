@@ -48,7 +48,7 @@ export class SectionGenerator {
         if (slide.transition) {
             const transitionValue = this.parseTransition(slide.transition);
             if (transitionValue) {
-                transitionAttr = ` data-transition="${transitionValue}"`;
+                transitionAttr = ` data-transition="${textProcessor.escapeHtml(transitionValue)}"`;
             }
         }
 

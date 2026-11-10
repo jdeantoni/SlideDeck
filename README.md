@@ -138,6 +138,28 @@ Footnotes are numbered in reading order, restarting on each slide. They appear
 after the slide content and take up slide space; fragment footnotes are visible
 even before their fragment is revealed. `note` and `footnote` can be combined.
 
+Set a presentation-wide transition in the metadata (after `logo` and `css`,
+when present). It defaults to `slide` if omitted. A transition at the start
+of an individual slide overrides the presentation setting. When navigating
+in either direction, the destination slide's transition applies to both the
+incoming and outgoing slides:
+
+```sdml
+{
+    author: "Your Name"
+    title: "My Presentation"
+    transition: "none"
+}
+===
+# Uses no transition
+===
+{transition: "fade"}
+# Uses fade for this slide
+```
+
+Reveal.js mixed values such as `slide-in fade-out` retain their separate
+in/out effects, so the two sides can intentionally look different.
+
 Lists can be nested using Markdown-style indentation:
 
 ```sdml

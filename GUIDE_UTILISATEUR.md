@@ -91,6 +91,29 @@ Les métadonnées définissent les informations générales de votre présentati
 }
 ```
 
+La transition globale vaut `slide` par défaut. Les métadonnées suivent l'ordre
+du tableau : placez `transition` après `logo` et `css` lorsqu'ils sont présents.
+Une transition placée au début d'une diapositive remplace la valeur globale
+pour cette diapositive. Lors de la navigation dans les deux sens, la transition
+de la diapositive de destination s'applique à la diapositive entrante et à la
+diapositive sortante :
+
+```sdml
+{
+    author: "Votre nom"
+    title: "Transitions"
+    transition: "none"
+}
+===
+# Transition globale
+===
+{transition: "fade"}
+# Transition spécifique
+```
+
+Les valeurs mixtes comme `slide-in fade-out` conservent leurs effets d'entrée
+et de sortie distincts.
+
 ---
 
 ## Séparateur de slides

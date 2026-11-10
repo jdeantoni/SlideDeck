@@ -11,6 +11,7 @@ export class TemplateGenerator {
     private css: string = ''
     private logo: string = ''
     private theme: string = 'white'
+    private transition: string = 'slide'
     private sourceFilePath?: string;
 
     // Feature usage tracking
@@ -79,6 +80,8 @@ export class TemplateGenerator {
         if (metadata.theme) {
             this.theme = metadata.theme.replace(/^"|"$/g, '')
         }
+        this.transition = metadata.transition === undefined
+            ? 'slide' : metadata.transition.replace(/^"|"$/g, '');
         
         // Chalkboard configuration
         if (metadata.chalkboard) {
@@ -323,9 +326,42 @@ ${slidesContent}
         ${this.hasInteractiveElements ? `const originalUrl = window.location.href;
         const guestParam = new URL(originalUrl).searchParams.get('guest');
         ` : ''}
+        const slideTransitions = new WeakMap();
+        document.querySelectorAll('.reveal .slides > section').forEach(slide => {
+            slideTransitions.set(slide, slide.getAttribute('data-transition'));
+        });
+        const defaultTransition = ${JSON.stringify(this.transition).replace(/</g, '\\u003c')};
+        const transitionRuns = new WeakMap();
+        Reveal.on('slidechanged', event => {
+            if (!event.currentSlide || !event.previousSlide) return;
+            const transition = slideTransitions.get(event.currentSlide) ?? defaultTransition;
+            event.currentSlide.setAttribute('data-transition', transition);
+            event.previousSlide.setAttribute('data-transition', transition);
+            const previous = event.previousSlide;
+            const run = {};
+            transitionRuns.set(previous, run);
+            const restore = () => {
+                if (transitionRuns.get(previous) !== run || previous.classList.contains('present')) return;
+                transitionRuns.delete(previous);
+                const original = slideTransitions.get(previous);
+                if (original === null) previous.removeAttribute('data-transition');
+                else if (original !== undefined) previous.setAttribute('data-transition', original);
+            };
+            const onEnd = endEvent => {
+                if (endEvent.target === previous) {
+                    previous.removeEventListener('transitionend', onEnd);
+                    restore();
+                }
+            };
+            previous.addEventListener('transitionend', onEnd);
+            setTimeout(() => {
+                previous.removeEventListener('transitionend', onEnd);
+                restore();
+            }, 2000);
+        });
         Reveal.initialize({
             hash: true,
-            transition: 'slide',
+            transition: ${JSON.stringify(this.transition).replace(/</g, '\\u003c')},
             progress: true,
             slideNumber: 'c/t',
             center: true,
