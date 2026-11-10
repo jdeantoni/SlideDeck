@@ -106,6 +106,18 @@ Questions?
 
 For complete syntax documentation, see the **[User Guide](GUIDE_UTILISATEUR.md)**.
 
+To style part of a line, use an inline span:
+
+```sdml
+- **Event**: [EDT Catalyst – PC1]{.small-note} *in-person kickoff*
+This is [important]{.highlight; font-size: '20px'; color: 'red'}.
+```
+
+Classes must be defined in your presentation's CSS. Inline spans also work in
+headings, paragraphs, lists, and quotes; they can contain bold and italic text.
+Escape literal span delimiters with `\[` and `\]`. The existing `::: {…}`
+syntax remains available for styling entire blocks.
+
 ### 2. Compile to HTML
 
 **Option A: Using build scripts (recommended)**
@@ -163,6 +175,18 @@ open output.html
 
 # Linux
 xdg-open output.html
+```
+
+Generated presentations display the current slide number and total. To
+customize their appearance, add a `.reveal .slide-number` rule to the `css`
+metadata, for example:
+
+```sdml
+{
+    author: "Your Name"
+    title: "My Presentation"
+    css: ".reveal .slide-number { font-size: 20px; color: red; }"
+}
 ```
 
 ### 4. Development Server (Optional)

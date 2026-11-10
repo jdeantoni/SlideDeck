@@ -311,6 +311,7 @@ ${slidesContent}
             hash: true,
             transition: 'slide',
             progress: true,
+            slideNumber: 'c/t',
             center: true,
             backgroundTransition: 'fade',
             ${this.hasInteractiveElements ? `

@@ -51,9 +51,9 @@ Complete Feature Demonstration
 ===
 # Text Formatting
 
-Regular paragraph with **bold**, *italic*, and _underlined_ text.
+Regular paragraph with **bold**, *italic*, and __underlined__ text.
 
-Combine them: **_bold italic_** and **_bold underline_**.
+Combine them: **_bold italic_** and **__bold underline__**.
 
 ===
 # Lists
@@ -65,7 +65,7 @@ Unordered:
 
 Ordered:
 1. Step one
-2. Step two with _underline_
+2. Step two with __underline__
 3. Step three
 
 ===

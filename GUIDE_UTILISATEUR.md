@@ -408,6 +408,42 @@ coloration syntaxique
 
 ## Styles personnalisés
 
+### Numéros de diapositives
+
+Les présentations affichent le numéro de la diapositive courante et le nombre
+total de diapositives. Personnalisez leur apparence dans le CSS des métadonnées :
+
+```sdml
+{
+    author: "Votre nom"
+    title: "Ma présentation"
+    css: ".reveal .slide-number { font-size: 20px; color: red; }"
+}
+```
+
+### Styles sur une partie du texte
+
+Utilisez `[texte]{attributs}` pour appliquer une ou plusieurs classes CSS ou
+propriétés CSS à une partie d'une ligne, sans créer de bloc :
+
+```sdml
+- **Événement** : [EDT Catalyst – PC1]{.small-note} *en personne*
+Une phrase avec [du texte **important**]{.highlight .large}.
+Une phrase avec [du texte coloré]{.highlight; font-size: '20px'; color: 'red'}.
+```
+
+Les classes doivent être définies dans le CSS de la présentation. Les spans
+fonctionnent dans les titres, paragraphes, listes, citations et fragments
+synchronisés, et peuvent être imbriqués. Ils génèrent un élément HTML `span` :
+les propriétés de mise en page de bloc ne s'y appliquent pas nécessairement.
+Séparez les propriétés avec `;` ou `,` ; les guillemets entourant une valeur
+sont retirés. Pour conserver des guillemets CSS dans la valeur, utilisez par
+exemple `font-family: '"Open Sans", sans-serif'`.
+
+Échappez les délimiteurs littéraux avec `\[` et `\]` (ainsi que `\{`, `\}`
+ou `\\` si nécessaire). Une expression incomplète ou avec des attributs
+invalides reste affichée sous forme de texte.
+
 ### Symbole : `:::`
 
 Les délimiteurs `:::` permettent d'appliquer des styles CSS personnalisés à n'importe quel contenu.

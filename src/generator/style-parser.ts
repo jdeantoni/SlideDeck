@@ -185,11 +185,22 @@ export class StyleParser {
         const result: string[] = [];
         let current = '';
         let depth = 0;
+        let quote = '';
         
         for (let i = 0; i < content.length; i++) {
             const char = content[i];
-            
-            if (char === '(') {
+
+            if (quote) {
+                current += char;
+                if (char === '\\' && i + 1 < content.length) {
+                    current += content[++i];
+                } else if (char === quote) {
+                    quote = '';
+                }
+            } else if (char === "'" || char === '"') {
+                quote = char;
+                current += char;
+            } else if (char === '(') {
                 depth++;
                 current += char;
             } else if (char === ')') {
@@ -227,6 +238,36 @@ export class StyleParser {
         }
 
         return result;
+    }
+
+    /**
+     * Parse inline span attributes without applying block layout shortcuts.
+     * Invalid attributes are rejected so their source can be displayed literally.
+     */
+    public parseInlineAttributes(content: string): {classes: string[], styles: string[]} | undefined {
+        const classes: string[] = [];
+        const styles: string[] = [];
+        for (const part of this.smartSplit(content)) {
+            let remaining = part.trim();
+            while (remaining.startsWith('.')) {
+                const match = /^\.([a-zA-Z][a-zA-Z0-9_-]*)(?=\s|$)/.exec(remaining);
+                if (!match) return undefined;
+                classes.push(match[1]);
+                remaining = remaining.slice(match[0].length).trim();
+            }
+            if (!remaining) continue;
+
+            const property = /^((?:--[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-]*))\s*:\s*(.+)$/.exec(remaining);
+            if (!property) return undefined;
+            let value = property[2].trim();
+            if (value.startsWith("'") || value.startsWith('"')) {
+                if (value.length < 2 || value[value.length - 1] !== value[0]) return undefined;
+                value = value.slice(1, -1);
+            }
+            if (!value) return undefined;
+            styles.push(`${property[1]}: ${value}`);
+        }
+        return classes.length || styles.length ? {classes, styles} : undefined;
     }
 
     /**

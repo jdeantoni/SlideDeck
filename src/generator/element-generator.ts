@@ -1,5 +1,6 @@
 import { ImageConverter } from "./image-converter";
 import { VideoAssetManager } from "./video-asset-manager";
+import { StyleParser } from "./style-parser";
 import * as path from 'path';
 
 /**
@@ -531,16 +532,88 @@ export class ElementGenerator {
  * It handles bold, italic, and underline formatting.
  */
 export class TextProcessor {
+    private styleParser = new StyleParser();
+
     public processInlineText(text: string): string {
-        // First escape HTML entities
-        let result = this.escapeHtml(text);
+        const replacements: string[] = [];
+        let marker = '\u0000';
+        while (text.includes(marker)) marker += '\u0000';
+        const protect = (html: string): string => {
+            const token = `${marker}${replacements.length}${marker}`;
+            replacements.push(html);
+            return token;
+        };
+        let source = '';
+        for (let i = 0; i < text.length; i++) {
+            if (text[i] === '\\' && i + 1 < text.length && '[]{}\\'.includes(text[i + 1])) {
+                source += protect(this.escapeHtml(text[++i]));
+                continue;
+            }
+            if (text[i] === '[') {
+                const span = this.findInlineSpan(text, i);
+                if (span) {
+                    const attributes = this.styleParser.parseInlineAttributes(span.attributes);
+                    if (attributes) {
+                        const classes = attributes.classes.length
+                            ? ` class="${this.escapeHtml(attributes.classes.join(' '))}"`
+                            : '';
+                        const styles = attributes.styles.length
+                            ? ` style="${this.escapeHtml(attributes.styles.join('; '))}"`
+                            : '';
+                        source += protect(`<span${classes}${styles}>${this.processInlineText(span.content)}</span>`);
+                        i = span.end;
+                        continue;
+                    }
+                }
+            }
+            source += text[i];
+        }
+
+        let result = this.escapeHtml(source);
         // Process bold (**text**)
         result = this.processBold(result);
         // Process underline (__text__)
         result = this.processUnderline(result);
         // Process italic (*text* or _text_)
         result = this.processItalic(result);
+        for (let i = 0; i < replacements.length; i++) {
+            result = result.split(`${marker}${i}${marker}`).join(replacements[i]);
+        }
         return result;
+    }
+
+    private findInlineSpan(text: string, start: number): {content: string, attributes: string, end: number} | undefined {
+        let depth = 1;
+        let close = start + 1;
+        for (; close < text.length; close++) {
+            if (text[close] === '\\' && close + 1 < text.length) {
+                close++;
+            } else if (text[close] === '[') {
+                depth++;
+            } else if (text[close] === ']' && --depth === 0) {
+                break;
+            }
+        }
+        if (depth !== 0 || text[close + 1] !== '{') return undefined;
+
+        let quote = '';
+        for (let end = close + 2; end < text.length; end++) {
+            const char = text[end];
+            if (quote && char === '\\' && end + 1 < text.length) {
+                end++;
+            } else if (quote && char === quote) {
+                quote = '';
+            } else if (!quote && (char === "'" || char === '"')) {
+                quote = char;
+            } else if (!quote && char === '}') {
+                return {
+                    content: text.slice(start + 1, close),
+                    attributes: text.slice(close + 2, end),
+                    end
+                };
+            }
+        }
+        return undefined;
     }
 
     /**
