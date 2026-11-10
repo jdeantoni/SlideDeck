@@ -1,7 +1,16 @@
 import { ImageConverter } from "./image-converter";
 import { VideoAssetManager } from "./video-asset-manager";
 import { StyleParser } from "./style-parser";
+import { isRootCstNode } from "langium";
+import { List, OrderedListItem, UnorderedListItem, isOrderedListItem } from "../language/generated/ast";
 import * as path from 'path';
+
+interface NestedListItem {
+    item: OrderedListItem | UnorderedListItem;
+    indentation: number;
+    contentColumn: number;
+    children: NestedListItem[];
+}
 
 /**
  * This module is responsible for generating HTML elements from the AST nodes.
@@ -53,35 +62,69 @@ export class ElementGenerator {
     }
 
     /**
-     * Generate a pointed list element
+     * Generate nested ordered and unordered lists
      * @param list The pointed list AST node
      * @returns The HTML string for the pointed list
      */
-    public generatePointedList(list: any, style: string = ''): string {
-        const items = list.items
-            .map((item: any) => {
-                // Access text directly from the AST
-                const text = item.text;
-                return `                <li>${this.textProcessor.processInlineText(text)}</li>`;
-            })
-            .join('\n');
-        return `            <ul${style}>\n${items}\n            </ul>`;
+    public generateList(list: List): string {
+        const cst = list.$cstNode;
+        if (!cst || !isRootCstNode(cst.root)) {
+            throw new Error('Cannot generate a list without source positions');
+        }
+        const lines = cst.root.fullText.split(/\r?\n/);
+        const roots: NestedListItem[] = [];
+        const stack: NestedListItem[] = [];
+        for (const item of list.items) {
+            if (!item.$cstNode) throw new Error('Cannot generate a list item without a source position');
+            const line = lines[item.$cstNode.range.start.line];
+            const match = /^([ \t]*)(?:[-+*]|\d+\.)([ \t]+)/.exec(line);
+            if (!match) throw new Error(`Invalid list item at line ${item.$cstNode.range.start.line + 1}`);
+            const indentation = this.listColumn(match[1]);
+            const contentColumn = this.listColumn(match[0]);
+            const node: NestedListItem = {item, indentation, contentColumn, children: []};
+            while (stack.length > 0 && indentation < stack[stack.length - 1].contentColumn) {
+                stack.pop();
+            }
+            if (stack.length > 0) {
+                stack[stack.length - 1].children.push(node);
+            } else {
+                roots.push(node);
+            }
+            stack.push(node);
+        }
+        return this.renderListItems(roots, 12);
     }
 
-    /**
-     * Generate an ordered list element
-     * @param list The ordered list AST node
-     * @returns The HTML string for the ordered list
-     */
-    public generateOrderedList(list: any, style: string = ''): string {
-        const items = list.items
-            .map((item: any) => {
-                // Access text directly from the AST
-                const text = item.text;
-                return `                <li>${this.textProcessor.processInlineText(text)}</li>`;
-            })
-            .join('\n');
-        return `            <ol${style}>\n${items}\n            </ol>`;
+    private listColumn(text: string): number {
+        let column = 0;
+        for (const char of text) column += char === '\t' ? 4 - column % 4 : 1;
+        return column;
+    }
+
+    private renderListItems(items: NestedListItem[], indent: number): string {
+        const lines: string[] = [];
+        let index = 0;
+        const prefix = ' '.repeat(indent);
+        while (index < items.length) {
+            const first = items[index].item;
+            const ordered = isOrderedListItem(first);
+            const tag = ordered ? 'ol' : 'ul';
+            const start = isOrderedListItem(first) && first.number !== 1 ? ` start="${first.number}"` : '';
+            lines.push(`${prefix}<${tag}${start}>`);
+            while (index < items.length && isOrderedListItem(items[index].item) === ordered) {
+                const node = items[index++];
+                const text = this.textProcessor.processInlineText(node.item.text);
+                if (node.children.length) {
+                    lines.push(`${prefix}    <li>${text}`);
+                    lines.push(this.renderListItems(node.children, indent + 8));
+                    lines.push(`${prefix}    </li>`);
+                } else {
+                    lines.push(`${prefix}    <li>${text}</li>`);
+                }
+            }
+            lines.push(`${prefix}</${tag}>`);
+        }
+        return lines.join('\n');
     }
 
     /**

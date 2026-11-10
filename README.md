@@ -118,6 +118,19 @@ headings, paragraphs, lists, and quotes; they can contain bold and italic text.
 Escape literal span delimiters with `\[` and `\]`. The existing `::: {…}`
 syntax remains available for styling entire blocks.
 
+Lists can be nested using Markdown-style indentation:
+
+```sdml
+- Main point
+   - Sub-point
+      1. Numbered detail
+- Next main point
+```
+
+Indent a child marker at least as far as the start of its parent item's text;
+dedent to return to a previous level. Items are single-line, and blank lines
+alone do not separate consecutive lists.
+
 ### 2. Compile to HTML
 
 **Option A: Using build scripts (recommended)**

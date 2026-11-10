@@ -159,8 +159,7 @@ Each line appears progressively - perfect for teaching!
 ===
 # All 6 Code Highlighting Modes
 
-::: {display: 'grid'; grid-template-columns: '1fr 1fr'; gap: '20px'}
-::: {background: '#0055A4'; color: 'white'; padding: '15px'; border-radius: '8px'; animate: 'fade-in'}
+::: {display: 'grid'; grid-template-columns: '1fr 1fr'; gap: '20px'; background: '#0055A4'; color: 'white'; padding: '15px'; border-radius: '8px'; animate: 'fade-in'}
 **all**
 
 Everything at once

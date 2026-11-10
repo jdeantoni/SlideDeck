@@ -2,8 +2,7 @@ import {
     LineContent,
     CodeBlock,
     isHeader,
-    isUnorderedList,
-    isOrderedList,
+    isList,
     isParagraph,
     isQuote,
     isMedia,
@@ -73,11 +72,8 @@ export class LineContentHandler {
         if (isHeader(line)) {
             return this.elementGenerator.generateHeading(line);
         }
-        if (isUnorderedList(line)) {
-            return this.elementGenerator.generatePointedList(line);
-        }
-        if (isOrderedList(line)) {
-            return this.elementGenerator.generateOrderedList(line);
+        if (isList(line)) {
+            return this.elementGenerator.generateList(line);
         }
         if (isQuote(line)) {
             return this.elementGenerator.generateQuote(line);
@@ -139,10 +135,8 @@ export class LineContentHandler {
                 containerHtml += await this.handleStyledElement(element) + '\n';
             } else if (isHeader(element)) {
                 containerHtml += this.elementGenerator.generateHeading(element, '') + '\n';
-            } else if (isUnorderedList(element)) {
-                containerHtml += this.elementGenerator.generatePointedList(element, '') + '\n';
-            } else if (isOrderedList(element)) {
-                containerHtml += this.elementGenerator.generateOrderedList(element, '') + '\n';
+            } else if (isList(element)) {
+                containerHtml += this.elementGenerator.generateList(element) + '\n';
             } else if (isQuote(element)) {
                 containerHtml += this.elementGenerator.generateQuote(element, '') + '\n';
             } else if (isMedia(element)) {
@@ -189,10 +183,8 @@ export class LineContentHandler {
                 containerHtml += await this.handleStyledElement(element) + '\n';
             } else if (isHeader(element)) {
                 containerHtml += this.elementGenerator.generateHeading(element, '') + '\n';
-            } else if (isUnorderedList(element)) {
-                containerHtml += this.elementGenerator.generatePointedList(element, '') + '\n';
-            } else if (isOrderedList(element)) {
-                containerHtml += this.elementGenerator.generateOrderedList(element, '') + '\n';
+            } else if (isList(element)) {
+                containerHtml += this.elementGenerator.generateList(element) + '\n';
             } else if (isQuote(element)) {
                 containerHtml += this.elementGenerator.generateQuote(element, '') + '\n';
             } else if (isMedia(element)) {
@@ -259,10 +251,8 @@ export class LineContentHandler {
             // Handle other element types
             else if (isHeader(element)) {
                 containerHtml += this.elementGenerator.generateHeading(element, '') + '\n';
-            } else if (isUnorderedList(element)) {
-                containerHtml += this.elementGenerator.generatePointedList(element, '') + '\n';
-            } else if (isOrderedList(element)) {
-                containerHtml += this.elementGenerator.generateOrderedList(element, '') + '\n';
+            } else if (isList(element)) {
+                containerHtml += this.elementGenerator.generateList(element) + '\n';
             } else if (isQuote(element)) {
                 containerHtml += this.elementGenerator.generateQuote(element, '') + '\n';
             } else if (isMedia(element)) {

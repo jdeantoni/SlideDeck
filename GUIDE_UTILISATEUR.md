@@ -178,6 +178,22 @@ Texte **gras et _italique_** en même temps
 
 ### Listes non ordonnées
 
+Les listes peuvent contenir des sous-listes avec une indentation de type
+Markdown. Placez le marqueur enfant au moins à la colonne où commence le texte
+du parent ; réduisez l'indentation pour revenir au niveau précédent :
+
+```sdml
+- Élément principal
+   - Sous-élément
+      1. Détail numéroté
+      2. Autre détail
+- Élément suivant
+```
+
+Les listes numérotées et non numérotées peuvent être mélangées. Les tabulations
+sont comptées par colonnes de quatre espaces. Les éléments sont limités à une
+ligne de texte ; une ligne vide seule ne sépare pas deux listes consécutives.
+
 Symboles : `-`, `*`, `+`
 
 Tous ces symboles créent des puces. Ils sont interchangeables.

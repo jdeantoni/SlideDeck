@@ -51,6 +51,16 @@ With formatting:
 4. Step with __**_combined formatting_**__
 
 ===
+# Nested Lists
+
+- Main item
+   - Sub-item one
+   - Sub-item two
+      1. Numbered detail
+      2. Another detail
+- Another main item
+
+===
 # Quote Test
 
 > This is a simple quote without formatting

@@ -23,7 +23,7 @@ Block:
     Quiz | lines+=LineContent+;
 
 LineContent:
-    FragmentElement | NestedStyledElement | StyledElement | Header | UnorderedList | OrderedList | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode;
+    FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode;
 
 CodeBlock:
     content=CODE_BLOCK;
@@ -35,19 +35,16 @@ FragmentItem:
     text=PARAGRAPH_TEXT | media=MEDIA_LINE;
 
 FragmentElement:
-    STYLE_DELIMITER fragment=FRAGMENT_ATTRS elements+=(FragmentElement | StyledElement | Header | UnorderedList | OrderedList | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_DELIMITER;
+    STYLE_DELIMITER fragment=FRAGMENT_ATTRS elements+=(FragmentElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_DELIMITER;
 
 NestedStyledElement:
-    NESTED_STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | StyledElement | Header | UnorderedList | OrderedList | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ NESTED_STYLE_DELIMITER;
+    NESTED_STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ NESTED_STYLE_DELIMITER;
 
 StyledElement:
-    STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | Header | UnorderedList | OrderedList | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_DELIMITER;
+    STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_DELIMITER;
 
-UnorderedList:
-    items+=UnorderedListItem+;
-
-OrderedList:
-    items+=OrderedListItem+;
+List:
+    items+=(UnorderedListItem | OrderedListItem)+;
 
 Header:
     level=HEADER_LEVEL text=PARAGRAPH_TEXT;
@@ -140,7 +137,7 @@ terminal BOOLEAN returns boolean:
     /true|false/;
 
 terminal PARAGRAPH_TEXT returns string:
-    /(?!(###|##|#)[ \t]+)(?![\-\*\+][ \t]+)(?![0-9]+\.[ \t]+)(?!>)(?!\!\[)(?!:::)(?!```)(?!,,,)(?!===)(?!---)(?!\[\-\-\-\])(?![\s]*\{)(?![\s]*\})(?![\s]*![QR])(?![\s]*true)(?![\s]*false)(?![\s]*author)(?![\s]*title)(?![\s]*css)(?![\s]*logo)(?![\s]*theme)(?![\s]*transition)(?![\s]*chalkboard)(?![\s]*python)(?![\s]*sql)(?![\s]*javascript)(?![\s]*output)(?![\s]*question)(?![\s]*freeText)(?![\s]*choice)(?![\s]*choices)(?![\s]*correct)(?![\s]*results)(?![\s]*showResultsOnDemand)(?![\s]*showJoinQrCode)(?![\s]*visualization)(?![\s]*maxLength)(?![\s]*barChart)(?![\s]*pieChart)(?![\s]*:)(?!")(?!\.)[^\r\n]+/;
+    /(?!(###|##|#)[ \t]+)(?![ \t]*[\-\*\+][ \t]+)(?![ \t]*[0-9]+\.[ \t]+)(?!>)(?!\!\[)(?!:::)(?!```)(?!,,,)(?!===)(?!---)(?!\[\-\-\-\])(?![\s]*\{)(?![\s]*\})(?![\s]*![QR])(?![\s]*true)(?![\s]*false)(?![\s]*author)(?![\s]*title)(?![\s]*css)(?![\s]*logo)(?![\s]*theme)(?![\s]*transition)(?![\s]*chalkboard)(?![\s]*python)(?![\s]*sql)(?![\s]*javascript)(?![\s]*output)(?![\s]*question)(?![\s]*freeText)(?![\s]*choice)(?![\s]*choices)(?![\s]*correct)(?![\s]*results)(?![\s]*showResultsOnDemand)(?![\s]*showJoinQrCode)(?![\s]*visualization)(?![\s]*maxLength)(?![\s]*barChart)(?![\s]*pieChart)(?![\s]*:)(?!")(?!\.)[^\r\n]+/;
 
 terminal STRING returns string:
     /"(?:\\.|[^"\\])*"/;
