@@ -288,6 +288,21 @@ slides beside it, without starting the development server:
    Preview to the Side** from the Command Palette, or use the editor title
    action.
 
+To generate standalone HTML, click **Generate HTML** in the editor title bar
+or run **SlideDeckML: Generate HTML** from the Command Palette. Choose an
+output file in the save dialog (the default is beside the source). The
+current editor contents, including unsaved edits, are compiled; the source
+and output must be files on the extension host's filesystem. Save a new
+file first so relative assets can be resolved. Existing output may be
+overwritten after the save dialog's confirmation. As with the CLI, local
+videos are copied to a matching `-assets` directory next to the HTML.
+
+With VS Code 1.97 or later, paste an image or copy an image file into a saved
+`.sdml` editor to create an image in an `img` folder beside the source and
+insert its SlideDeckML image reference. Generated names are unique and do not
+overwrite existing images. Regular text pastes are unchanged. The source must
+be on the extension host's filesystem.
+
 The preview follows unsaved text changes and the editor cursor. It remains
 associated with the file it was opened for; open another preview for another
 file. Parse errors appear above the last successful preview. Restart the

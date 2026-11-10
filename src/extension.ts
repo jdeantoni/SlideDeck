@@ -4,6 +4,8 @@ import {
     LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
 } from 'vscode-languageclient/node';
 import { PreviewManager } from './vscode/preview';
+import { compileHtml } from './vscode/compile';
+import { registerImagePaste } from './vscode/image-paste';
 
 let client: LanguageClient;
 
@@ -13,6 +15,9 @@ export function activate(context: vscode.ExtensionContext): void {
     const previews = new PreviewManager();
     context.subscriptions.push(previews);
     context.subscriptions.push(vscode.commands.registerCommand('slidedeckml.openPreview', () => previews.open()));
+    context.subscriptions.push(vscode.commands.registerCommand('slidedeckml.compileHtml', compileHtml));
+    const imagePaste = registerImagePaste();
+    if (imagePaste) context.subscriptions.push(imagePaste);
 }
 
 // This function is called when the extension is deactivated.

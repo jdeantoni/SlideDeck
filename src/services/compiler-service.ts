@@ -29,9 +29,10 @@ export class CompilerService {
      * @param cursorLine Optional cursor line to determine which slide to display
      * @param sourceFilePath Optional source file path for resolving relative paths (e.g., logos)
      * @param options HTML generation options
+     * @param outputHtmlPath Optional output path for generated assets
      * @returns Compilation result with HTML and metadata
      */
-    async compile(content: string, cursorLine?: number, sourceFilePath?: string, options?: HtmlGenerationOptions): Promise<CompilationResult> {
+    async compile(content: string, cursorLine?: number, sourceFilePath?: string, options?: HtmlGenerationOptions, outputHtmlPath?: string): Promise<CompilationResult> {
         try {
             // Parse the document
             const document = this.services.shared.workspace.LangiumDocumentFactory.fromString(
@@ -75,7 +76,7 @@ export class CompilerService {
             const html = await new HtmlGenerator().generateHTML(
                 presentation,
                 sourceFilePath ? path.resolve(sourceFilePath) : undefined,
-                undefined,
+                outputHtmlPath ? path.resolve(outputHtmlPath) : undefined,
                 options
             );
 
