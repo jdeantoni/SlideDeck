@@ -244,9 +244,11 @@ export class StyleParser {
      * Parse inline span attributes without applying block layout shortcuts.
      * Invalid attributes are rejected so their source can be displayed literally.
      */
-    public parseInlineAttributes(content: string): {classes: string[], styles: string[]} | undefined {
+    public parseInlineAttributes(content: string): {classes: string[], styles: string[], note?: string, footnote?: string} | undefined {
         const classes: string[] = [];
         const styles: string[] = [];
+        let note: string | undefined;
+        let footnote: string | undefined;
         for (const part of this.smartSplit(content)) {
             let remaining = part.trim();
             while (remaining.startsWith('.')) {
@@ -260,6 +262,18 @@ export class StyleParser {
             const property = /^((?:--[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-]*))\s*:\s*(.+)$/.exec(remaining);
             if (!property) return undefined;
             let value = property[2].trim();
+            if (property[1] === 'note' || property[1] === 'footnote') {
+                const match = /^(?:'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)")$/.exec(value);
+                if (!match || (property[1] === 'note' ? note !== undefined : footnote !== undefined)) return undefined;
+                const quote = value[0];
+                const text = (match[1] ?? match[2]).replace(/\\(.)/g, (original, char: string) =>
+                    char === quote || char === '\\' ? char : original
+                );
+                if (!text) return undefined;
+                if (property[1] === 'note') note = text;
+                else footnote = text;
+                continue;
+            }
             if (value.startsWith("'") || value.startsWith('"')) {
                 if (value.length < 2 || value[value.length - 1] !== value[0]) return undefined;
                 value = value.slice(1, -1);
@@ -267,7 +281,8 @@ export class StyleParser {
             if (!value) return undefined;
             styles.push(`${property[1]}: ${value}`);
         }
-        return classes.length || styles.length ? {classes, styles} : undefined;
+        return classes.length || styles.length || note !== undefined || footnote !== undefined
+            ? {classes, styles, note, footnote} : undefined;
     }
 
     /**

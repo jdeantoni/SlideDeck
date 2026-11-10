@@ -580,6 +580,17 @@ export class ElementGenerator {
  */
 export class TextProcessor {
     private styleParser = new StyleParser();
+    private footnotes: string[] = [];
+
+    public resetFootnotes(): void {
+        this.footnotes = [];
+    }
+
+    public renderFootnotes(): string {
+        if (!this.footnotes.length) return '';
+        const items = this.footnotes.map(note => `                <li>${this.escapeHtml(note)}</li>`).join('\n');
+        return `            <aside class="slide-footnotes" aria-label="Footnotes">\n                <ol>\n${items}\n                </ol>\n            </aside>`;
+    }
 
     public processInlineText(text: string): string {
         const replacements: string[] = [];
@@ -624,7 +635,16 @@ export class TextProcessor {
                         const styles = attributes.styles.length
                             ? ` style="${this.escapeHtml(attributes.styles.join('; '))}"`
                             : '';
-                        source += protect(`<span${classes}${styles}>${this.processInlineText(span.content)}</span>`);
+                        const note = attributes.note !== undefined
+                            ? ` title="${this.escapeHtml(attributes.note)}"`
+                            : '';
+                        const content = this.processInlineText(span.content);
+                        let marker = '';
+                        if (attributes.footnote !== undefined) {
+                            this.footnotes.push(attributes.footnote);
+                            marker = `<sup class="footnote-marker">[${this.footnotes.length}]</sup>`;
+                        }
+                        source += protect(`<span${classes}${styles}${note}>${content}</span>${marker}`);
                         i = span.end;
                         continue;
                     }

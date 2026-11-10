@@ -40,6 +40,16 @@ async function main() {
     );
     assert.strictEqual(format('Normal **bold** and _italic_ & <text>'),
         'Normal <strong>bold</strong> and <em>italic</em> &amp; &lt;text&gt;');
+    assert.strictEqual(format('[hover]{note: \'More information\'}'),
+        '<span title="More information">hover</span>');
+    assert.strictEqual(format('[**term**]{.highlight; color: red; note: "A & B; <C>"}'),
+        '<span class="highlight" style="color: red" title="A &amp; B; &lt;C&gt;"><strong>term</strong></span>');
+    assert.strictEqual(format('[x]{note: \'It\\\'s "quoted" & <safe>\'}'),
+        '<span title="It&#39;s &quot;quoted&quot; &amp; &lt;safe&gt;">x</span>');
+    assert.strictEqual(format('[x]{note: no-quotes}'), '[x]{note: no-quotes}');
+    assert.strictEqual(format('[x]{note: \'\'}'), '[x]{note: &#39;&#39;}');
+    assert.strictEqual(format('[x]{note: \'one\'; note: \'two\'}'),
+        '[x]{note: &#39;one&#39;; note: &#39;two&#39;}');
 
     const input = [
         '# [Heading]{.title}',
@@ -51,6 +61,14 @@ async function main() {
         '1. [Number]{color: red}',
         '',
         '> [Quote]{.note}',
+        '',
+        '[Hover]{note: \'A tooltip\'; color: red}',
+        '',
+        '- [List note]{note: "Helpful, details"}',
+        '',
+        '[![link] "https://example.com"]{note: \'Visit the site\'}',
+        '',
+        '[![QR] "https://example.com"]{note: \'Scan me\'}',
         '',
         '::: {.block; color: \'blue\'}',
         '[Block content]{.inner}',
@@ -67,6 +85,10 @@ async function main() {
         '<li><span class="highlight">List</span></li>',
         '<li><span style="color: red">Number</span></li>',
         '<blockquote><span class="note">Quote</span></blockquote>',
+        '<span style="color: red" title="A tooltip">Hover</span>',
+        '<li><span title="Helpful, details">List note</span></li>',
+        '<span title="Visit the site"><a href="https://example.com">link</a></span>',
+        '<span title="Scan me"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fexample.com"',
         '<div class="block" style="color: blue">',
         '<span class="inner">Block content</span>',
         '<span class="note">Synchronized</span>'

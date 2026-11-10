@@ -21,7 +21,6 @@ export interface SlideMapping {
 
 export class CompilerService {
     private services = createSlideDeckMlServices(NodeFileSystem).SlideDeckMl;
-    private htmlGenerator = new HtmlGenerator();
 
     /**
      * Compile SDML content to HTML
@@ -71,7 +70,7 @@ export class CompilerService {
             const presentation = document.parseResult.value as Presentation;
 
             // Generate HTML
-            const html = await this.htmlGenerator.generateHTML(
+            const html = await new HtmlGenerator().generateHTML(
                 presentation,
                 sourceFilePath ? path.resolve(sourceFilePath) : undefined
             );

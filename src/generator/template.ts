@@ -214,6 +214,22 @@ export class TemplateGenerator {
             font-size: 1em; /* Reduced from default 1.5em */
         }
 
+        .reveal .slide-footnotes {
+            margin-top: 1em;
+            border-top: 1px solid currentColor;
+            font-size: 0.55em;
+            text-align: left;
+        }
+
+        .reveal .slide-footnotes ol {
+            display: block;
+            margin: 0.4em 0 0 1.5em;
+        }
+
+        .reveal .footnote-marker {
+            font-size: 0.6em;
+        }
+
         /* Reveal.js columns layout */
         .columns {
             display: flex;

@@ -59,13 +59,13 @@ export class HtmlGenerator {
         this.sectionGenerator.resetSlideIndex();
 
         // Generate slides with index tracking
-        const slidesPromises = (presentation.slides?.slides || []).map(async (slide: Slide) => {
-            const html = await this.sectionGenerator.generateSection(slide);
+        const slides: string[] = [];
+        for (const slide of presentation.slides?.slides || []) {
+            slides.push(await this.sectionGenerator.generateSection(slide));
             this.sectionGenerator.incrementSlideIndex();
-            return html;
-        });
+        }
         
-        const slidesHTML = (await Promise.all(slidesPromises)).join("\n");
+        const slidesHTML = slides.join("\n");
 
         return this.templateGenerator.getHTMLTemplate(slidesHTML);
     }

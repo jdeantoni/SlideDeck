@@ -35,8 +35,13 @@ export class SectionGenerator {
      * @returns Generated HTML string
      */
     public async generateSection(slide: Slide): Promise<string> {
-        const blockPromises = slide.blocks.map(block => this.generateBlock(block));
-        const contentHTML = (await Promise.all(blockPromises)).join('\n');
+        const textProcessor = this.lineContentHandler.getElementGenerator().textProcessor;
+        textProcessor.resetFootnotes();
+        const blocks: string[] = [];
+        for (const block of slide.blocks) blocks.push(await this.generateBlock(block));
+        const footnotes = textProcessor.renderFootnotes();
+        if (footnotes) blocks.push(footnotes);
+        const contentHTML = blocks.join('\n');
 
         // Parse transition if specified
         let transitionAttr = '';
@@ -74,8 +79,9 @@ export class SectionGenerator {
         }
         // Handle regular content blocks
         else if (block.lines.length > 0) {
-            const linePromises = block.lines.map(line => this.lineContentHandler.generateLine(line));
-            html += (await Promise.all(linePromises)).join('\n');
+            const lines: string[] = [];
+            for (const line of block.lines) lines.push(await this.lineContentHandler.generateLine(line));
+            html += lines.join('\n');
         }
 
         return html;

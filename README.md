@@ -118,6 +118,26 @@ headings, paragraphs, lists, and quotes; they can contain bold and italic text.
 Escape literal span delimiters with `\[` and `\]`. The existing `::: {…}`
 syntax remains available for styling entire blocks.
 
+For a native browser hover note, add a quoted `note` attribute:
+
+```sdml
+This is [EDT]{note: 'Explanation of EDT'; color: 'blue'}.
+```
+
+The note becomes an HTML `title` attribute, not a CSS property. Its appearance
+is controlled by the browser and it may not be available on touch devices or
+through keyboard focus; include essential information in visible text.
+
+For a numbered note at the end of the current slide, use `footnote` instead:
+
+```sdml
+This is [EDT]{footnote: 'Explanation of EDT'}.
+```
+
+Footnotes are numbered in reading order, restarting on each slide. They appear
+after the slide content and take up slide space; fragment footnotes are visible
+even before their fragment is revealed. `note` and `footnote` can be combined.
+
 Lists can be nested using Markdown-style indentation:
 
 ```sdml

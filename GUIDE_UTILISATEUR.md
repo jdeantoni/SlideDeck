@@ -477,6 +477,27 @@ total de diapositives. Personnalisez leur apparence dans le CSS des métadonnée
 
 ### Styles sur une partie du texte
 
+Pour ajouter une note au survol, utilisez l'attribut `note` entre guillemets :
+
+```sdml
+[EDT]{note: 'Explication de EDT'; color: 'blue'}
+```
+
+La note devient un attribut HTML `title`, et non une propriété CSS. Son
+apparence dépend du navigateur ; elle peut être inaccessible au clavier ou sur
+écran tactile. Les informations essentielles doivent rester visibles.
+
+Pour une note numérotée à la fin de la diapositive, utilisez `footnote` :
+
+```sdml
+[EDT]{footnote: 'Explication de EDT'}
+```
+
+La numérotation suit l'ordre de lecture et recommence à chaque diapositive.
+Les notes occupent de la place après le contenu ; celles des fragments sont
+visibles même avant l'apparition du fragment. `note` et `footnote` peuvent
+être utilisés ensemble.
+
 Utilisez `[texte]{attributs}` pour appliquer une ou plusieurs classes CSS ou
 propriétés CSS à une partie d'une ligne, sans créer de bloc :
 
