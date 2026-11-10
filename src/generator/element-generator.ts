@@ -12,6 +12,11 @@ interface NestedListItem {
     children: NestedListItem[];
 }
 
+function qrCodeHtml(data: string, style: string = ''): string {
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data)}`;
+    return `<img src="${qrUrl}" alt="QR Code"${style} class="qr-code-standalone">`;
+}
+
 /**
  * This module is responsible for generating HTML elements from the AST nodes.
  * So Each lines is a specific element (heading, paragraph, list, etc.)
@@ -553,8 +558,7 @@ export class ElementGenerator {
      */
     public generateQrCode(qrCode: any, style: string = ''): string {
         const data = qrCode.data.replace(/^"|"$/g, ''); // Remove quotes
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data)}`;
-        return `            <img src="${qrUrl}" alt="QR Code"${style} class="qr-code-standalone">`;
+        return `            ${qrCodeHtml(data, style)}`;
     }
 
     /**
@@ -591,6 +595,23 @@ export class TextProcessor {
             if (text[i] === '\\' && i + 1 < text.length && '[]{}\\'.includes(text[i + 1])) {
                 source += protect(this.escapeHtml(text[++i]));
                 continue;
+            }
+            if (text[i] === '!' && text[i + 1] === '[') {
+                const link = /^!\[([^\[\]\r\n]+)\][ \t]+"([^"\r\n]*)"/.exec(text.slice(i));
+                if (link) {
+                    if (link[1] === 'QR') {
+                        source += protect(qrCodeHtml(link[2]));
+                    } else {
+                        const url = link[2];
+                        if (!url || /[\u0000-\u0020\u007f\\]/.test(url) ||
+                            (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(url) && !/^(?:https?|mailto):/i.test(url))) {
+                            throw new Error(`Invalid hyperlink destination: ${url}`);
+                        }
+                        source += protect(`<a href="${this.escapeHtml(url)}">${this.processInlineText(link[1])}</a>`);
+                    }
+                    i += link[0].length - 1;
+                    continue;
+                }
             }
             if (text[i] === '[') {
                 const span = this.findInlineSpan(text, i);

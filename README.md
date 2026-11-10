@@ -131,6 +131,25 @@ Indent a child marker at least as far as the start of its parent item's text;
 dedent to return to a previous level. Items are single-line, and blank lines
 alone do not separate consecutive lists.
 
+Comments can be written on their own lines with `//`, or as `/* ... */`
+blocks spanning one or more lines. They are omitted from generated slides.
+Comments may also follow metadata values, but markers within slide text are
+treated as text; put comments on a separate line there. Normal text formatting still applies. Code
+blocks retain their contents, including comments.
+
+For hyperlinks, write `![label] "destination"` in text, headings or lists:
+
+```sdml
+Visit ![our website] "https://example.com".
+![QR] "https://example.com"
+```
+
+The reserved label `QR` generates a QR code as before. Image and video syntax
+`![description](url)` is unchanged. Links accept HTTP(S), `mailto:`, relative
+paths and fragments; unsupported URL schemes produce a compilation error.
+Relative links are resolved by the browser against the generated HTML's
+location, and may not work in the live preview.
+
 ### 2. Compile to HTML
 
 **Option A: Using build scripts (recommended)**

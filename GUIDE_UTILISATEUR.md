@@ -147,6 +147,23 @@ Paragraphe normal
 
 ## Formatage de texte
 
+### Commentaires
+
+Utilisez `//` pour une ligne de commentaire ou `/* ... */` pour un bloc
+de commentaire sur une ou plusieurs lignes :
+
+```sdml
+// Ce commentaire n'apparaît pas sur la diapositive
+/* Ce bloc non plus,
+   même sur plusieurs lignes. */
+# Titre visible
+```
+
+Les commentaires peuvent aussi suivre une valeur de métadonnée. Dans le
+texte d'une diapositive, placez-les sur une ligne séparée : un marqueur après
+du texte fait partie de ce texte et subit son formatage habituel. Les commentaires
+à l'intérieur des blocs de code sont conservés.
+
 ### Symboles de formatage inline
 
 | Symbole     | Effet          | Exemple         | Résultat         |
@@ -268,6 +285,27 @@ Utilisé pour mettre en évidence des citations ou des remarques importantes.
 **Rendu :**
 
 > Ceci est une citation importante
+
+---
+
+## Liens hypertextes
+
+Utilisez `![libellé] "destination"` pour créer un lien cliquable :
+
+```sdml
+Consultez ![notre site] "https://example.com".
+- ![Nous contacter] "mailto:contact@example.com"
+```
+
+Les liens peuvent apparaître dans les titres, paragraphes, listes, citations
+et fragments. Le libellé peut contenir du texte en gras ou en italique.
+Les destinations HTTP(S), `mailto:`, les chemins relatifs et les fragments
+comme `#/2` sont acceptés ; les autres protocoles provoquent une erreur de
+compilation. Les chemins relatifs sont résolus par le navigateur à partir de
+l'emplacement du HTML généré et peuvent ne pas fonctionner dans la prévisualisation.
+
+Le libellé réservé `QR` génère un QR code, et la syntaxe des médias avec
+parenthèses `![description](url)` reste inchangée.
 
 ---
 

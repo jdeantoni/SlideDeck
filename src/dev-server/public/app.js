@@ -578,6 +578,9 @@ class SlideDeckMLApp {
                 monaco.languages.setMonarchTokensProvider('slidedeckml', {
                     tokenizer: {
                         root: [
+                            [/^\s*```.*$/, { token: 'string.code', next: '@codeBlock' }],
+                            [/^\s*\/\/.*$/, 'comment'],
+                            [/^\s*\/\*/, { token: 'comment', next: '@blockComment' }],
                             [/^===\s*$/, 'delimiter.slide'],
                             [/^---\s*$/, 'delimiter.template'],
                             [/^#{1,3}\s+.*$/, 'keyword.heading'],
@@ -588,9 +591,16 @@ class SlideDeckMLApp {
                             [/\*\*.*?\*\*/, 'strong'],
                             [/\*.*?\*/, 'emphasis'],
                             [/__.*?__/, 'string.underline'],
-                            [/```[\s\S]*?```/, 'string.code'],
                             [/:::/, 'delimiter.style'],
                             [/\{[^}]*\}/, 'attribute'],
+                        ],
+                        blockComment: [
+                            [/\*\//, { token: 'comment', next: '@pop' }],
+                            [/[^*]+|\*/, 'comment']
+                        ],
+                        codeBlock: [
+                            [/^\s*```\s*$/, { token: 'string.code', next: '@pop' }],
+                            [/.+/, 'string.code']
                         ]
                     }
                 });
