@@ -11,6 +11,9 @@ syntaxes/
 
 # IDE
 .vscode/
+!.vscode/
+.vscode/*
+!.vscode/launch.json
 .idea/
 *.swp
 *.swo

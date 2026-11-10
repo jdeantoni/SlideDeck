@@ -1,0 +1,24 @@
+{
+  "Presentation metadata": {
+    "prefix": "sdml-metadata",
+    "body": ["{", "    author: \"${1:Author}\"", "    title: \"${2:Title}\"", "    theme: \"${3:white}\"", "}", "===", "$0"],
+    "description": "Presentation metadata and first slide"
+  },
+  "New slide": { "prefix": "sdml-slide", "body": ["===", "# ${1:Title}", "", "$0"], "description": "Insert a slide separator and heading" },
+  "Metadata author": { "prefix": "sdml-author", "body": "author: \"${1:Author}\"", "description": "Presentation author (first metadata field)" },
+  "Metadata title": { "prefix": "sdml-title", "body": "title: \"${1:Title}\"", "description": "Presentation title (after author)" },
+  "Metadata theme": { "prefix": "sdml-theme", "body": "theme: \"${1:white}\"", "description": "Reveal.js theme (after title)" },
+  "Metadata transition": { "prefix": "sdml-default-transition", "body": "transition: \"${1|none,fade,slide,convex,concave,zoom|}\"", "description": "Presentation transition (after theme, logo and CSS)" },
+  "Styled block": { "prefix": "sdml-style", "body": ["::: {${1:color: 'red'}}", "${2:Content}", ":::", "$0"], "description": "Block with CSS properties or classes" },
+  "Animated fragment": { "prefix": "sdml-fragment", "body": ["::: {animate: \"${1:fade-in}\"}", "${2:Content}", ":::", "$0"], "description": "Reveal content as an animated fragment" },
+  "Slide transition": { "prefix": "sdml-transition", "body": "{transition: \"${1|none,fade,slide,convex,concave,zoom|}\"}", "description": "Override the transition at the beginning of a slide" },
+  "Code block": { "prefix": "sdml-code", "body": ["```${1:javascript}", "${2:code}", "```", "$0"], "description": "Syntax-highlighted code block" },
+  "Code block with highlights": { "prefix": "sdml-code-highlight", "body": ["```${1:javascript} [highlight:${2|line-by-line,block,function,class,all,none|}]", "${3:code}", "```", "$0"], "description": "Code block with reveal.js highlighting" },
+  "Image or video": { "prefix": "sdml-media", "body": "![${1:description}](${2:path-or-url})", "description": "Insert an image or video" },
+  "Hyperlink": { "prefix": "sdml-link", "body": "![${1:label}] \"${2:https://example.com}\"", "description": "Insert a hyperlink" },
+  "QR code": { "prefix": "sdml-qr", "body": "![QR] \"${1:https://example.com}\"", "description": "Insert a QR code" },
+  "Inline style": { "prefix": "sdml-inline", "body": "[${1:text}]{${2:color: 'red'}}", "description": "Style part of a line" },
+  "Hover note": { "prefix": "sdml-note", "body": "[${1:text}]{note: '${2:Explanation}'}", "description": "Native browser hover note" },
+  "Footnote": { "prefix": "sdml-footnote", "body": "[${1:text}]{footnote: '${2:Explanation}'}", "description": "Numbered footnote on the slide" },
+  "Synchronized fragments": { "prefix": "sdml-sync", "body": [":::[sync-fragments]", "${1:First fragment}", "[---]", "${2:Second fragment}", ":::[sync-fragments]", "$0"], "description": "Fragments synchronized with a code block" }
+}

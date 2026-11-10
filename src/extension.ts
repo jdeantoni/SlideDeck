@@ -3,12 +3,16 @@ import * as path from 'path';
 import {
     LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
 } from 'vscode-languageclient/node';
+import { PreviewManager } from './vscode/preview';
 
 let client: LanguageClient;
 
 // This function is called when the extension is activated.
 export function activate(context: vscode.ExtensionContext): void {
     client = startLanguageClient(context);
+    const previews = new PreviewManager();
+    context.subscriptions.push(previews);
+    context.subscriptions.push(vscode.commands.registerCommand('slidedeckml.openPreview', () => previews.open()));
 }
 
 // This function is called when the extension is deactivated.
@@ -38,7 +42,7 @@ function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
 
     // Options to control the language client
     const clientOptions: LanguageClientOptions = {
-        documentSelector: [{ scheme: 'file', language: 'slide-deck' }],
+        documentSelector: [{ scheme: 'file', language: 'slidedeckml' }, { scheme: 'untitled', language: 'slidedeckml' }],
         synchronize: {
             // Notify the server about file changes to files contained in the workspace
             fileEvents: fileSystemWatcher

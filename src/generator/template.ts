@@ -168,7 +168,7 @@ export class TemplateGenerator {
     }
 
 
-    public getHTMLTemplate(slidesContent: string): string {
+    public getHTMLTemplate(slidesContent: string, useUrlHash: boolean = true): string {
         const chalkboardCDN = this.chalkboardEnabled ? this.getChalkboardCDNLinks() : { css: '', js: '' };
         
         return `<!DOCTYPE html>
@@ -360,7 +360,7 @@ ${slidesContent}
             }, 2000);
         });
         Reveal.initialize({
-            hash: true,
+            hash: ${useUrlHash},
             transition: ${JSON.stringify(this.transition).replace(/</g, '\\u003c')},
             progress: true,
             slideNumber: 'c/t',

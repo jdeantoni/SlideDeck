@@ -17,7 +17,7 @@ const program = new Command();
 program
     .name('slidedeckml')
     .description('Compile SlideDeckML files to reveal.js HTML presentations')
-    .version('1.0.0');
+    .version('1.0.3');
 
 program
     .command('compile')

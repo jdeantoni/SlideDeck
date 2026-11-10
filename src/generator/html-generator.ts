@@ -7,6 +7,10 @@ import { SectionGenerator } from "./section-generator";
 import { InteractiveElementDetector } from "./interactive-element-detector";
 import { IdeRuntimeGenerator } from "./ide-runtime";
 
+export interface HtmlGenerationOptions {
+    useUrlHash?: boolean;
+}
+
 /**
  * Main HTML generator that orchestrates the conversion of SlideDeckML to HTML
  */
@@ -30,9 +34,10 @@ export class HtmlGenerator {
      * @param presentation The presentation AST
      * @param sourceFilePath Absolute path to the source .sdml file (for resolving relative image paths)
      * @param outputHtmlPath Absolute path to the output HTML file (for managing video assets)
+     * @param options HTML generation options
      * @returns Complete HTML document string
      */
-    public async generateHTML(presentation: Presentation, sourceFilePath?: string, outputHtmlPath?: string): Promise<string> {
+    public async generateHTML(presentation: Presentation, sourceFilePath?: string, outputHtmlPath?: string, options?: HtmlGenerationOptions): Promise<string> {
         if (presentation.metadata) {
             this.templateGenerator.setMetadata(presentation.metadata);
         }
@@ -67,7 +72,7 @@ export class HtmlGenerator {
         
         const slidesHTML = slides.join("\n");
 
-        return this.templateGenerator.getHTMLTemplate(slidesHTML);
+        return this.templateGenerator.getHTMLTemplate(slidesHTML, options?.useUrlHash);
     }
 
     /**

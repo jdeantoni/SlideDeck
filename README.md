@@ -271,7 +271,49 @@ For live editing and preview:
 npm run dev examples/sdml/demo.sdml
 ```
 
-This starts a development server that automatically reloads when you save changes to your `.sdml` file.
+This starts a development server with its own browser editor and live preview.
+Edit there and press Ctrl+S to save; the server does not watch external edits.
+
+### VS Code native editor and preview
+
+The VS Code extension lets you edit `.sdml` files in the normal editor and view
+slides beside it, without starting the development server:
+
+1. Open a trusted workspace in desktop VS Code (or a remote VS Code workspace
+   with a Node.js extension host).
+2. Install the packaged SlideDeckML extension, or run it from source: run
+   `npm install`, `npm run langium:generate`, and `npm run build`, then open
+   this repository in VS Code and press **F5** to launch the extension host.
+3. Open an `.sdml` file in the extension host and run **SlideDeckML: Open
+   Preview to the Side** from the Command Palette, or use the editor title
+   action.
+
+The preview follows unsaved text changes and the editor cursor. It remains
+associated with the file it was opened for; open another preview for another
+file. Parse errors appear above the last successful preview. Restart the
+extension host after rebuilding extension code.
+The embedded preview does not update the URL hash while navigating; generated
+standalone presentations retain reveal.js URL-hash navigation.
+
+To go back from a slide to its source, double-click non-interactive content on
+the current slide. The editor opens at the start of that slide. Double-clicks
+on links, controls, media and interactive widgets keep their normal behavior.
+If the preview is stale because compilation is pending or has failed, fix the
+errors and wait for it to update before navigating.
+
+The extension provides syntax coloring, language-server diagnostics and
+completion, and snippets. Type `sdml-` and choose a suggestion such as
+`sdml-slide`, `sdml-fragment`, `sdml-link`, or `sdml-footnote` (or press
+Ctrl+Space). If coloring is missing, check that the language mode in the
+bottom-right corner is **SlideDeckML**.
+
+The preview runs presentation scripts in a webview and is disabled in
+untrusted workspaces. It loads reveal.js and other libraries from their CDNs,
+so those features require network access. Local media can be loaded from the
+presentation directory and workspace folders; paths outside those roots may
+not load. Relative hyperlinks are resolved inside the webview and should be
+checked in the generated HTML. Quiz and embedded IDE integrations require
+their normal services and may have additional webview restrictions.
 
 ## Example Gallery
 

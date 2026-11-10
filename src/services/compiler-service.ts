@@ -1,5 +1,5 @@
 import type { Presentation } from '../language/generated/ast';
-import { HtmlGenerator } from '../generator/html-generator';
+import { HtmlGenerationOptions, HtmlGenerator } from '../generator/html-generator';
 import { createSlideDeckMlServices } from "../language/slide-deck-module";
 import { NodeFileSystem } from "langium/node";
 import { URI } from "vscode-uri";
@@ -10,6 +10,7 @@ export interface CompilationResult {
     slideCount: number;
     error?: string;
     slideIndex?: number;
+    slideStartLines?: number[];
     hasTemplate?: boolean;
 }
 
@@ -27,9 +28,10 @@ export class CompilerService {
      * @param content SDML content
      * @param cursorLine Optional cursor line to determine which slide to display
      * @param sourceFilePath Optional source file path for resolving relative paths (e.g., logos)
+     * @param options HTML generation options
      * @returns Compilation result with HTML and metadata
      */
-    async compile(content: string, cursorLine?: number, sourceFilePath?: string): Promise<CompilationResult> {
+    async compile(content: string, cursorLine?: number, sourceFilePath?: string, options?: HtmlGenerationOptions): Promise<CompilationResult> {
         try {
             // Parse the document
             const document = this.services.shared.workspace.LangiumDocumentFactory.fromString(
@@ -72,7 +74,9 @@ export class CompilerService {
             // Generate HTML
             const html = await new HtmlGenerator().generateHTML(
                 presentation,
-                sourceFilePath ? path.resolve(sourceFilePath) : undefined
+                sourceFilePath ? path.resolve(sourceFilePath) : undefined,
+                undefined,
+                options
             );
 
             // Calculate slide count
@@ -87,7 +91,8 @@ export class CompilerService {
             return {
                 html,
                 slideCount,
-                slideIndex
+                slideIndex,
+                slideStartLines: (presentation.slides?.slides || []).map(slide => slide.$cstNode?.range.start.line ?? 0)
             };
 
         } catch (error) {
