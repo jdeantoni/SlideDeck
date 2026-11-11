@@ -2,7 +2,7 @@
   "name": "slidedeck",
   "displayName": "SlideDeck",
   "publisher": "slidedeck",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "A DSL for creating reveal.js slides from extended markdown",
   "repository": {
     "type": "git",

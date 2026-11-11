@@ -35,10 +35,10 @@ async function main() {
     styled.resetFootnotes();
     styled.processInlineText('[x]{footnote: [\'text\'; note: \'" & <hover>; \\\'quoted\\\'\']{.todo; color: red}; note: \'reference\'}');
     assert.ok(styled.renderFootnotes().includes(
-        '<li><span class="todo" style="color: red" title="&quot; &amp; &lt;hover&gt;; &#39;quoted&#39;">text</span></li>'));
+        '<li><span class="todo" style="color: red" title="&quot; &amp; &lt;hover&gt;; &#39;quoted&#39;" data-sd-note>text</span></li>'));
     styled.resetFootnotes();
     styled.processInlineText('[x]{footnote: [\'text\']{note: \'hover\'}}');
-    assert.ok(styled.renderFootnotes().includes('<li><span title="hover">text</span></li>'));
+    assert.ok(styled.renderFootnotes().includes('<li><span title="hover" data-sd-note>text</span></li>'));
 
     const userText = 'we have no actual reasearch activity dedicated to the way to express the characteristics in a VF. In our  experiments, we may use existing technologies like extending the Asset Administration Shell with a specific metamodel; or similar';
     const source = [
@@ -66,13 +66,13 @@ async function main() {
         const second = sections[1][2];
         assert.deepStrictEqual([...first.matchAll(/class="footnote-marker">\[(\d+)\]/g)].map(m => m[1]),
             ['1', '2', '3', '4', '5', '6', '7']);
-        assert.ok(first.includes('<span style="color: red" title="Hover">first</span><sup class="footnote-marker">[2]</sup>'));
+        assert.ok(first.includes('<span style="color: red" title="Hover" data-sd-note>first</span><sup class="footnote-marker">[2]</sup>'));
         assert.ok(first.includes('<li>First &amp; &lt;safe&gt;</li>'));
         assert.ok(first.includes('<li>It&#39;s a list</li>'));
         assert.ok(first.includes('<li>Fragment</li>'));
         assert.ok(first.includes('<li><span class="todo" style="color: red">Styled &amp; &lt;safe&gt;</span></li>'));
         assert.ok(first.includes('<span><em>validity frame</em></span><sup class="footnote-marker">[7]</sup>'));
-        assert.ok(first.includes(`<li><span class="todo" title="${userText}">${userText}</span></li>`));
+        assert.ok(first.includes(`<li><span class="todo" title="${userText}" data-sd-note>${userText}</span></li>`));
         assert.ok(second.includes('<sup class="footnote-marker">[1]</sup>'));
         assert.ok(second.includes('<li>Second slide note</li>'));
         assert.ok(!sections[2][2].includes('slide-footnotes'));

@@ -41,11 +41,11 @@ async function main() {
     assert.strictEqual(format('Normal **bold** and _italic_ & <text>'),
         'Normal <strong>bold</strong> and <em>italic</em> &amp; &lt;text&gt;');
     assert.strictEqual(format('[hover]{note: \'More information\'}'),
-        '<span title="More information">hover</span>');
+        '<span title="More information" data-sd-note>hover</span>');
     assert.strictEqual(format('[**term**]{.highlight; color: red; note: "A & B; <C>"}'),
-        '<span class="highlight" style="color: red" title="A &amp; B; &lt;C&gt;"><strong>term</strong></span>');
+        '<span class="highlight" style="color: red" title="A &amp; B; &lt;C&gt;" data-sd-note><strong>term</strong></span>');
     assert.strictEqual(format('[x]{note: \'It\\\'s "quoted" & <safe>\'}'),
-        '<span title="It&#39;s &quot;quoted&quot; &amp; &lt;safe&gt;">x</span>');
+        '<span title="It&#39;s &quot;quoted&quot; &amp; &lt;safe&gt;" data-sd-note>x</span>');
     assert.strictEqual(format('[x]{note: no-quotes}'), '[x]{note: no-quotes}');
     assert.strictEqual(format('[x]{note: \'\'}'), '[x]{note: &#39;&#39;}');
     assert.strictEqual(format('[x]{note: \'one\'; note: \'two\'}'),
@@ -85,10 +85,10 @@ async function main() {
         '<li><span class="highlight">List</span></li>',
         '<li><span style="color: red">Number</span></li>',
         '<blockquote><span class="note">Quote</span></blockquote>',
-        '<span style="color: red" title="A tooltip">Hover</span>',
-        '<li><span title="Helpful, details">List note</span></li>',
-        '<span title="Visit the site"><a href="https://example.com">link</a></span>',
-        '<span title="Scan me"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fexample.com"',
+        '<span style="color: red" title="A tooltip" data-sd-note>Hover</span>',
+        '<li><span title="Helpful, details" data-sd-note>List note</span></li>',
+        '<span title="Visit the site" data-sd-note><a href="https://example.com">link</a></span>',
+        '<span title="Scan me" data-sd-note><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fexample.com"',
         '<div class="block" style="color: blue">',
         '<span class="inner">Block content</span>',
         '<span class="note">Synchronized</span>'
@@ -97,6 +97,8 @@ async function main() {
     const result = await new CompilerService().compile(input);
     assert.ifError(result.error);
     for (const fragment of expected) assert.ok(result.html.includes(fragment), fragment);
+    assert.ok(result.html.includes('.reveal [data-sd-note]::after'));
+    assert.ok(!format('[ordinary]{color: red}').includes('data-sd-note'));
 
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-inline-'));
     const source = path.join(tempDir, 'slides.sdml');

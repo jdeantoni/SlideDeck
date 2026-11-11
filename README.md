@@ -127,9 +127,12 @@ For a native browser hover note, add a quoted `note` attribute:
 This is [EDT]{note: 'Explanation of EDT'; color: 'blue'}.
 ```
 
-The note becomes an HTML `title` attribute, not a CSS property. Its appearance
-is controlled by the browser and it may not be available on touch devices or
-through keyboard focus; include essential information in visible text.
+An ⓘ indicator marks the annotated text, including notes on footnotes. The
+note becomes an HTML `title` attribute, not a CSS property. The tooltip's
+appearance is controlled by the browser and it may not be available on touch
+devices or through keyboard focus; include essential information in visible
+text. Customize the indicator with `.reveal [data-sd-note]::after` in the
+presentation CSS.
 
 For a numbered note at the end of the current slide, use `footnote` instead:
 

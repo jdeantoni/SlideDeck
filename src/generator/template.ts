@@ -199,6 +199,19 @@ export class TemplateGenerator {
             display: block; width: 100%; height: 100%; max-width: none; max-height: none;
             margin: 0; border: 0; box-shadow: none;
         }
+        .reveal [data-sd-note]::after {
+            content: "i";
+            display: inline-block;
+            box-sizing: border-box;
+            width: 1.15em;
+            height: 1.15em;
+            margin-left: 0.25em;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+            font: bold 0.55em/1 sans-serif;
+            text-align: center;
+            vertical-align: super;
+        }
         ${this.hasInteractiveElements ? this.pollGenerator.getPollCSS() : ''}
 
         ${this.css}

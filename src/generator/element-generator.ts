@@ -628,7 +628,7 @@ export class TextProcessor {
         const items = this.footnotes.map(note => {
             const classes = note.classes.length ? ` class="${this.escapeHtml(note.classes.join(' '))}"` : '';
             const styles = note.styles.length ? ` style="${this.escapeHtml(note.styles.join('; '))}"` : '';
-            const title = note.note !== undefined ? ` title="${this.escapeHtml(note.note)}"` : '';
+            const title = note.note !== undefined ? ` title="${this.escapeHtml(note.note)}" data-sd-note` : '';
             const text = this.escapeHtml(note.text);
             return `                <li>${classes || styles || title ? `<span${classes}${styles}${title}>${text}</span>` : text}</li>`;
         }).join('\n');
@@ -679,7 +679,7 @@ export class TextProcessor {
                             ? ` style="${this.escapeHtml(attributes.styles.join('; '))}"`
                             : '';
                         const note = attributes.note !== undefined
-                            ? ` title="${this.escapeHtml(attributes.note)}"`
+                            ? ` title="${this.escapeHtml(attributes.note)}" data-sd-note`
                             : '';
                         const content = this.processInlineText(span.content);
                         let marker = '';
