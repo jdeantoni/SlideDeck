@@ -514,7 +514,18 @@ Pour une note numérotée à la fin de la diapositive, utilisez `footnote` :
 
 ```sdml
 [EDT]{footnote: 'Explication de EDT'}
+[concept]{footnote: ['Note en couleur']{.todo; color: red}}
+[concept]{footnote: ['Note courte'; note: 'Plus de détails']{.todo}}
 ```
+
+Le style entre les accolades internes s'applique au texte de la note, pas au
+texte de référence ni au numéro. Définissez les classes comme `.todo` dans le
+CSS de la présentation. Le texte de la note reste du texte brut : le HTML est
+échappé.
+L'attribut `note` entre les crochets (ou dans les accolades internes) ajoute
+une infobulle au texte de la note. Placé dans les accolades externes, il
+s'applique au texte de référence. L'infobulle native peut être inaccessible
+au clavier ou sur écran tactile.
 
 La numérotation suit l'ordre de lecture et recommence à chaque diapositive.
 Les notes occupent de la place après le contenu ; celles des fragments sont

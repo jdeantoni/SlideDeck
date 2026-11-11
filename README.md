@@ -141,6 +141,25 @@ Footnotes are numbered in reading order, restarting on each slide. They appear
 after the slide content and take up slide space; fragment footnotes are visible
 even before their fragment is revealed. `note` and `footnote` can be combined.
 
+Style an individual footnote using a quoted text inside a styled span:
+
+```sdml
+[*a concept*]{footnote: ['a styled footnote']{.todo; color: red}}
+```
+
+Classes and CSS properties inside the nested braces apply to the footnote
+text, not the reference or its number. Footnote text remains plain text
+(HTML is escaped); define classes such as `.todo` in the presentation CSS.
+To add a hover tooltip to the footnote text, put `note` inside the brackets:
+
+```sdml
+[term]{footnote: ['Short note'; note: 'More details']{.todo}}
+```
+
+Alternatively, put `note` inside the nested braces. A `note` on the outer
+span instead applies to the reference text. Tooltips use the browser's native
+`title` behavior and may be inaccessible by keyboard or on touch devices.
+
 Set a presentation-wide transition in the metadata (after `logo` and `css`,
 when present). It defaults to `slide` if omitted. A transition at the start
 of an individual slide overrides the presentation setting. When navigating

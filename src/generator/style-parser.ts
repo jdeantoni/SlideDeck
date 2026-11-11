@@ -6,6 +6,13 @@ export interface ParsedStyleAttributes {
     classes: string;       // ` class="..."` or empty string
 }
 
+export interface FootnoteContent {
+    text: string;
+    classes: string[];
+    styles: string[];
+    note?: string;
+}
+
 /**
  * Style parser for handling CSS style attributes with abstractions
  */
@@ -181,10 +188,12 @@ export class StyleParser {
      * @param content CSS properties string
      * @returns Array of property pairs
      */
-    private smartSplit(content: string): string[] {
+    private smartSplit(content: string, nestedBraces = false): string[] {
         const result: string[] = [];
         let current = '';
         let depth = 0;
+        let braceDepth = 0;
+        let bracketDepth = 0;
         let quote = '';
         
         for (let i = 0; i < content.length; i++) {
@@ -206,13 +215,25 @@ export class StyleParser {
             } else if (char === ')') {
                 depth--;
                 current += char;
-            } else if (char === ';' && depth === 0) {
+            } else if (nestedBraces && char === '{') {
+                braceDepth++;
+                current += char;
+            } else if (nestedBraces && char === '}') {
+                braceDepth--;
+                current += char;
+            } else if (nestedBraces && char === '[') {
+                bracketDepth++;
+                current += char;
+            } else if (nestedBraces && char === ']') {
+                bracketDepth--;
+                current += char;
+            } else if (char === ';' && depth === 0 && braceDepth === 0 && bracketDepth === 0) {
                 // Always split on semicolon if we're not inside parentheses
                 if (current.trim()) {
                     result.push(current.trim());
                 }
                 current = '';
-            } else if (char === ',' && depth === 0) {
+            } else if (char === ',' && depth === 0 && braceDepth === 0 && bracketDepth === 0) {
                 // Only split on comma if the next part looks like a property (has a colon for key:value)
                 // Look ahead to see if this comma separates properties or is part of a value
                 const remaining = content.substring(i + 1).trim();
@@ -244,12 +265,12 @@ export class StyleParser {
      * Parse inline span attributes without applying block layout shortcuts.
      * Invalid attributes are rejected so their source can be displayed literally.
      */
-    public parseInlineAttributes(content: string): {classes: string[], styles: string[], note?: string, footnote?: string} | undefined {
+    public parseInlineAttributes(content: string): {classes: string[], styles: string[], note?: string, footnote?: FootnoteContent} | undefined {
         const classes: string[] = [];
         const styles: string[] = [];
         let note: string | undefined;
-        let footnote: string | undefined;
-        for (const part of this.smartSplit(content)) {
+        let footnote: FootnoteContent | undefined;
+        for (const part of this.smartSplit(content, true)) {
             let remaining = part.trim();
             while (remaining.startsWith('.')) {
                 const match = /^\.([a-zA-Z][a-zA-Z0-9_-]*)(?=\s|$)/.exec(remaining);
@@ -263,15 +284,34 @@ export class StyleParser {
             if (!property) return undefined;
             let value = property[2].trim();
             if (property[1] === 'note' || property[1] === 'footnote') {
+                if (property[1] === 'note' ? note !== undefined : footnote !== undefined) return undefined;
+                let classes: string[] = [];
+                let styles: string[] = [];
+                let footnoteNote: string | undefined;
+                if (property[1] === 'footnote' && value.startsWith('[')) {
+                    const styled = /^\[\s*((?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"))\s*(?:;\s*(note\s*:\s*(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"))\s*)?\]\s*\{([\s\S]*)\}$/.exec(value);
+                    if (!styled) return undefined;
+                    const attributes = this.parseInlineAttributes(styled[3]);
+                    if (!attributes || attributes.footnote !== undefined) return undefined;
+                    if (styled[2]) {
+                        const tooltip = this.parseInlineAttributes(styled[2]);
+                        if (!tooltip || tooltip.note === undefined || attributes.note !== undefined) return undefined;
+                        footnoteNote = tooltip.note;
+                    } else {
+                        footnoteNote = attributes.note;
+                    }
+                    classes = attributes.classes;
+                    styles = attributes.styles;
+                    value = styled[1];
+                }
                 const match = /^(?:'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)")$/.exec(value);
-                if (!match || (property[1] === 'note' ? note !== undefined : footnote !== undefined)) return undefined;
+                if (!match) return undefined;
                 const quote = value[0];
                 const text = (match[1] ?? match[2]).replace(/\\(.)/g, (original, char: string) =>
-                    char === quote || char === '\\' ? char : original
-                );
+                    char === quote || char === '\\' ? char : original);
                 if (!text) return undefined;
                 if (property[1] === 'note') note = text;
-                else footnote = text;
+                else footnote = { text, classes, styles, note: footnoteNote };
                 continue;
             }
             if (value.startsWith("'") || value.startsWith('"')) {

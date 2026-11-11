@@ -14,6 +14,33 @@ async function main() {
     assert.strictEqual(text.processInlineText('[x]{footnote: \'a\'; footnote: \'b\'}'),
         '[x]{footnote: &#39;a&#39;; footnote: &#39;b&#39;}');
 
+    const styled = new TextProcessor();
+    assert.strictEqual(styled.processInlineText('[*a concept*]{footnote: [\'a styled footnote\']{.todo}};'),
+        '<span><em>a concept</em></span><sup class="footnote-marker">[1]</sup>;');
+    assert.ok(styled.renderFootnotes().includes('<li><span class="todo">a styled footnote</span></li>'));
+    styled.resetFootnotes();
+    styled.processInlineText('[x]{footnote: ["A & <B>"]{.todo .small; color: \'red\'; font-size: \'12px\'}; color: blue}');
+    assert.ok(styled.renderFootnotes().includes(
+        '<li><span class="todo small" style="color: red; font-size: 12px">A &amp; &lt;B&gt;</span></li>'));
+    styled.resetFootnotes();
+    styled.processInlineText('[x]{footnote: [\'It\\\'s "safe"\']{content: \'" onmouseover="evil\'}}');
+    assert.ok(styled.renderFootnotes().includes(
+        '<li><span style="content: &quot; onmouseover=&quot;evil">It&#39;s &quot;safe&quot;</span></li>'));
+    styled.resetFootnotes();
+    styled.processInlineText('[x]{footnote: [\'Nested\']{footnote: \'no\'}}');
+    assert.strictEqual(styled.renderFootnotes(), '');
+    styled.resetFootnotes();
+    styled.processInlineText('[x]{footnote: [\'text\'; note: \'one\']{.todo; note: \'two\'}}');
+    assert.strictEqual(styled.renderFootnotes(), '');
+    styled.resetFootnotes();
+    styled.processInlineText('[x]{footnote: [\'text\'; note: \'" & <hover>; \\\'quoted\\\'\']{.todo; color: red}; note: \'reference\'}');
+    assert.ok(styled.renderFootnotes().includes(
+        '<li><span class="todo" style="color: red" title="&quot; &amp; &lt;hover&gt;; &#39;quoted&#39;">text</span></li>'));
+    styled.resetFootnotes();
+    styled.processInlineText('[x]{footnote: [\'text\']{note: \'hover\'}}');
+    assert.ok(styled.renderFootnotes().includes('<li><span title="hover">text</span></li>'));
+
+    const userText = 'we have no actual reasearch activity dedicated to the way to express the characteristics in a VF. In our  experiments, we may use existing technologies like extending the Asset Administration Shell with a specific metamodel; or similar';
     const source = [
         '# [Title]{footnote: \'Title note\'}',
         '[first]{note: \'Hover\'; footnote: \'First & <safe>\'; color: red}',
@@ -24,6 +51,8 @@ async function main() {
         '::: {animate: "fade-in"}',
         '[fragment]{footnote: \'Fragment\'}',
         ':::',
+        '[styled]{footnote: [\'Styled & <safe>\']{.todo; color: red}; note: \'hover\'}',
+        `[*validity frame*]{footnote: ['${userText}'; note: '${userText}']{.todo}}`,
         '===',
         '[second slide]{footnote: \'Second slide note\'}',
         '===',
@@ -36,11 +65,14 @@ async function main() {
         const first = sections[0][2];
         const second = sections[1][2];
         assert.deepStrictEqual([...first.matchAll(/class="footnote-marker">\[(\d+)\]/g)].map(m => m[1]),
-            ['1', '2', '3', '4', '5']);
+            ['1', '2', '3', '4', '5', '6', '7']);
         assert.ok(first.includes('<span style="color: red" title="Hover">first</span><sup class="footnote-marker">[2]</sup>'));
         assert.ok(first.includes('<li>First &amp; &lt;safe&gt;</li>'));
         assert.ok(first.includes('<li>It&#39;s a list</li>'));
         assert.ok(first.includes('<li>Fragment</li>'));
+        assert.ok(first.includes('<li><span class="todo" style="color: red">Styled &amp; &lt;safe&gt;</span></li>'));
+        assert.ok(first.includes('<span><em>validity frame</em></span><sup class="footnote-marker">[7]</sup>'));
+        assert.ok(first.includes(`<li><span class="todo" title="${userText}">${userText}</span></li>`));
         assert.ok(second.includes('<sup class="footnote-marker">[1]</sup>'));
         assert.ok(second.includes('<li>Second slide note</li>'));
         assert.ok(!sections[2][2].includes('slide-footnotes'));

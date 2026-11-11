@@ -46,6 +46,7 @@ async function run() {
             '# Title',
             '- **bold** and *italic*',
             '[Text]{.large; color: \'red\'}',
+            '[Term]{footnote: [\'Styled\']{.todo; color: red}; note: \'Tip\'}',
             '![QR] "https://example.com"',
             '::: {animate: "fade-in"}',
             'Text',

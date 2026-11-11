@@ -57,17 +57,7 @@
       "patterns": [
         { "name": "constant.character.escape.slidedeck", "match": "\\\\[\\[\\]{}\\\\]" },
         { "name": "string.other.link.slidedeck", "match": "!\\[[^\\]]+\\](?:\\([^\\r\\n)]*\\)|\\s+\"[^\"\\r\\n]*\")" },
-        {
-          "name": "meta.inline-attributes.slidedeck",
-          "begin": "(?<=\\])\\{",
-          "end": "\\}",
-          "patterns": [
-            { "name": "entity.other.attribute-name.class.slidedeck", "match": "\\.[a-zA-Z][\\w-]*" },
-            { "name": "variable.other.property.slidedeck", "match": "[\\w-]+(?=\\s*:)" },
-            { "name": "string.quoted.single.slidedeck", "begin": "'", "end": "'", "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.slidedeck" }] },
-            { "name": "string.quoted.double.slidedeck", "begin": "\"", "end": "\"", "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.slidedeck" }] }
-          ]
-        },
+        { "include": "#inline-attributes" },
         { "name": "markup.bold.slidedeck", "match": "\\*\\*[^*]+\\*\\*" },
         { "name": "markup.underline.slidedeck", "match": "__[^_]+__" },
         { "name": "markup.italic.slidedeck", "match": "(?<!\\*)\\*[^*]+\\*|(?<!_)_[^_]+_" },
@@ -75,6 +65,18 @@
         { "name": "variable.other.property.slidedeck", "match": "\\b(?:animate|transition|index|font-size|color|width|height|background|text-align)(?=\\s*:)" },
         { "name": "string.quoted.single.slidedeck", "match": "(?<=:\\s)'[^'\\r\\n]*'" },
         { "name": "string.quoted.double.slidedeck", "match": "(?<=:\\s)\"[^\"\\r\\n]*\"" }
+      ]
+    },
+    "inline-attributes": {
+      "name": "meta.inline-attributes.slidedeck",
+      "begin": "(?<=\\])\\{",
+      "end": "\\}",
+      "patterns": [
+        { "include": "#inline-attributes" },
+        { "name": "entity.other.attribute-name.class.slidedeck", "match": "\\.[a-zA-Z][\\w-]*" },
+        { "name": "variable.other.property.slidedeck", "match": "[\\w-]+(?=\\s*:)" },
+        { "name": "string.quoted.single.slidedeck", "begin": "'", "end": "'", "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.slidedeck" }] },
+        { "name": "string.quoted.double.slidedeck", "begin": "\"", "end": "\"", "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.slidedeck" }] }
       ]
     }
   }

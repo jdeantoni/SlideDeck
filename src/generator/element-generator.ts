@@ -580,7 +580,7 @@ export class ElementGenerator {
  */
 export class TextProcessor {
     private styleParser = new StyleParser();
-    private footnotes: string[] = [];
+    private footnotes: {text: string, classes: string[], styles: string[], note?: string}[] = [];
 
     public resetFootnotes(): void {
         this.footnotes = [];
@@ -588,7 +588,13 @@ export class TextProcessor {
 
     public renderFootnotes(): string {
         if (!this.footnotes.length) return '';
-        const items = this.footnotes.map(note => `                <li>${this.escapeHtml(note)}</li>`).join('\n');
+        const items = this.footnotes.map(note => {
+            const classes = note.classes.length ? ` class="${this.escapeHtml(note.classes.join(' '))}"` : '';
+            const styles = note.styles.length ? ` style="${this.escapeHtml(note.styles.join('; '))}"` : '';
+            const title = note.note !== undefined ? ` title="${this.escapeHtml(note.note)}"` : '';
+            const text = this.escapeHtml(note.text);
+            return `                <li>${classes || styles || title ? `<span${classes}${styles}${title}>${text}</span>` : text}</li>`;
+        }).join('\n');
         return `            <aside class="slide-footnotes" aria-label="Footnotes">\n                <ol>\n${items}\n                </ol>\n            </aside>`;
     }
 
@@ -648,6 +654,11 @@ export class TextProcessor {
                         i = span.end;
                         continue;
                     }
+                    if (/\bfootnote\s*:\s*\[/.test(span.attributes)) {
+                        source += protect(this.escapeHtml(text.slice(i, span.end + 1)));
+                        i = span.end;
+                        continue;
+                    }
                 }
             }
             source += text[i];
@@ -681,6 +692,7 @@ export class TextProcessor {
         if (depth !== 0 || text[close + 1] !== '{') return undefined;
 
         let quote = '';
+        let braceDepth = 0;
         for (let end = close + 2; end < text.length; end++) {
             const char = text[end];
             if (quote && char === '\\' && end + 1 < text.length) {
@@ -689,6 +701,10 @@ export class TextProcessor {
                 quote = '';
             } else if (!quote && (char === "'" || char === '"')) {
                 quote = char;
+            } else if (!quote && char === '{') {
+                braceDepth++;
+            } else if (!quote && char === '}' && braceDepth > 0) {
+                braceDepth--;
             } else if (!quote && char === '}') {
                 return {
                     content: text.slice(start + 1, close),
