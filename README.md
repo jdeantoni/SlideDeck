@@ -342,6 +342,46 @@ extension host after rebuilding extension code.
 The embedded preview does not update the URL hash while navigating; generated
 standalone presentations retain reveal.js URL-hash navigation.
 
+Embedded code editors require internet access to load Monaco and, for Python
+and SQL, their execution runtimes. If the editor cannot load, check your
+connection and reload the presentation.
+
+To position an image visually, enable **Edit layout** in the preview and drag
+the image. The source is updated as one undoable edit; save the file to keep
+the change. For example:
+`![Logo](img/logo.png){offset: '40px -20px'}`. Offsets are measured in slide
+pixels relative to the image's original position; its space in the normal
+layout is retained. The position is also used in generated HTML. Turn off
+**Edit layout** to return to normal preview interaction. This supports regular
+image lines (including images in styled blocks and fragments), not videos,
+QR codes, or images inside synchronized fragments. Wait for the preview to
+finish updating before dragging again.
+
+**Edit layout** also moves styled blocks (`::: {…} … :::`) as a unit,
+including their headings, text, lists and images. Drag the block's content;
+Shift-drag an image to move its surrounding block rather than the image.
+The offset is stored as a `translate` style on the block and its original
+space remains in the layout. Wrap a heading or paragraph in a styled block
+to move it independently. Blocks with an existing non-pixel `translate`
+style are not draggable.
+
+Use **Draw** in the preview to draw on the slide. Choose the pen, rectangle,
+ellipse or arrow, and set a color and width. Pen strokes are smoothed, and
+rectangles and ellipses have a slightly hand-drawn outline. **Save
+fragments** creates a transparent SVG in `img` for each drawing and inserts
+one `fade-in` fragment per SVG at the end of the current slide. Save the
+SlideDeck file to keep the source edits. In the generated presentation the
+annotations appear in drawing order as you advance the fragments; they are
+static images, not stroke-by-stroke animations. Existing fragment ordering
+and explicit fragment indices still apply.
+
+Drawings are drafts until saved. Return to their original slide to save or
+clear them. If the source changes while a draft is open, it cannot be saved
+against the stale preview; clear it and draw again. Undoing the source
+insertion does not delete the generated SVG files. The drawings are separate
+SVG images, not individually editable shapes; remove their fragment and SVG
+file manually if no longer needed.
+
 To go back from a slide to its source, double-click non-interactive content on
 the current slide. The editor opens at the start of that slide. Double-clicks
 on links, controls, media and interactive widgets keep their normal behavior.

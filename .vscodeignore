@@ -17,4 +17,5 @@ langium-config.json
 build-and-compile.*
 GUIDE_UTILISATEUR.md
 DEV_MODE.md
+todo.md
 standalone-quiz-server/node_modules/**

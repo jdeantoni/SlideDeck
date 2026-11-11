@@ -192,6 +192,13 @@ export class TemplateGenerator {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/poll/style.css">
     ` : ''}
     <style>
+        .reveal .slides > .sd-annotation-layer {
+            position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20;
+        }
+        .reveal .slides > .sd-annotation-layer img {
+            display: block; width: 100%; height: 100%; max-width: none; max-height: none;
+            margin: 0; border: 0; box-shadow: none;
+        }
         ${this.hasInteractiveElements ? this.pollGenerator.getPollCSS() : ''}
 
         ${this.css}
@@ -306,6 +313,7 @@ ${slidesContent}
     ${this.useLatex ? '<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>' : ''}
     ${this.chalkboardEnabled ? chalkboardCDN.js : ''}
     ${this.ideRuntime.generateScriptTags()}
+    ${this.ideRuntime.generateMonacoLoaderScript()}
     ${this.hasInteractiveElements ? `
     <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -315,17 +323,36 @@ ${slidesContent}
     <!-- ResizeObserver polyfill for older browsers/mobile -->
     <script src="https://cdn.jsdelivr.net/npm/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script>
     
-    ${this.ideRuntime.generateMonacoLoaderScript()}
     <!-- Seminar plugin -->
     <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/seminar/plugin.js"></script>
     <!-- Poll plugin requires seminar plugin -->
     <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/poll/plugin.js"></script>
     ` : ''}
     <script>
-        ${this.hasInteractiveElements ? this.ideRuntime.generateMonacoEditorScript() + '\n' : ''}
+        ${this.ideRuntime.generateMonacoEditorScript()}
         ${this.hasInteractiveElements ? `const originalUrl = window.location.href;
         const guestParam = new URL(originalUrl).searchParams.get('guest');
         ` : ''}
+        const annotationLayers = [];
+        const slidesContainer = document.querySelector('.reveal .slides');
+        slidesContainer.querySelectorAll('section .sd-annotation-layer').forEach(layer => {
+            const slide = layer.closest('section');
+            const fragment = layer.closest('.fragment');
+            if (!slide || !fragment) return;
+            annotationLayers.push({ layer, slide, fragment });
+            layer.style.display = 'none';
+            slidesContainer.appendChild(layer);
+        });
+        function updateAnnotationLayers() {
+            const current = Reveal.getCurrentSlide();
+            annotationLayers.forEach(({ layer, slide, fragment }) => {
+                layer.style.display = slide === current && fragment.classList.contains('visible') ? 'block' : 'none';
+            });
+        }
+        Reveal.on('ready', updateAnnotationLayers);
+        Reveal.on('slidechanged', updateAnnotationLayers);
+        Reveal.on('fragmentshown', updateAnnotationLayers);
+        Reveal.on('fragmenthidden', updateAnnotationLayers);
         const slideTransitions = new WeakMap();
         document.querySelectorAll('.reveal .slides > section').forEach(slide => {
             slideTransitions.set(slide, slide.getAttribute('data-transition'));

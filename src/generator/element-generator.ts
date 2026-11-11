@@ -2,7 +2,9 @@ import { ImageConverter } from "./image-converter";
 import { VideoAssetManager } from "./video-asset-manager";
 import { StyleParser } from "./style-parser";
 import { isRootCstNode } from "langium";
-import { List, OrderedListItem, UnorderedListItem, isOrderedListItem } from "../language/generated/ast";
+import { List, Media, NestedStyledElement, StyledElement, OrderedListItem, UnorderedListItem, isOrderedListItem } from "../language/generated/ast";
+import { getImageOffset } from "./image-position";
+import { getBlockOffset } from "./block-position";
 import * as path from 'path';
 
 interface NestedListItem {
@@ -26,7 +28,29 @@ export class ElementGenerator {
     textProcessor = new TextProcessor();
     private sourceFilePath?: string;
     private videoAssetManager = new VideoAssetManager();
+    private previewImagePositions = false;
+    private imageMappings: Array<{ start: number; end: number; content: string }> = [];
+    private blockMappings: Array<{ start: number; end: number; content: string; style?: string }> = [];
 
+    public enablePreviewImagePositions(): void {
+        this.previewImagePositions = true;
+    }
+
+    public getImageMappings(): Array<{ start: number; end: number; content: string }> {
+        return this.imageMappings;
+    }
+
+    public getBlockMappings(): Array<{ start: number; end: number; content: string; style?: string }> {
+        return this.blockMappings;
+    }
+
+    public getBlockPreviewAttributes(block: StyledElement | NestedStyledElement): string {
+        const cst = block.$cstNode;
+        const offset = getBlockOffset(block.style);
+        if (!this.previewImagePositions || !cst || !offset) return '';
+        this.blockMappings.push({ start: cst.offset, end: cst.end, content: cst.text, style: block.style });
+        return ` data-sd-block="${cst.offset}" data-sd-x="${offset.x}" data-sd-y="${offset.y}"`;
+    }
     /**
      * Set the source file path for resolving relative image paths
      * @param filePath Absolute path to the .sdml file
@@ -147,7 +171,7 @@ export class ElementGenerator {
      * @param media The media AST node
      * @returns The HTML string for the media
      */
-    public async generateMedia(media: any, style: string = ''): Promise<string> {
+    public async generateMedia(media: Media, style: string = ''): Promise<string> {
         const content = media.content;
         
         // Parse the media line: ![alt](url)
@@ -176,7 +200,18 @@ export class ElementGenerator {
             const basePath = this.sourceFilePath ? path.dirname(this.sourceFilePath) : undefined;
             const base64Url = await ImageConverter.convertToBase64Async(url, basePath);
             
-            return `            <img src="${base64Url}" alt="${alt}"${style}>`;
+            const offset = getImageOffset(content);
+            if (offset.x !== 0 || offset.y !== 0) {
+                const translate = `translate: ${offset.x}px ${offset.y}px`;
+                style = style ? style.replace(/"$/, `; ${translate}"`) : ` style="${translate}"`;
+            }
+            let source = '';
+            if (this.previewImagePositions && media.$cstNode) {
+                const { offset: start, end } = media.$cstNode;
+                this.imageMappings.push({ start, end, content });
+                source = ` data-sd-image="${start}" data-sd-x="${offset.x}" data-sd-y="${offset.y}"`;
+            }
+            return `            <img src="${base64Url}" alt="${this.textProcessor.escapeHtml(alt)}"${style}${source}>`;
         }
     }
 
@@ -536,7 +571,9 @@ export class ElementGenerator {
                     const basePath = this.sourceFilePath ? path.dirname(this.sourceFilePath) : undefined;
                     const base64Url = await ImageConverter.convertToBase64Async(url, basePath);
                     
-                    content = `<img src="${base64Url}" alt="${this.textProcessor.escapeHtml(alt)}" style="max-width: 100%; height: auto;" />`;
+                    const offset = getImageOffset(fragment.media);
+                    const translate = offset.x || offset.y ? ` translate: ${offset.x}px ${offset.y}px;` : '';
+                    content = `<img src="${base64Url}" alt="${this.textProcessor.escapeHtml(alt)}" style="max-width: 100%; height: auto;${translate}" />`;
                 }
             } else if (fragment.text) {
                 // Process text with inline formatting

@@ -1,6 +1,10 @@
 import * as path from 'path';
+import * as crypto from 'crypto';
 import * as vscode from 'vscode';
 import { CompilerService } from '../services/compiler-service';
+import { getImageOffset, withImageOffset } from '../generator/image-position';
+import { getBlockOffset, withBlockOffset } from '../generator/block-position';
+import { annotationSvg, validateAnnotations } from './annotation';
 
 export class PreviewManager implements vscode.Disposable {
     private readonly panels = new Map<string, SlidePreview>();
@@ -37,11 +41,17 @@ class SlidePreview implements vscode.Disposable {
     private timer: ReturnType<typeof setTimeout> | undefined;
     private revision = 0;
     private startLines: number[] = [];
+    private slideEndOffsets: number[] = [];
     private disposed = false;
     private ready = false;
     private pendingError: string | undefined;
     private compiledVersion: number | undefined;
     private displayedRevision: number | undefined;
+    private imageMappings = new Map<number, { start: number; end: number; content: string }>();
+    private blockMappings = new Map<number, { start: number; end: number; content: string; style?: string }>();
+    private layoutMode = false;
+    private pendingSlide: number | undefined;
+    private savingAnnotations = false;
 
     constructor(private readonly document: vscode.TextDocument, private readonly editorColumn: vscode.ViewColumn | undefined, onDispose: () => void) {
         const roots = (vscode.workspace.workspaceFolders || []).map(folder => folder.uri);
@@ -71,10 +81,25 @@ class SlidePreview implements vscode.Disposable {
             this.panel.webview.onDidReceiveMessage(message => {
                 if (message && message.type === 'ready') {
                     this.ready = true;
-                    this.updateSlide();
+                    if (this.pendingSlide !== undefined) {
+                        void this.panel.webview.postMessage({ type: 'slide', index: this.pendingSlide });
+                        this.pendingSlide = undefined;
+                    } else {
+                        this.updateSlide();
+                    }
                     if (this.pendingError) this.showError(this.pendingError);
                 } else if (message && message.type === 'revealSource') {
                     void this.revealSource(message.index, message.revision);
+                } else if (message && message.type === 'layoutMode' && typeof message.enabled === 'boolean') {
+                    this.layoutMode = message.enabled;
+                } else if (message && message.type === 'moveImage') {
+                    void this.moveElement(message, 'image');
+                } else if (message && message.type === 'moveBlock') {
+                    void this.moveElement(message, 'block');
+                } else if (message && message.type === 'layoutError' && typeof message.text === 'string') {
+                    void vscode.window.showWarningMessage(message.text);
+                } else if (message && message.type === 'saveAnnotations') {
+                    void this.saveAnnotations(message);
                 }
             })
         );
@@ -107,14 +132,17 @@ class SlidePreview implements vscode.Disposable {
             const source = this.document.getText();
             const version = this.document.version;
             const sourcePath = this.document.uri.scheme === 'file' ? this.document.uri.fsPath : undefined;
-            const result = await new CompilerService().compile(source, undefined, sourcePath, { useUrlHash: false });
+            const result = await new CompilerService().compile(source, undefined, sourcePath, { useUrlHash: false, previewImagePositions: true });
             if (this.disposed || revision !== this.revision) return;
             if (result.error) {
                 this.showError(result.error);
                 return;
             }
             this.startLines = result.slideStartLines || [];
-            const html = this.previewHtml(result.html, revision);
+            this.slideEndOffsets = result.slideEndOffsets || [];
+            this.imageMappings = new Map((result.imageMappings || []).map(mapping => [mapping.start, mapping]));
+            this.blockMappings = new Map((result.blockMappings || []).map(mapping => [mapping.start, mapping]));
+            const html = this.previewHtml(result.html, revision, version);
             this.compiledVersion = version;
             this.displayedRevision = revision;
             this.pendingError = undefined;
@@ -124,6 +152,106 @@ class SlidePreview implements vscode.Disposable {
             if (!this.disposed && revision === this.revision) {
                 this.showError(error instanceof Error ? error.message : String(error));
             }
+        }
+    }
+
+    private async saveAnnotations(message: { revision: unknown; slide: unknown; width: unknown; height: unknown; strokes: unknown }): Promise<void> {
+        const fail = (text: string): void => {
+            void vscode.window.showWarningMessage(text);
+            void this.panel.webview.postMessage({ type: 'annotationsSaveFailed' });
+        };
+        if (this.savingAnnotations) return;
+        if (message.revision !== this.displayedRevision || this.document.version !== this.compiledVersion) {
+            fail('The preview is out of date. Wait for it to update before saving annotations.');
+            return;
+        }
+        if (this.document.uri.scheme !== 'file' || this.document.isUntitled) {
+            fail('Save the SlideDeck file before saving annotations.');
+            return;
+        }
+        if (typeof message.slide !== 'number' || !Number.isInteger(message.slide) ||
+            message.slide < 0 || message.slide >= this.slideEndOffsets.length ||
+            typeof message.width !== 'number' || !Number.isFinite(message.width) || message.width <= 0 || message.width > 10000 ||
+            typeof message.height !== 'number' || !Number.isFinite(message.height) || message.height <= 0 || message.height > 10000 ||
+            !validateAnnotations(message.strokes)) {
+            fail('Cannot save invalid annotation data.');
+            return;
+        }
+        const offset = this.slideEndOffsets[message.slide];
+        if (offset < 0 || offset > this.document.getText().length) {
+            fail('Cannot locate the slide source for these annotations.');
+            return;
+        }
+        this.savingAnnotations = true;
+        try {
+            const edit = new vscode.WorkspaceEdit();
+            const directory = vscode.Uri.joinPath(this.document.uri, '..', 'img');
+            const newline = this.document.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n';
+            const width = message.width;
+            const height = message.height;
+            const fragments = message.strokes.map(stroke => {
+                const name = `annotation-${crypto.randomBytes(16).toString('hex')}.svg`;
+                edit.createFile(vscode.Uri.joinPath(directory, name), {
+                    contents: Buffer.from(annotationSvg(stroke, width, height), 'utf8'),
+                    overwrite: false
+                });
+                return ['::: {animate: "fade-in"}', '::: {.sd-annotation-layer}',
+                    `![Annotation](./img/${name})`, ':::', ':::'].join(newline);
+            });
+            edit.insert(this.document.uri, this.document.positionAt(offset), newline + newline + fragments.join(newline + newline));
+            this.pendingSlide = message.slide;
+            if (!await vscode.workspace.applyEdit(edit)) {
+                this.pendingSlide = undefined;
+                fail('Could not save annotations in the source file.');
+                return;
+            }
+            void this.panel.webview.postMessage({ type: 'annotationsSaved' });
+        } catch (error) {
+            this.pendingSlide = undefined;
+            fail(`Could not save annotations: ${error instanceof Error ? error.message : String(error)}`);
+        } finally {
+            this.savingAnnotations = false;
+        }
+    }
+
+    private async moveElement(message: { revision: unknown; id: unknown; x: unknown; y: unknown; slide: unknown }, kind: 'image' | 'block'): Promise<void> {
+        if (!this.layoutMode || typeof message.id !== 'number' || !Number.isInteger(message.id) ||
+            typeof message.x !== 'number' || !Number.isFinite(message.x) ||
+            typeof message.y !== 'number' || !Number.isFinite(message.y) ||
+            typeof message.slide !== 'number' || !Number.isInteger(message.slide) ||
+            message.slide < 0 || message.slide >= this.startLines.length) return;
+        if (message.revision !== this.displayedRevision || this.document.version !== this.compiledVersion) {
+            void vscode.window.showWarningMessage('The preview is out of date. Wait for it to update before moving an element.');
+            return;
+        }
+        if (Math.abs(message.x) > 10000 || Math.abs(message.y) > 10000) {
+            void vscode.window.showWarningMessage('Element offsets must be within 10000 slide pixels.');
+            return;
+        }
+        const mapping = kind === 'image' ? this.imageMappings.get(message.id) : this.blockMappings.get(message.id);
+        if (!mapping) return;
+        const range = new vscode.Range(this.document.positionAt(mapping.start), this.document.positionAt(mapping.end));
+        if (this.document.getText(range) !== mapping.content) {
+            void vscode.window.showWarningMessage('The element source has changed. Wait for the preview to update.');
+            return;
+        }
+        const offset = { x: Math.round(message.x * 10) / 10, y: Math.round(message.y * 10) / 10 };
+        const style = 'style' in mapping && typeof mapping.style === 'string' ? mapping.style : undefined;
+        const previous = kind === 'image' ? getImageOffset(mapping.content) : getBlockOffset(style);
+        if (!previous) return;
+        if (previous.x === offset.x && previous.y === offset.y) return;
+        const edit = new vscode.WorkspaceEdit();
+        edit.replace(this.document.uri, range, kind === 'image'
+            ? withImageOffset(mapping.content, offset) : withBlockOffset(mapping.content, style, offset));
+        try {
+            this.pendingSlide = message.slide;
+            if (!await vscode.workspace.applyEdit(edit)) {
+                this.pendingSlide = undefined;
+                void vscode.window.showErrorMessage('Could not update the element position in the source file.');
+            }
+        } catch (error) {
+            this.pendingSlide = undefined;
+            void vscode.window.showErrorMessage(`Could not update the element position: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
@@ -173,7 +301,7 @@ class SlidePreview implements vscode.Disposable {
         return `<!DOCTYPE html><html><body><p>Compiling presentation...</p>${this.bridge(false, 0)}</body></html>`;
     }
 
-    private previewHtml(html: string, revision: number): string {
+    private previewHtml(html: string, revision: number, version: number): string {
         let base = '';
         if (this.document.uri.scheme === 'file') {
             const directory = vscode.Uri.file(path.dirname(this.document.uri.fsPath));
@@ -181,19 +309,167 @@ class SlidePreview implements vscode.Disposable {
             base = `<base href="${uri.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">`;
         }
         const source = this.panel.webview.cspSource;
-        const csp = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' https: http:; style-src 'unsafe-inline' https: http:; img-src ${source} data: https: http:; media-src ${source} data: blob: https: http:; font-src ${source} data: https: http:; connect-src ${source} https: http: ws: wss:; frame-src https: http: blob:;">`;
+        const csp = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' https: http:; worker-src blob:; style-src 'unsafe-inline' https: http:; img-src ${source} data: https: http:; media-src ${source} data: blob: https: http:; font-src ${source} data: https: http:; connect-src ${source} https: http: ws: wss:; frame-src https: http: blob:;">`;
         const head = html.replace('<head>', `<head>${csp}${base}`);
         const end = head.lastIndexOf('</body>');
         if (end < 0) throw new Error('Generated presentation has no closing body tag.');
-        return head.slice(0, end) + this.bridge(true, revision) + head.slice(end);
+        return head.slice(0, end) + this.bridge(true, revision, version) + head.slice(end);
     }
 
-    private bridge(presentation: boolean, revision: number): string {
+    private bridge(presentation: boolean, revision: number, version?: number): string {
         return `<div id="sdml-preview-error" role="alert" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#822;color:white;padding:12px;white-space:pre-wrap"></div>
+${presentation ? `<style>
+body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; outline: 2px dashed #19a7ff; outline-offset: 3px; touch-action: none; }
+#sd-layout-toggle { position: fixed; top: 8px; right: 8px; z-index: 99998; padding: 6px 10px; background: #222; color: white; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; }
+#sd-layout-toggle[aria-pressed="true"] { background: #075b8d; }
+#sd-annotation-toolbar { position: fixed; top: 42px; right: 8px; z-index: 99998; background: #222; color: white; padding: 6px; border-radius: 4px; display: flex; gap: 5px; align-items: center; }
+#sd-annotation-toolbar button, #sd-annotation-toolbar select, #sd-annotation-toolbar input { font: 13px sans-serif; }
+#sd-annotation-toolbar [hidden] { display: none; }
+#sd-annotation-toolbar button[aria-pressed="true"] { background: #075b8d; color: white; }
+.sd-annotation-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 9999; touch-action: none; }
+</style><button id="sd-layout-toggle" type="button" aria-pressed="${this.layoutMode}" title="Drag images or styled blocks; Shift-drag an image to move its surrounding block">Edit layout</button>
+<div id="sd-annotation-toolbar"><button id="sd-draw-toggle" type="button" aria-pressed="false">Draw</button>
+<span id="sd-draw-controls" hidden><label>Tool <select id="sd-draw-tool"><option value="pen">Pen</option><option value="rectangle">Rectangle</option><option value="ellipse">Ellipse</option><option value="arrow">Arrow</option></select></label>
+<label>Color <input id="sd-draw-color" type="color" value="#ff3333"></label>
+<label>Width <input id="sd-draw-width" type="number" value="4" min="1" max="30" style="width: 46px"></label>
+<button id="sd-draw-save" type="button">Save fragments</button><button id="sd-draw-clear" type="button">Clear</button></span></div>` : ''}
 <script>
 (() => {
     const vscode = acquireVsCodeApi();
     let slide = 0;
+    let layoutMode = ${presentation && this.layoutMode};
+    let drag = null;
+    let drawingMode = false;
+    const toggle = document.getElementById('sd-layout-toggle');
+    if (toggle) {
+        document.body.classList.toggle('sd-layout-mode', layoutMode);
+        toggle.addEventListener('click', () => {
+            if (drawingMode) return;
+            layoutMode = !layoutMode;
+            document.body.classList.toggle('sd-layout-mode', layoutMode);
+            toggle.setAttribute('aria-pressed', String(layoutMode));
+            vscode.postMessage({ type: 'layoutMode', enabled: layoutMode });
+        });
+    }
+    const drawToggle = document.getElementById('sd-draw-toggle');
+    const drawControls = document.getElementById('sd-draw-controls');
+    const drawTool = document.getElementById('sd-draw-tool');
+    const drawColor = document.getElementById('sd-draw-color');
+    const drawWidth = document.getElementById('sd-draw-width');
+    const drawSave = document.getElementById('sd-draw-save');
+    const drawClear = document.getElementById('sd-draw-clear');
+    let drawing = null;
+    let canvas = null;
+    let sketch = null;
+    let strokes = [];
+    let drawingSlide = null;
+    let drawingSize = null;
+    let drawingVersion = ${version ?? -1};
+    let saving = false;
+    const savedSketch = typeof vscode.getState === 'function' ? vscode.getState() : null;
+    if (savedSketch && Array.isArray(savedSketch.strokes) && savedSketch.strokes.length) {
+        strokes = savedSketch.strokes;
+        drawingSlide = savedSketch.slide;
+        drawingSize = savedSketch.size;
+        drawingVersion = savedSketch.version;
+    }
+    function persistSketch() {
+        if (typeof vscode.setState === 'function') vscode.setState(strokes.length ?
+            { strokes, slide: drawingSlide, size: drawingSize, version: drawingVersion } : null);
+    }
+    function renderSketch() {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (const stroke of sketch ? strokes.concat([sketch]) : strokes) {
+            const first = stroke.points[0], last = stroke.points[stroke.points.length - 1];
+            ctx.beginPath();
+            ctx.lineWidth = stroke.width; ctx.strokeStyle = stroke.color;
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            if (stroke.tool === 'rectangle') {
+                ctx.rect(first.x, first.y, last.x - first.x, last.y - first.y);
+            } else if (stroke.tool === 'ellipse') {
+                ctx.ellipse((first.x + last.x) / 2, (first.y + last.y) / 2,
+                    Math.abs(last.x - first.x) / 2, Math.abs(last.y - first.y) / 2, 0, 0, Math.PI * 2);
+            } else {
+                ctx.moveTo(first.x, first.y);
+                for (let i = 1; i < stroke.points.length; i++) ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+                if (stroke.tool === 'arrow') {
+                    const angle = Math.atan2(last.y - first.y, last.x - first.x), size = Math.max(12, stroke.width * 4);
+                    ctx.lineTo(last.x - size * Math.cos(angle - 0.45), last.y - size * Math.sin(angle - 0.45));
+                    ctx.moveTo(last.x, last.y);
+                    ctx.lineTo(last.x - size * Math.cos(angle + 0.45), last.y - size * Math.sin(angle + 0.45));
+                }
+            }
+            ctx.stroke();
+        }
+    }
+    function clearSketch() {
+        strokes = []; sketch = null; drawing = null; drawingSlide = null; drawingSize = null;
+        drawingVersion = ${version ?? -1};
+        persistSketch();
+        if (canvas) canvas.remove();
+        canvas = null;
+    }
+    function currentIndex() {
+        const current = window.Reveal && Reveal.isReady() && Reveal.getCurrentSlide();
+        const value = current && current.getAttribute('data-slide-index');
+        return value !== null && /^\\d+$/.test(value) ? Number(value) : null;
+    }
+    function makeCanvas() {
+        const current = Reveal.getCurrentSlide(), index = currentIndex();
+        const slides = document.querySelector('.reveal .slides');
+        if (!current || index === null) return false;
+        if (drawingSlide !== null && drawingSlide !== index) {
+            vscode.postMessage({ type: 'layoutError', text: 'Return to the annotated slide to save or clear its drawings.' });
+            return false;
+        }
+        if (!canvas) {
+            const width = slides.clientWidth, height = slides.clientHeight;
+            if (!width || !height) return false;
+            canvas = document.createElement('canvas');
+            canvas.className = 'sd-annotation-canvas';
+            canvas.width = drawingSize ? drawingSize.width : width;
+            canvas.height = drawingSize ? drawingSize.height : height;
+            drawingSlide = index; drawingSize = drawingSize || { width, height };
+            slides.appendChild(canvas);
+        }
+        canvas.style.display = 'block';
+        canvas.style.pointerEvents = drawingMode ? 'auto' : 'none';
+        renderSketch();
+        return true;
+    }
+    if (drawToggle) {
+        drawToggle.addEventListener('click', () => {
+            if (saving || !window.Reveal || !Reveal.isReady()) return;
+            if (!drawingMode && layoutMode) toggle.click();
+            drawingMode = !drawingMode;
+            drawToggle.setAttribute('aria-pressed', String(drawingMode));
+            drawControls.hidden = !drawingMode;
+            if (drawingMode && !makeCanvas()) {
+                drawingMode = false; drawToggle.setAttribute('aria-pressed', 'false'); drawControls.hidden = true;
+            } else if (canvas) canvas.style.pointerEvents = drawingMode ? 'auto' : 'none';
+        });
+        drawClear.addEventListener('click', () => {
+            if (saving) return;
+            clearSketch();
+            if (drawingMode) makeCanvas();
+        });
+        drawSave.addEventListener('click', () => {
+            if (saving || !strokes.length) return;
+            if (drawingSlide !== currentIndex()) {
+                vscode.postMessage({ type: 'layoutError', text: 'Return to the annotated slide before saving.' });
+                return;
+            }
+            if (drawingVersion !== ${version ?? -1}) {
+                vscode.postMessage({ type: 'layoutError', text: 'The source changed while you were drawing. Clear the drawings and try again.' });
+                return;
+            }
+            saving = true;
+            vscode.postMessage({ type: 'saveAnnotations', slide: drawingSlide, width: drawingSize.width,
+                height: drawingSize.height, strokes, revision: ${revision} });
+        });
+    }
     function navigate() {
         if (window.Reveal && Reveal.isReady()) Reveal.slide(slide, 0);
     }
@@ -206,10 +482,15 @@ class SlidePreview implements vscode.Disposable {
             const banner = document.getElementById('sdml-preview-error');
             banner.textContent = message.text;
             banner.style.display = 'block';
+        } else if (message.type === 'annotationsSaved') {
+            saving = false; clearSketch();
+        } else if (message.type === 'annotationsSaveFailed') {
+            saving = false;
         }
     });
     document.addEventListener('dblclick', event => {
         if (!window.Reveal || !Reveal.isReady() || !(event.target instanceof Element)) return;
+        if (layoutMode && event.target.closest('img[data-sd-image], [data-sd-block]')) return;
         const current = Reveal.getCurrentSlide();
         if (!current || !current.contains(event.target) ||
             event.target.closest('a, button, input, textarea, select, video, audio, canvas, [contenteditable], [role="button"], .monaco-editor')) return;
@@ -218,9 +499,103 @@ class SlidePreview implements vscode.Disposable {
         const index = Number(attribute);
         if (Number.isInteger(index) && index >= 0) vscode.postMessage({ type: 'revealSource', index, revision: ${revision} });
     });
+    document.addEventListener('pointerdown', event => {
+        if (drawingMode && canvas && event.target === canvas && event.button === 0 && !saving) {
+            const rect = canvas.getBoundingClientRect();
+            const point = { x: (event.clientX - rect.left) * canvas.width / rect.width,
+                y: (event.clientY - rect.top) * canvas.height / rect.height };
+            const width = Number(drawWidth.value);
+            if (!Number.isFinite(width) || width < 1 || width > 30) {
+                vscode.postMessage({ type: 'layoutError', text: 'Pen width must be between 1 and 30.' }); return;
+            }
+            sketch = { tool: drawTool.value, color: drawColor.value, width, points: [point, point] };
+            drawing = event.pointerId;
+            canvas.setPointerCapture(event.pointerId);
+            event.preventDefault(); event.stopPropagation(); return;
+        }
+        if (!layoutMode || event.button !== 0 || !(event.target instanceof Element) || !window.Reveal || !Reveal.isReady()) return;
+        const image = event.shiftKey ? event.target.closest('[data-sd-block]') :
+            event.target.closest('img[data-sd-image], [data-sd-block]');
+        const current = Reveal.getCurrentSlide();
+        if (!image || !current || !current.contains(image)) return;
+        const index = Number(current.getAttribute('data-slide-index'));
+        if (!Number.isInteger(index) || index < 0) return;
+        let matrix = new DOMMatrix();
+        for (let parent = image.parentElement; parent; parent = parent.parentElement) {
+            const transform = getComputedStyle(parent).transform;
+            if (transform && transform !== 'none') matrix = new DOMMatrix(transform).multiply(matrix);
+        }
+        if (!matrix.is2D || !Number.isFinite(matrix.a * matrix.d - matrix.b * matrix.c) ||
+            Math.abs(matrix.a * matrix.d - matrix.b * matrix.c) < 0.000001) {
+            vscode.postMessage({ type: 'layoutError', text: 'Cannot move an element inside a 3D or non-invertible transform.' });
+            return;
+        }
+        drag = { image, pointer: event.pointerId, startX: event.clientX, startY: event.clientY,
+            x: Number(image.dataset.sdX), y: Number(image.dataset.sdY), inverse: matrix.inverse(), index,
+            previous: image.style.translate, moved: false };
+        image.setPointerCapture(event.pointerId);
+        event.preventDefault();
+        event.stopPropagation();
+    });
+    document.addEventListener('pointermove', event => {
+        if (drawing === event.pointerId && sketch && canvas) {
+            const rect = canvas.getBoundingClientRect();
+            const point = { x: (event.clientX - rect.left) * canvas.width / rect.width,
+                y: (event.clientY - rect.top) * canvas.height / rect.height };
+            if (sketch.tool === 'pen' && sketch.points.length < 2000) sketch.points.push(point);
+            else sketch.points[sketch.points.length - 1] = point;
+            renderSketch(); event.preventDefault(); event.stopPropagation(); return;
+        }
+        if (!drag || drag.pointer !== event.pointerId) return;
+        const dx = event.clientX - drag.startX, dy = event.clientY - drag.startY;
+        if (Math.hypot(dx, dy) < 3 && !drag.moved) return;
+        drag.moved = true;
+        const delta = new DOMPoint(dx, dy, 0, 0).matrixTransform(drag.inverse);
+        drag.image.style.translate = (drag.x + delta.x) + 'px ' + (drag.y + delta.y) + 'px';
+        event.preventDefault();
+        event.stopPropagation();
+    });
+    function finishDrag(event, cancelled) {
+        if (drawing === event.pointerId && sketch) {
+            if (!cancelled && strokes.length < 100) { strokes.push(sketch); persistSketch(); }
+            else if (!cancelled) vscode.postMessage({ type: 'layoutError', text: 'Save at most 100 drawings at a time.' });
+            sketch = null; drawing = null; renderSketch();
+            event.preventDefault(); event.stopPropagation(); return;
+        }
+        if (!drag || drag.pointer !== event.pointerId) return;
+        const current = drag;
+        drag = null;
+        current.image.style.translate = current.previous;
+        if (!cancelled && current.moved) {
+            const delta = new DOMPoint(event.clientX - current.startX, event.clientY - current.startY, 0, 0).matrixTransform(current.inverse);
+            vscode.postMessage({ type: current.image.dataset.sdImage !== undefined ? 'moveImage' : 'moveBlock',
+                id: Number(current.image.dataset.sdImage ?? current.image.dataset.sdBlock),
+                x: current.x + delta.x, y: current.y + delta.y, slide: current.index, revision: ${revision} });
+        }
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    document.addEventListener('pointerup', event => finishDrag(event, false));
+    document.addEventListener('pointercancel', event => finishDrag(event, true));
+    document.addEventListener('dragstart', event => {
+        if (layoutMode && event.target instanceof Element && event.target.closest('img[data-sd-image]')) event.preventDefault();
+    });
     if (window.Reveal) {
         if (Reveal.isReady()) navigate();
         else Reveal.on('ready', navigate);
+        Reveal.on('slidechanged', () => {
+            if (drawingSlide !== currentIndex()) {
+                if (drawingMode) {
+                    drawingMode = false;
+                    drawToggle.setAttribute('aria-pressed', 'false');
+                    drawControls.hidden = true;
+                }
+                if (!strokes.length) clearSketch();
+                else if (canvas) { canvas.style.pointerEvents = 'none'; canvas.style.display = 'none'; }
+            } else if (canvas) {
+                canvas.style.display = 'block';
+            }
+        });
     } else if (${presentation}) {
         const banner = document.getElementById('sdml-preview-error');
         banner.textContent = 'Could not load reveal.js. Check network access and reload the preview.';

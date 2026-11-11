@@ -5,6 +5,8 @@ const vscode = require('vscode');
 const path = require('path');
 const { ImagePasteProvider } = require('../out/vscode/image-paste');
 const { CompilerService } = require('../out/services/compiler-service');
+const { withImageOffset } = require('../out/generator/image-position');
+const { annotationSvg } = require('../out/vscode/annotation');
 
 async function run() {
     const extension = vscode.extensions.getExtension('slidedeck.slidedeck');
@@ -101,6 +103,42 @@ async function run() {
         if (fs.existsSync(path.join(pasteDir, 'img'))) fs.rmdirSync(path.join(pasteDir, 'img'));
         fs.unlinkSync(sourcePath);
         fs.rmdirSync(pasteDir);
+    }
+    const imageSource = '![Logo](image.png)';
+    const layoutDocument = await vscode.workspace.openTextDocument({ language: 'slidedeck', content: imageSource });
+    await vscode.window.showTextDocument(layoutDocument);
+    const layoutEdit = new vscode.WorkspaceEdit();
+    layoutEdit.replace(layoutDocument.uri, new vscode.Range(layoutDocument.positionAt(0), layoutDocument.positionAt(imageSource.length)),
+        withImageOffset(imageSource, { x: 25, y: -10 }));
+    assert.ok(await vscode.workspace.applyEdit(layoutEdit), 'Expected layout edit to succeed');
+    assert.strictEqual(layoutDocument.getText(), `${imageSource}{offset: '25px -10px'}`);
+    await vscode.commands.executeCommand('undo');
+    assert.strictEqual(layoutDocument.getText(), imageSource, 'Layout edit should be undone in one step');
+    const annotationDir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-drawing-'));
+    const annotationSource = path.join(annotationDir, 'slides.slidedeck');
+    const svgPath = path.join(annotationDir, 'img', 'annotation.svg');
+    try {
+        fs.writeFileSync(annotationSource, '# Drawing');
+        const doc = await vscode.workspace.openTextDocument(annotationSource);
+        await vscode.window.showTextDocument(doc);
+        const edit = new vscode.WorkspaceEdit();
+        const svg = annotationSvg({ tool: 'pen', color: '#ff0000', width: 4, points: [{ x: 1, y: 2 }, { x: 3, y: 4 }] }, 960, 700);
+        edit.createFile(vscode.Uri.file(svgPath), { contents: Buffer.from(svg), overwrite: false });
+        edit.insert(doc.uri, doc.positionAt(doc.getText().length),
+            '\n\n::: {animate: "fade-in"}\n::: {.sd-annotation-layer}\n![Annotation](./img/annotation.svg)\n:::\n:::');
+        assert.ok(await vscode.workspace.applyEdit(edit));
+        assert.ok(fs.existsSync(svgPath));
+        const compiled = await new CompilerService().compile(doc.getText(), undefined, annotationSource);
+        assert.ifError(compiled.error);
+        assert.ok(compiled.html.includes('data:image/svg+xml;base64,'));
+        await vscode.commands.executeCommand('undo');
+        assert.strictEqual(doc.getText(), '# Drawing');
+        assert.ok(fs.existsSync(svgPath), 'Undoing source insertion does not remove the saved SVG');
+    } finally {
+        if (fs.existsSync(svgPath)) fs.unlinkSync(svgPath);
+        if (fs.existsSync(path.join(annotationDir, 'img'))) fs.rmdirSync(path.join(annotationDir, 'img'));
+        fs.unlinkSync(annotationSource);
+        fs.rmdirSync(annotationDir);
     }
     console.log(`SlideDeck extension host: ${completions.items.length} completion items`);
 }

@@ -11,7 +11,10 @@ export interface CompilationResult {
     error?: string;
     slideIndex?: number;
     slideStartLines?: number[];
+    slideEndOffsets?: number[];
     hasTemplate?: boolean;
+    imageMappings?: Array<{ start: number; end: number; content: string }>;
+    blockMappings?: Array<{ start: number; end: number; content: string; style?: string }>;
 }
 
 export interface SlideMapping {
@@ -73,7 +76,8 @@ export class CompilerService {
             const presentation = document.parseResult.value as Presentation;
 
             // Generate HTML
-            const html = await new HtmlGenerator().generateHTML(
+            const generator = new HtmlGenerator();
+            const html = await generator.generateHTML(
                 presentation,
                 sourceFilePath ? path.resolve(sourceFilePath) : undefined,
                 outputHtmlPath ? path.resolve(outputHtmlPath) : undefined,
@@ -93,7 +97,10 @@ export class CompilerService {
                 html,
                 slideCount,
                 slideIndex,
-                slideStartLines: (presentation.slides?.slides || []).map(slide => slide.$cstNode?.range.start.line ?? 0)
+                slideStartLines: (presentation.slides?.slides || []).map(slide => slide.$cstNode?.range.start.line ?? 0),
+                slideEndOffsets: (presentation.slides?.slides || []).map(slide => slide.$cstNode?.end ?? -1),
+                imageMappings: generator.getImageMappings(),
+                blockMappings: generator.getBlockMappings()
             };
 
         } catch (error) {

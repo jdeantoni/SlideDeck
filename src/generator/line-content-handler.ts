@@ -91,6 +91,14 @@ export class LineContentHandler {
         if (isSyncFragments(line)) {
             return await this.elementGenerator.generateSyncFragments(line, this.lastCodeBlock);
         }
+        if (isEditor(line)) {
+            this.ideRuntime.enable();
+            return this.ideGenerator.generateEditor(line);
+        }
+        if (isOutput(line)) {
+            this.ideRuntime.enable();
+            return this.ideGenerator.generateOutput(line);
+        }
         if (isParagraph(line)) {
             return this.elementGenerator.generateParagraph(line);
         }
@@ -124,7 +132,7 @@ export class LineContentHandler {
         }
 
         // Apply both classes and inline styles to the container div
-        let containerHtml = `            <div${attrs.classes}${attrs.inlineStyles}>\n`;
+        let containerHtml = `            <div${attrs.classes}${attrs.inlineStyles}${this.elementGenerator.getBlockPreviewAttributes(line)}>\n`;
 
         for (const element of elements) {
             if (isFragmentElement(element)) {
@@ -233,7 +241,7 @@ export class LineContentHandler {
         }
 
         // Apply both classes and inline styles to the container div
-        let containerHtml = `            <div${attrs.classes}${attrs.inlineStyles}>\n`;
+        let containerHtml = `            <div${attrs.classes}${attrs.inlineStyles}${this.elementGenerator.getBlockPreviewAttributes(line)}>\n`;
 
         for (const element of elements) {
             // Handle fragment elements (animations)
@@ -262,6 +270,12 @@ export class LineContentHandler {
                 containerHtml += this.elementGenerator.generateCodeBlock(element, '') + '\n';
             } else if (isSyncFragments(element)) {
                 containerHtml += await this.elementGenerator.generateSyncFragments(element, this.lastCodeBlock) + '\n';
+            } else if (isEditor(element)) {
+                this.ideRuntime.enable();
+                containerHtml += this.ideGenerator.generateEditor(element) + '\n';
+            } else if (isOutput(element)) {
+                this.ideRuntime.enable();
+                containerHtml += this.ideGenerator.generateOutput(element) + '\n';
             } else if (isParagraph(element)) {
                 containerHtml += this.elementGenerator.generateParagraph(element, '') + '\n';
             }

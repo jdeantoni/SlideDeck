@@ -117,27 +117,32 @@ export class IdeRuntimeGenerator {
     public generateMonacoEditorScript(): string {
         if (!this.hasIdeElements) return '';
         
-        return `        require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
-
+        return `        function showIdeLoadError(error) {
+            const message = 'Could not load the code editor. Check network access and reload the presentation.';
+            document.querySelectorAll('.monaco-editor-wrapper').forEach(element => {
+                element.textContent = message;
+            });
+            document.querySelectorAll('.run-button').forEach(button => { button.disabled = true; });
+            console.error(message, error);
+        }
         window.monacoEditors = {};
 
         if (!window.ResizeObserver && typeof ResizeObserver !== 'undefined') {
             window.ResizeObserver = ResizeObserver;
         }
 
+        if (typeof require !== 'function' || typeof require.config !== 'function') {
+            showIdeLoadError('Monaco loader unavailable');
+        } else {
+        require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
         require(['vs/editor/editor.main'], function() {
             document.querySelectorAll('.monaco-editor-wrapper').forEach(editorElement => {
                 const editorId = editorElement.id;
                 const language = editorElement.getAttribute('data-language') || 'python';
                 const initialCode = editorElement.getAttribute('data-initial-code') || '# Write your ' + language + ' code here\\n';
 
-                // Unescape HTML entities from the attribute
-                const textarea = document.createElement('textarea');
-                textarea.innerHTML = initialCode;
-                const unescapedCode = textarea.value;
-
                 window.monacoEditors[editorId] = monaco.editor.create(editorElement, {
-                    value: unescapedCode,
+                    value: initialCode,
                     language: language,
                     theme: 'vs-dark',
                     minimap: { enabled: false },
@@ -177,7 +182,8 @@ export class IdeRuntimeGenerator {
                     }
                 });
             });
-        });
+        }, showIdeLoadError);
+        }
 
         async function runPythonCode(code, outputElement) {
             try {
@@ -262,16 +268,15 @@ figures_data
         }
 
         function runJavaScriptCode(code, outputElement) {
+            const originalLog = console.log;
             try {
                 const logs = [];
-                const originalLog = console.log;
                 console.log = (...args) => {
                     logs.push(args.map(a => String(a)).join(' '));
                     originalLog.apply(console, args);
                 };
 
                 const result = eval(code);
-                console.log = originalLog;
 
                 let output = logs.join('\\n');
                 if (result !== undefined && logs.length === 0) {
@@ -283,6 +288,8 @@ figures_data
             } catch (error) {
                 outputElement.textContent = 'Error: ' + error.message;
                 outputElement.style.color = '#ff6b6b';
+            } finally {
+                console.log = originalLog;
             }
         }
 

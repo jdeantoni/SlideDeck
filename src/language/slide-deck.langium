@@ -109,7 +109,7 @@ terminal SYNC_DELIMITER: /:::\[sync-fragments\]/;
 terminal FRAGMENT_SEPARATOR: /\[\-\-\-\]/;
 
 terminal MEDIA_LINE returns string:
-    /!\[[^\]]+\]\([^\)]+\)/;
+    /!\[[^\]]+\]\([^\)]+\)(?:[ \t]*\{offset:[ \t]*'[-+]?\d+(?:\.\d+)?px[ \t]+[-+]?\d+(?:\.\d+)?px'\})?/;
 
 terminal TRANSITION_ATTR returns string:
     /\{transition:\s*["'][^"']+["']\}/;

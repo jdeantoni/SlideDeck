@@ -38,7 +38,11 @@ async function main() {
     ].join('\n');
 
     const check = html => {
-        assert.ok(!html.includes('hidden'), 'SDML comments should not be rendered');
+        for (const comment of ['hidden before metadata', 'hidden after author', 'hidden inside metadata',
+            'hidden indented comment', 'hidden first line', 'hidden second line', 'hidden within list',
+            'hidden inside style', 'hidden at end of file']) {
+            assert.ok(!html.includes(comment), `SDML comment should not be rendered: ${comment}`);
+        }
         assert.ok(html.includes('https://example.com/a and // text remains'));
         assert.ok(html.includes('inline markers remain'));
         assert.ok(html.includes('url(https://example.com/image.png)'));

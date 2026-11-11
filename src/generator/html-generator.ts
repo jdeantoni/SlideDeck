@@ -9,6 +9,7 @@ import { IdeRuntimeGenerator } from "./ide-runtime";
 
 export interface HtmlGenerationOptions {
     useUrlHash?: boolean;
+    previewImagePositions?: boolean;
 }
 
 /**
@@ -38,6 +39,9 @@ export class HtmlGenerator {
      * @returns Complete HTML document string
      */
     public async generateHTML(presentation: Presentation, sourceFilePath?: string, outputHtmlPath?: string, options?: HtmlGenerationOptions): Promise<string> {
+        if (options?.previewImagePositions) {
+            this.sectionGenerator.getLineContentHandler().getElementGenerator().enablePreviewImagePositions();
+        }
         if (presentation.metadata) {
             this.templateGenerator.setMetadata(presentation.metadata);
         }
@@ -73,6 +77,14 @@ export class HtmlGenerator {
         const slidesHTML = slides.join("\n");
 
         return this.templateGenerator.getHTMLTemplate(slidesHTML, options?.useUrlHash);
+    }
+
+    public getImageMappings(): Array<{ start: number; end: number; content: string }> {
+        return this.sectionGenerator.getLineContentHandler().getElementGenerator().getImageMappings();
+    }
+
+    public getBlockMappings(): Array<{ start: number; end: number; content: string; style?: string }> {
+        return this.sectionGenerator.getLineContentHandler().getElementGenerator().getBlockMappings();
     }
 
     /**
