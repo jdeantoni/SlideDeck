@@ -2,7 +2,7 @@
   "name": "slidedeck",
   "displayName": "SlideDeck",
   "publisher": "slidedeck",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A DSL for creating reveal.js slides from extended markdown",
   "repository": {
     "type": "git",
@@ -15,7 +15,8 @@
   "activationEvents": [
     "onLanguage:slidedeck",
     "onCommand:slidedeck.openPreview",
-    "onCommand:slidedeck.compileHtml"
+    "onCommand:slidedeck.compileHtml",
+    "onCommand:slidedeck.startPresentation"
   ],
   "contributes": {
     "languages": [
@@ -54,6 +55,11 @@
         "command": "slidedeck.compileHtml",
         "title": "SlideDeck: Generate HTML",
         "icon": "$(export)"
+      },
+      {
+        "command": "slidedeck.startPresentation",
+        "title": "SlideDeck: Start Presentation",
+        "icon": "$(play)"
       }
     ],
     "menus": {
@@ -67,8 +73,35 @@
           "command": "slidedeck.compileHtml",
           "when": "editorLangId == slidedeck",
           "group": "navigation@2"
+        },
+        {
+          "command": "slidedeck.startPresentation",
+          "when": "editorLangId == slidedeck",
+          "group": "navigation@3"
         }
       ]
+    },
+    "configuration": {
+      "title": "SlideDeck",
+      "properties": {
+        "slidedeck.browserExecutable": {
+          "type": "string",
+          "default": "firefox",
+          "scope": "machine",
+          "description": "Browser executable or absolute path used to start a presentation."
+        },
+        "slidedeck.browserArguments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "--new-window"
+          ],
+          "scope": "machine",
+          "description": "Arguments passed to the browser before the presentation URL."
+        }
+      }
     }
   },
   "capabilities": {

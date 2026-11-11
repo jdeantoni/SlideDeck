@@ -300,6 +300,16 @@ file first so relative assets can be resolved. Existing output may be
 overwritten after the save dialog's confirmation. As with the CLI, local
 videos are copied to a matching `-assets` directory next to the HTML.
 
+To start a presentation, click **Start Presentation** in the editor title bar
+or run **SlideDeck: Start Presentation**. It compiles the current editor
+contents to an HTML file beside the source and opens a new Firefox window.
+If the HTML already exists, you must confirm before it is replaced.
+Configure `slidedeck.browserExecutable` to choose another browser or an
+absolute executable path; `slidedeck.browserArguments` defaults to
+`["--new-window"]` and can be changed to suit that browser. Arguments are
+passed separately, without a shell. This action requires a local VS Code
+extension host; in remote workspaces, generate the HTML and open it locally.
+
 With VS Code 1.97 or later, paste an image or copy an image file into a saved
 SlideDeck editor to create an image in an `img` folder beside the source and
 insert its SlideDeck image reference. Generated names are unique and do not

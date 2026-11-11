@@ -12,6 +12,8 @@ async function run() {
     await extension.activate();
     assert.ok((await vscode.commands.getCommands(true)).includes('slidedeck.compileHtml'),
         'Expected the HTML compilation command');
+    assert.ok((await vscode.commands.getCommands(true)).includes('slidedeck.startPresentation'),
+        'Expected the start presentation command');
     const document = await vscode.workspace.openTextDocument({
         language: 'slidedeck',
         content: '# Example\nsdml-'
