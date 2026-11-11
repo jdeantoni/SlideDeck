@@ -9,7 +9,7 @@ const listen = name => callback => {
     return { dispose() { delete callbacks[name]; } };
 };
 const document = {
-    languageId: 'slidedeckml',
+    languageId: 'slidedeck',
     fileName: '/tmp/slides/talk.sdml',
     uri: { scheme: 'file', fsPath: '/tmp/slides/talk.sdml', toString: () => 'file:///tmp/slides/talk.sdml' },
     version: 1,

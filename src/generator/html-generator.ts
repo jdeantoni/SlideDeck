@@ -12,7 +12,7 @@ export interface HtmlGenerationOptions {
 }
 
 /**
- * Main HTML generator that orchestrates the conversion of SlideDeckML to HTML
+ * Main HTML generator that orchestrates the conversion of SlideDeck to HTML
  */
 export class HtmlGenerator {
     private templateGenerator: TemplateGenerator;
@@ -30,7 +30,7 @@ export class HtmlGenerator {
     }
 
     /**
-     * Generate complete HTML presentation from SlideDeckML AST
+     * Generate complete HTML presentation from SlideDeck AST
      * @param presentation The presentation AST
      * @param sourceFilePath Absolute path to the source .sdml file (for resolving relative image paths)
      * @param outputHtmlPath Absolute path to the output HTML file (for managing video assets)

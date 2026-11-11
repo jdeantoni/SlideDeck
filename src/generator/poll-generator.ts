@@ -232,7 +232,7 @@ export class PollGenerator {
                 const hostname = window.location.hostname || 'localhost';
                 const port = 3000;
                 const pathname = window.location.pathname;
-                const pathMatch = pathname.match(/sse-dsl-SlideDeckML(.+)/) || pathname.match(/([^/]+\.html)$/);
+                const pathMatch = pathname.match(/(?:sse-dsl-SlideDeckML|SlideDeck)(\\/.+)/) || pathname.match(/([^/]+\.html)$/);
                 const path = pathMatch ? (pathMatch[1] || '/' + pathMatch[0]) : 'index.html';
                 url = 'http://' + hostname + ':' + port + path;
             }

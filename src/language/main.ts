@@ -1,13 +1,13 @@
 import { startLanguageServer } from 'langium';
 import { NodeFileSystem } from 'langium/node';
 import { createConnection, ProposedFeatures } from 'vscode-languageserver/node';
-import {createSlideDeckMlServices} from "./slide-deck-module";
+import {createSlideDeckServices} from "./slide-deck-module";
 
 // Create a connection to the client
 const connection = createConnection(ProposedFeatures.all);
 
 // Inject the shared services and language-specific services
-const { shared } = createSlideDeckMlServices({ connection, ...NodeFileSystem });
+const { shared } = createSlideDeckServices({ connection, ...NodeFileSystem });
 
 // Start the language server with the shared services
 startLanguageServer(shared);

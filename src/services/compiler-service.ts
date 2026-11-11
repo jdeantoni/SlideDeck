@@ -1,6 +1,6 @@
 import type { Presentation } from '../language/generated/ast';
 import { HtmlGenerationOptions, HtmlGenerator } from '../generator/html-generator';
-import { createSlideDeckMlServices } from "../language/slide-deck-module";
+import { createSlideDeckServices } from "../language/slide-deck-module";
 import { NodeFileSystem } from "langium/node";
 import { URI } from "vscode-uri";
 import * as path from 'path';
@@ -21,7 +21,7 @@ export interface SlideMapping {
 }
 
 export class CompilerService {
-    private services = createSlideDeckMlServices(NodeFileSystem).SlideDeckMl;
+    private services = createSlideDeckServices(NodeFileSystem).SlideDeck;
 
     /**
      * Compile SDML content to HTML

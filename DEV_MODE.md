@@ -3,7 +3,7 @@
 ## Démarrage rapide
 
 ```bash
-npm run dev examples/demo.sdml
+npm run dev examples/sdml/01-simple-markdown.slidedeck
 ```
 
 Le navigateur s'ouvre automatiquement sur `http://localhost:3000` avec :
@@ -14,13 +14,13 @@ Le navigateur s'ouvre automatiquement sur `http://localhost:3000` avec :
 
 ```bash
 # Lancer avec un fichier spécifique
-npm run dev examples/comprehensive-demo.sdml
+npm run dev examples/sdml/complete-demo.slidedeck
 
 # Utiliser un port personnalisé
-npm run dev examples/demo.sdml -- --port 3001
+npm run dev examples/sdml/01-simple-markdown.slidedeck -- --port 3001
 
 # Ne pas ouvrir le navigateur automatiquement
-npm run dev examples/demo.sdml -- --no-open
+npm run dev examples/sdml/01-simple-markdown.slidedeck -- --no-open
 
 # Démarrer sans fichier (contenu par défaut)
 npm run dev

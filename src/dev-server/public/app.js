@@ -1,11 +1,11 @@
-// SlideDeckML Live Preview Application
+// SlideDeck Live Preview Application
 
 // Configuration
 const COMPILE_DEBOUNCE_MS = 1000;  // Délai avant compilation après modification
 const CURSOR_DEBOUNCE_MS = 500;    // Délai avant compilation après mouvement du curseur
 const DEBUG_MEMORY = true;         // Activer les logs de debug mémoire
 
-class SlideDeckMLApp {
+class SlideDeckApp {
     constructor() {
         this.editor = null;
         this.socket = null;
@@ -60,11 +60,11 @@ class SlideDeckMLApp {
             });
 
             require(['vs/editor/editor.main'], () => {
-                // Define SlideDeckML language
-                monaco.languages.register({ id: 'slidedeckml' });
+                // Define SlideDeck language
+                monaco.languages.register({ id: 'slidedeck' });
 
                 // Language configuration for auto-closing and formatting
-                monaco.languages.setLanguageConfiguration('slidedeckml', {
+                monaco.languages.setLanguageConfiguration('slidedeck', {
                     comments: {
                         lineComment: '//',
                         blockComment: ['/*', '*/']
@@ -97,7 +97,7 @@ class SlideDeckMLApp {
                 });
 
                 // Register completion provider
-                monaco.languages.registerCompletionItemProvider('slidedeckml', {
+                monaco.languages.registerCompletionItemProvider('slidedeck', {
                     provideCompletionItems: (model, position) => {
                         const word = model.getWordUntilPosition(position);
                         const range = {
@@ -509,7 +509,7 @@ class SlideDeckMLApp {
                 });
 
                 // Register hover provider
-                monaco.languages.registerHoverProvider('slidedeckml', {
+                monaco.languages.registerHoverProvider('slidedeck', {
                     provideHover: (model, position) => {
                         const word = model.getWordAtPosition(position);
                         const line = model.getLineContent(position.lineNumber);
@@ -575,7 +575,7 @@ class SlideDeckMLApp {
                 });
 
                 // Set language syntax highlighting
-                monaco.languages.setMonarchTokensProvider('slidedeckml', {
+                monaco.languages.setMonarchTokensProvider('slidedeck', {
                     tokenizer: {
                         root: [
                             [/^\s*```.*$/, { token: 'string.code', next: '@codeBlock' }],
@@ -606,7 +606,7 @@ class SlideDeckMLApp {
                 });
 
                 // Define theme
-                monaco.editor.defineTheme('slidedeckml-theme', {
+                monaco.editor.defineTheme('slidedeck-theme', {
                     base: 'vs-dark',
                     inherit: true,
                     rules: [
@@ -629,8 +629,8 @@ class SlideDeckMLApp {
                 // Create editor
                 this.editor = monaco.editor.create(document.getElementById('editor-container'), {
                     value: '# Loading...',
-                    language: 'slidedeckml',
-                    theme: 'slidedeckml-theme',
+                    language: 'slidedeck',
+                    theme: 'slidedeck-theme',
                     fontSize: 14,
                     lineNumbers: 'on',
                     minimap: { enabled: true },
@@ -719,7 +719,7 @@ class SlideDeckMLApp {
             // Update title if we have a file path
             if (this.currentFilePath) {
                 const fileName = this.currentFilePath.split('/').pop();
-                document.title = `${fileName} - SlideDeckML`;
+                document.title = `${fileName} - SlideDeck`;
             }
 
             // Trigger initial compilation
@@ -984,8 +984,8 @@ class SlideDeckMLApp {
 // Initialize app when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        new SlideDeckMLApp();
+        new SlideDeckApp();
     });
 } else {
-    new SlideDeckMLApp();
+    new SlideDeckApp();
 }

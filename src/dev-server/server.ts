@@ -138,7 +138,7 @@ export class DevServer {
 
         return new Promise((resolve) => {
             this.httpServer.listen(this.options.port, () => {
-                console.log(`\n🚀 SlideDeckML Dev Server running!`);
+                console.log(`\n🚀 SlideDeck Dev Server running!`);
                 console.log(`📝 Editor: http://localhost:${this.options.port}`);
                 console.log(`\nPress Ctrl+C to stop\n`);
                 resolve();
@@ -147,7 +147,7 @@ export class DevServer {
     }
 
     private getDefaultContent(): string {
-        return `# Welcome to SlideDeckML
+        return `# Welcome to SlideDeck
 
 This is your first slide!
 

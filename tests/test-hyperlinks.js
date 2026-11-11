@@ -5,7 +5,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const { TextProcessor } = require('../out/generator/element-generator');
 const { CompilerService } = require('../out/services/compiler-service');
-const { createSlideDeckMlServices } = require('../out/language/slide-deck-module');
+const { createSlideDeckServices } = require('../out/language/slide-deck-module');
 const { NodeFileSystem } = require('langium/node');
 
 async function main() {
@@ -63,18 +63,18 @@ async function main() {
     check(result.html);
     const invalid = await compiler.compile('![bad] "javascript:alert(1)"');
     assert.match(invalid.error, /Invalid hyperlink destination/);
-    const qrExample = fs.readFileSync(path.resolve(__dirname, '../examples/sdml/20-qrcode.sdml'), 'utf8');
+    const qrExample = fs.readFileSync(path.resolve(__dirname, '../examples/sdml/20-qrcode.slidedeck'), 'utf8');
     const qrResult = await compiler.compile(qrExample);
     assert.ifError(qrResult.error);
     assert.strictEqual((qrResult.html.match(/class="qr-code-standalone"/g) || []).length, 3);
 
-    const services = createSlideDeckMlServices(NodeFileSystem).SlideDeckMl;
+    const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
     const media = services.parser.LangiumParser.parse('![Picture](https://example.com/image.png)');
     assert.strictEqual(media.parserErrors.length, 0);
     assert.strictEqual(media.lexerErrors.length, 0);
     assert.strictEqual(media.value.slides.slides[0].blocks[0].lines[0].$type, 'Media');
 
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeckml-links-'));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-links-'));
     const input = path.join(dir, 'slides.sdml');
     const output = path.join(dir, 'slides.html');
     try {

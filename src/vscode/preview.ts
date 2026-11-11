@@ -7,12 +7,12 @@ export class PreviewManager implements vscode.Disposable {
 
     public open(): void {
         const editor = vscode.window.activeTextEditor;
-        if (!editor || editor.document.languageId !== 'slidedeckml') {
-            void vscode.window.showErrorMessage('Open a SlideDeckML file before starting the preview.');
+        if (!editor || editor.document.languageId !== 'slidedeck') {
+            void vscode.window.showErrorMessage('Open a SlideDeck file before starting the preview.');
             return;
         }
         if (!vscode.workspace.isTrusted) {
-            void vscode.window.showErrorMessage('Trust this workspace before opening a SlideDeckML preview.');
+            void vscode.window.showErrorMessage('Trust this workspace before opening a SlideDeck preview.');
             return;
         }
         const key = editor.document.uri.toString();
@@ -49,7 +49,7 @@ class SlidePreview implements vscode.Disposable {
             roots.push(vscode.Uri.file(path.dirname(document.uri.fsPath)));
         }
         this.panel = vscode.window.createWebviewPanel(
-            'slidedeckml.preview',
+            'slidedeck.preview',
             `Preview: ${path.basename(document.fileName)}`,
             { viewColumn: vscode.ViewColumn.Beside, preserveFocus: true },
             { enableScripts: true, retainContextWhenHidden: true, localResourceRoots: roots }

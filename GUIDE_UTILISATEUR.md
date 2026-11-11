@@ -1,4 +1,4 @@
-# Guide Utilisateur SlideDeckML
+# Guide Utilisateur SlideDeck
 
 ## Table des matières
 
@@ -24,13 +24,13 @@
 
 ## Introduction
 
-**SlideDeckML** est un langage dédié (DSL) pour créer des présentations de manière simple et intuitive. Ce guide vous explique tous les symboles et leur utilisation avec des exemples pratiques.
+**SlideDeck** est un langage dédié (DSL) pour créer des présentations de manière simple et intuitive. Ce guide vous explique tous les symboles et leur utilisation avec des exemples pratiques.
 
 ---
 
 ## Structure de base
 
-Une présentation SlideDeckML se compose de deux parties :
+Une présentation SlideDeck se compose de deux parties :
 
 ```
 {métadonnées}
@@ -84,7 +84,7 @@ Les métadonnées définissent les informations générales de votre présentati
 ```sdml
 {
     author: "Baptiste Pellerin"
-    title: "SlideDeckML - Guide Complet"
+    title: "SlideDeck - Guide Complet"
     theme: "dark"
     logo: "https://example.com/logo.png"
     css: "h1{ color: blue}"
@@ -341,7 +341,7 @@ Syntaxe identique à Markdown pour insérer des images et vidéos.
 ### Images
 
 ```sdml
-![Logo SlideDeckML](https://via.placeholder.com/600x400/4CAF50/FFFFFF?text=Logo)
+![Logo SlideDeck](https://via.placeholder.com/600x400/4CAF50/FFFFFF?text=Logo)
 
 ![Photo avec description](https://example.com/image.png)
 ```
@@ -375,7 +375,7 @@ Syntaxe identique à Markdown pour insérer des images et vidéos.
 ### Exemple complet
 
 ```sdml
-![QR] "https://github.com/RoxaneBacon/sse-dsl-SlideDeckML"
+![QR] "https://github.com/jdeantoni/SlideDeck"
 ```
 
 ---
@@ -634,7 +634,7 @@ Paragraphe dans un encadré gris clair avec coins arrondis
 
 ## Templates de présentation
 
-SlideDeckML propose des **templates de présentation** prêts à l'emploi dans le dossier `examples/templates/`. Ce sont des fichiers `.sdml` complets que vous pouvez copier et personnaliser pour différents types de présentations.
+SlideDeck propose des **templates de présentation** prêts à l'emploi dans le dossier `examples/templates/`. Ce sont des fichiers `.slidedeck` complets que vous pouvez copier et personnaliser pour différents types de présentations.
 
 ### Templates disponibles
 
@@ -973,18 +973,18 @@ Une preview de vos slides est disponible afin de vous aider à créer en tout si
 
 Consultez les exemples fournis dans le dossier `examples/sdml/` :
 
-- `01-simple-markdown.sdml` - Markdown de base (titres, listes, formatage)
-- `02-code-highlighting.sdml` - Blocs de code avec coloration syntaxique
-- `03-code-sync.sdml` - Fragments synchronisés avec le code
-- `04-latex.sdml` - Formules mathématiques LaTeX
-- `05-styling.sdml` - Styles CSS personnalisés
-- `06-media.sdml` - Images et vidéos
-- `07-absolute-positioning.sdml` - Positionnement absolu
-- `08-template-academic.sdml` - Template académique complet
-- `13-chalkboard-simple.sdml` - Fonctionnalité tableau blanc
-- `16-fragments.sdml` - Animations de fragments
-- `17-transitions.sdml` - Transitions entre slides
-- `complete-demo.sdml` - Démonstration complète de toutes les fonctionnalités
+- `01-simple-markdown.slidedeck` - Markdown de base (titres, listes, formatage)
+- `02-code-highlighting.slidedeck` - Blocs de code avec coloration syntaxique
+- `03-code-sync.slidedeck` - Fragments synchronisés avec le code
+- `04-latex.slidedeck` - Formules mathématiques LaTeX
+- `05-styling.slidedeck` - Styles CSS personnalisés
+- `06-media.slidedeck` - Images et vidéos
+- `07-absolute-positioning.slidedeck` - Positionnement absolu
+- `08-template-academic.slidedeck` - Template académique complet
+- `13-chalkboard-simple.slidedeck` - Fonctionnalité tableau blanc
+- `16-fragments.slidedeck` - Animations de fragments
+- `17-transitions.slidedeck` - Transitions entre slides
+- `complete-demo.slidedeck` - Démonstration complète de toutes les fonctionnalités
 
 ### Templates prêts à l'emploi
 
@@ -998,4 +998,4 @@ Dans `examples/templates/`, vous trouverez des templates complets :
 
 ---
 
-**Bonne création de présentations avec SlideDeckML !**
+**Bonne création de présentations avec SlideDeck !**

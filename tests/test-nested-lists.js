@@ -57,7 +57,7 @@ async function main() {
         '<ol start="10"><li>Ten<ul><li>Child<ul><li>Grandchild</li></ul></li></ul><ol start="2"><li>Numbered child</li></ol></li><li>Eleven</li></ol>'
     ));
 
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeckml-lists-'));
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-lists-'));
     const input = path.join(directory, 'slides.sdml');
     const output = path.join(directory, 'slides.html');
     try {

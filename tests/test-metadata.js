@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const {createSlideDeckMlServices} = require('./out/language/slide-deck-module');
+const {createSlideDeckServices} = require('./out/language/slide-deck-module');
 const {NodeFileSystem} = require('langium/node');
 const {URI} = require('vscode-uri');
 
 async function test() {
     const content = fs.readFileSync('./examples/with-metadata.sdml', 'utf-8');
     
-    const services = createSlideDeckMlServices(NodeFileSystem).SlideDeckMl;
+    const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
     
     const document = services.shared.workspace.LangiumDocumentFactory.fromString(
         content,

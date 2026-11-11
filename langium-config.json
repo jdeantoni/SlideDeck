@@ -1,12 +1,12 @@
 {
-  "projectName": "SlideDeckML",
+  "projectName": "SlideDeck",
   "languages": [
     {
-      "id": "slidedeckml",
+      "id": "slidedeck",
       "grammar": "src/language/slide-deck.langium",
-      "fileExtensions": [".sdml"],
+      "fileExtensions": [".slidedeck", ".sdml"],
       "textMate": {
-        "out": "syntaxes/slidedeckml.tmLanguage.json"
+        "out": "syntaxes/slidedeck.tmLanguage.json"
       }
     }
   ],

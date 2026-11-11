@@ -14,8 +14,8 @@ export function activate(context: vscode.ExtensionContext): void {
     client = startLanguageClient(context);
     const previews = new PreviewManager();
     context.subscriptions.push(previews);
-    context.subscriptions.push(vscode.commands.registerCommand('slidedeckml.openPreview', () => previews.open()));
-    context.subscriptions.push(vscode.commands.registerCommand('slidedeckml.compileHtml', compileHtml));
+    context.subscriptions.push(vscode.commands.registerCommand('slidedeck.openPreview', () => previews.open()));
+    context.subscriptions.push(vscode.commands.registerCommand('slidedeck.compileHtml', compileHtml));
     const imagePaste = registerImagePaste();
     if (imagePaste) context.subscriptions.push(imagePaste);
 }
@@ -42,12 +42,12 @@ function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
         debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
     };
 
-    const fileSystemWatcher = vscode.workspace.createFileSystemWatcher('**/*.sdml');
+    const fileSystemWatcher = vscode.workspace.createFileSystemWatcher('**/*.{slidedeck,sdml}');
     context.subscriptions.push(fileSystemWatcher);
 
     // Options to control the language client
     const clientOptions: LanguageClientOptions = {
-        documentSelector: [{ scheme: 'file', language: 'slidedeckml' }, { scheme: 'untitled', language: 'slidedeckml' }],
+        documentSelector: [{ scheme: 'file', language: 'slidedeck' }, { scheme: 'untitled', language: 'slidedeck' }],
         synchronize: {
             // Notify the server about file changes to files contained in the workspace
             fileEvents: fileSystemWatcher
@@ -57,7 +57,7 @@ function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
     // Create the language client and start the client.
     const client = new LanguageClient(
         'slide-deck',
-        'SlideDeckML Language Server',
+        'SlideDeck Language Server',
         serverOptions,
         clientOptions
     );

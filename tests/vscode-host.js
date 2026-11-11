@@ -7,13 +7,13 @@ const { ImagePasteProvider } = require('../out/vscode/image-paste');
 const { CompilerService } = require('../out/services/compiler-service');
 
 async function run() {
-    const extension = vscode.extensions.getExtension('slidedeckml.slidedeckml');
+    const extension = vscode.extensions.getExtension('slidedeck.slidedeck');
     assert.ok(extension, 'Extension must be registered');
     await extension.activate();
-    assert.ok((await vscode.commands.getCommands(true)).includes('slidedeckml.compileHtml'),
+    assert.ok((await vscode.commands.getCommands(true)).includes('slidedeck.compileHtml'),
         'Expected the HTML compilation command');
     const document = await vscode.workspace.openTextDocument({
-        language: 'slidedeckml',
+        language: 'slidedeck',
         content: '# Example\nsdml-'
     });
     await vscode.window.showTextDocument(document);
@@ -25,14 +25,15 @@ async function run() {
     for (const prefix of ['sdml-slide', 'sdml-fragment', 'sdml-link', 'sdml-footnote']) {
         assert.ok(labels.some(label => label.includes(prefix)), `Missing completion ${prefix}: ${labels.join(', ')}`);
     }
-    const example = vscode.Uri.file(path.join(__dirname, '../examples/sdml/01-simple-markdown.sdml'));
+    const example = vscode.Uri.file(path.join(__dirname, '../examples/sdml/01-simple-markdown.slidedeck'));
     const tokens = await vscode.commands.executeCommand('_workbench.captureSyntaxTokens', example);
     assert.ok(Array.isArray(tokens) && tokens.length > 0, 'Expected TextMate syntax tokens');
     const syntax = JSON.stringify(tokens);
-    assert.ok(syntax.includes('slidedeckml'), 'Expected SlideDeckML TextMate scopes');
-    assert.ok(syntax.includes('punctuation.definition.heading.slidedeckml'), 'Expected heading scope');
+    assert.ok(syntax.includes('slidedeck'), 'Expected SlideDeck TextMate scopes');
+    assert.ok(syntax.includes('punctuation.definition.heading.slidedeck'), 'Expected heading scope');
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdml-grammar-'));
-    const fixture = path.join(dir, 'highlight.sdml');
+    const fixture = path.join(dir, 'highlight.slidedeck');
+    const legacyFixture = path.join(dir, 'legacy.sdml');
     try {
         fs.writeFileSync(fixture, [
             '{',
@@ -51,6 +52,11 @@ async function run() {
             '// code comment',
             '```'
         ].join('\n'));
+        fs.writeFileSync(legacyFixture, '# Legacy');
+        const newDocument = await vscode.workspace.openTextDocument(fixture);
+        const legacyDocument = await vscode.workspace.openTextDocument(legacyFixture);
+        assert.strictEqual(newDocument.languageId, 'slidedeck');
+        assert.strictEqual(legacyDocument.languageId, 'slidedeck');
         const scopes = JSON.stringify(await vscode.commands.executeCommand('_workbench.captureSyntaxTokens', vscode.Uri.file(fixture)));
         for (const scope of ['variable.other.property', 'markup.bold', 'markup.italic',
             'entity.other.attribute-name.class', 'string.other.link', 'keyword.control.directive',
@@ -59,17 +65,18 @@ async function run() {
         }
     } finally {
         fs.unlinkSync(fixture);
+        fs.unlinkSync(legacyFixture);
         fs.rmdirSync(dir);
     }
 
     const pasteDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdml-paste-'));
-    const sourcePath = path.join(pasteDir, 'slides.sdml');
+    const sourcePath = path.join(pasteDir, 'slides.slidedeck');
     let imagePath;
     try {
         fs.writeFileSync(sourcePath, '# Before\n\n# After');
         const source = await vscode.workspace.openTextDocument(sourcePath);
         const range = new vscode.Range(new vscode.Position(1, 0), new vscode.Position(1, 0));
-        const provider = new ImagePasteProvider(vscode.DocumentDropOrPasteEditKind.Empty.append('slidedeckml', 'image'));
+        const provider = new ImagePasteProvider(vscode.DocumentDropOrPasteEditKind.Empty.append('slidedeck', 'image'));
         const bytes = Uint8Array.from([137, 80, 78, 71, 13, 10, 26, 10]);
         const item = { asFile: () => ({ name: 'clipboard.png', data: async () => bytes }) };
         const transfer = new Map([['image/png', item]]);
@@ -92,7 +99,7 @@ async function run() {
         fs.unlinkSync(sourcePath);
         fs.rmdirSync(pasteDir);
     }
-    console.log(`SlideDeckML extension host: ${completions.items.length} completion items`);
+    console.log(`SlideDeck extension host: ${completions.items.length} completion items`);
 }
 
 exports.run = run;

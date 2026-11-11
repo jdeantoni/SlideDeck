@@ -1,7 +1,7 @@
 {
-  "name": "slidedeckml-quiz-server",
+  "name": "slidedeck-quiz-server",
   "version": "1.0.0",
-  "description": "Standalone Quiz/Poll server for SlideDeckML presentations",
+  "description": "Standalone Quiz/Poll server for SlideDeck presentations",
   "main": "server.js",
   "scripts": {
     "start": "node start-server.js"

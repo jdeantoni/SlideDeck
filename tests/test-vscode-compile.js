@@ -5,14 +5,14 @@ const path = require('path');
 const Module = require('module');
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sdml-compile-'));
-const sourcePath = path.join(dir, 'talk.sdml');
+const sourcePath = path.join(dir, 'talk.slidedeck');
 const outputPath = path.join(dir, 'talk.html');
 const videoPath = path.join(dir, 'demo.mp4');
 const assetDir = path.join(dir, 'talk-assets');
 const aliasPath = path.join(dir, 'source-alias.html');
 const uri = file => ({ scheme: 'file', fsPath: file });
 const document = {
-    languageId: 'slidedeckml',
+    languageId: 'slidedeck',
     uri: uri(sourcePath),
     text: '# Unsaved changes\n![Video](./demo.mp4)',
     getText() { return this.text; }
@@ -73,7 +73,7 @@ async function main() {
 
     document.uri = { scheme: 'untitled' };
     await compileHtml();
-    assert.match(notices.errors.pop(), /Save the SlideDeckML file/);
+    assert.match(notices.errors.pop(), /Save the SlideDeck file/);
     document.uri = uri(sourcePath);
     vscode.workspace.isTrusted = false;
     await compileHtml();

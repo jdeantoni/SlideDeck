@@ -1,0 +1,81 @@
+{
+  "name": "SlideDeck",
+  "scopeName": "source.slidedeck",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#code" },
+    { "include": "#metadata" },
+    { "include": "#block" },
+    { "include": "#inline" }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        { "name": "comment.line.double-slash.slidedeck", "match": "^\\s*//.*$" },
+        { "name": "comment.block.slidedeck", "begin": "^\\s*/\\*", "end": "\\*/" }
+      ]
+    },
+    "code": {
+      "patterns": [
+        {
+          "name": "markup.raw.block.slidedeck",
+          "begin": "^\\s*(```)([\\w-]*)(?:\\s*(\\[[^]]*\\]))?\\s*$",
+          "beginCaptures": {
+            "1": { "name": "punctuation.definition.raw.begin.slidedeck" },
+            "2": { "name": "entity.name.language.slidedeck" },
+            "3": { "name": "meta.attributes.slidedeck" }
+          },
+          "end": "^\\s*```\\s*$",
+          "endCaptures": { "0": { "name": "punctuation.definition.raw.end.slidedeck" } }
+        }
+      ]
+    },
+    "metadata": {
+      "patterns": [
+        {
+          "begin": "^\\s*\\{\\s*$",
+          "end": "^\\s*\\}\\s*$",
+          "name": "meta.metadata.slidedeck",
+          "patterns": [
+            { "name": "variable.other.property.slidedeck", "match": "\\b(?:author|title|theme|logo|css|transition|chalkboard(?:-[a-z-]+)?)\\b(?=\\s*:)" },
+            { "name": "string.quoted.double.slidedeck", "begin": "\"", "end": "\"", "patterns": [{ "name": "constant.character.escape.slidedeck", "match": "\\\\." }] },
+            { "include": "#comment" }
+          ]
+        }
+      ]
+    },
+    "block": {
+      "patterns": [
+        { "name": "keyword.control.separator.slidedeck", "match": "^\\s*===\\s*$" },
+        { "name": "keyword.control.directive.slidedeck", "match": ":{3,4}(?:quiz|\\[sync-fragments(?:\\s+keep)?\\])?" },
+        { "name": "keyword.control.list.slidedeck", "match": "^\\s*(?:[-+*]|\\d+\\.)\\s+" },
+        { "name": "punctuation.definition.heading.slidedeck", "match": "^\\s*#{1,3}(?=\\s)" },
+        { "name": "punctuation.definition.quote.slidedeck", "match": "^\\s*>\\s*" }
+      ]
+    },
+    "inline": {
+      "patterns": [
+        { "name": "constant.character.escape.slidedeck", "match": "\\\\[\\[\\]{}\\\\]" },
+        { "name": "string.other.link.slidedeck", "match": "!\\[[^\\]]+\\](?:\\([^\\r\\n)]*\\)|\\s+\"[^\"\\r\\n]*\")" },
+        {
+          "name": "meta.inline-attributes.slidedeck",
+          "begin": "(?<=\\])\\{",
+          "end": "\\}",
+          "patterns": [
+            { "name": "entity.other.attribute-name.class.slidedeck", "match": "\\.[a-zA-Z][\\w-]*" },
+            { "name": "variable.other.property.slidedeck", "match": "[\\w-]+(?=\\s*:)" },
+            { "name": "string.quoted.single.slidedeck", "begin": "'", "end": "'", "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.slidedeck" }] },
+            { "name": "string.quoted.double.slidedeck", "begin": "\"", "end": "\"", "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.slidedeck" }] }
+          ]
+        },
+        { "name": "markup.bold.slidedeck", "match": "\\*\\*[^*]+\\*\\*" },
+        { "name": "markup.underline.slidedeck", "match": "__[^_]+__" },
+        { "name": "markup.italic.slidedeck", "match": "(?<!\\*)\\*[^*]+\\*|(?<!_)_[^_]+_" },
+        { "name": "entity.other.attribute-name.class.slidedeck", "match": "(?<=\\{|\\s)\\.[a-zA-Z][\\w-]*" },
+        { "name": "variable.other.property.slidedeck", "match": "\\b(?:animate|transition|index|font-size|color|width|height|background|text-align)(?=\\s*:)" },
+        { "name": "string.quoted.single.slidedeck", "match": "(?<=:\\s)'[^'\\r\\n]*'" },
+        { "name": "string.quoted.double.slidedeck", "match": "(?<=:\\s)\"[^\"\\r\\n]*\"" }
+      ]
+    }
+  }
+}

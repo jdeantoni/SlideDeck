@@ -6,7 +6,7 @@ import * as path from 'path';
 
 export class TemplateGenerator {
     private ideRuntime: IdeRuntimeGenerator;
-    private title: string = 'SlideDeckML Presentation'
+    private title: string = 'SlideDeck Presentation'
     private author: string = 'Unknown Author'
     private css: string = ''
     private logo: string = ''

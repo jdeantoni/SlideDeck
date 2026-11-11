@@ -70,7 +70,7 @@ async function main() {
         ImageConverter.convertToBase64Async = original;
     }
 
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeckml-footnotes-'));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-footnotes-'));
     const input = path.join(dir, 'slides.sdml');
     const output = path.join(dir, 'slides.html');
     try {

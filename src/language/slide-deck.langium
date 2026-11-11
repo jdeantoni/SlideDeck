@@ -1,4 +1,4 @@
-grammar SlideDeckML
+grammar SlideDeck
 
 entry Presentation:
     (metadata=Metadata)?

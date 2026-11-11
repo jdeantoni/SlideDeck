@@ -2,12 +2,12 @@ import {
     createDefaultModule, createDefaultSharedModule, DefaultSharedModuleContext, inject,
     LangiumServices, LangiumSharedServices, Module, PartialLangiumServices, DefaultTokenBuilder
 } from 'langium';
-import { SlideDeckMLGeneratedModule, SlideDeckMlGeneratedSharedModule } from './generated/module';
+import { SlideDeckGeneratedModule, SlideDeckGeneratedSharedModule } from './generated/module';
 
 /**
  * Custom TokenBuilder that prioritizes specific terminals
  */
-class SlideDeckMLTokenBuilder extends DefaultTokenBuilder {
+class SlideDeckTokenBuilder extends DefaultTokenBuilder {
     protected override buildTerminalTokens(grammar: any) {
         const tokens = super.buildTerminalTokens(grammar);
         
@@ -48,7 +48,7 @@ class SlideDeckMLTokenBuilder extends DefaultTokenBuilder {
 /**
  * Declaration of custom services - add your own service classes here.
  */
-export type SlideDeckMlAddedServices = {
+export type SlideDeckAddedServices = {
     validation: {}
 }
 
@@ -56,20 +56,20 @@ export type SlideDeckMlAddedServices = {
  * Union of Langium default services and your custom services - use this as constructor parameter
  * of custom service classes.
  */
-export type SlideDeckMlServices = LangiumServices & SlideDeckMlAddedServices;
+export type SlideDeckServices = LangiumServices & SlideDeckAddedServices;
 
 /**
  * Dependency injection module that overrides Langium default services and contributes the
  * declared custom services. The Langium defaults can be partially specified to override only
  * selected services, while the custom services must be fully specified.
  */
-export const SlideDeckMLModule: Module<
-    SlideDeckMlServices,
-    PartialLangiumServices & SlideDeckMlAddedServices
+export const SlideDeckModule: Module<
+    SlideDeckServices,
+    PartialLangiumServices & SlideDeckAddedServices
 > = {
     validation: {},
     parser: {
-        TokenBuilder: () => new SlideDeckMLTokenBuilder(),
+        TokenBuilder: () => new SlideDeckTokenBuilder(),
     },
 };
 
@@ -88,21 +88,21 @@ export const SlideDeckMLModule: Module<
  * @param context Optional module context with the LSP connection
  * @returns An object wrapping the shared services and the language-specific services
  */
-export function createSlideDeckMlServices(
+export function createSlideDeckServices(
     context: DefaultSharedModuleContext
 ): {
     shared: LangiumSharedServices
-    SlideDeckMl: SlideDeckMlServices
+    SlideDeck: SlideDeckServices
 } {
     const shared = inject(
         createDefaultSharedModule(context),
-        SlideDeckMlGeneratedSharedModule
+        SlideDeckGeneratedSharedModule
     )
-    const SlideDeckMl = inject(
+    const SlideDeck = inject(
         createDefaultModule({ shared }),
-        SlideDeckMLGeneratedModule,
-        SlideDeckMLModule
+        SlideDeckGeneratedModule,
+        SlideDeckModule
     )
-    shared.ServiceRegistry.register(SlideDeckMl)
-    return { shared, SlideDeckMl }
+    shared.ServiceRegistry.register(SlideDeck)
+    return { shared, SlideDeck }
 }

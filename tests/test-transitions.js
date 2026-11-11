@@ -83,7 +83,7 @@ async function main() {
     assert.ifError(defaultResult.error);
     assert.match(defaultResult.html, /transition:\s*"slide"/);
 
-    const example = fs.readFileSync(path.resolve(__dirname, '../examples/sdml/17-transitions.sdml'), 'utf8');
+    const example = fs.readFileSync(path.resolve(__dirname, '../examples/sdml/17-transitions.slidedeck'), 'utf8');
     const exampleResult = await compiler.compile(example);
     assert.ifError(exampleResult.error);
     assert.match(exampleResult.html, /transition:\s*"slide"/);
@@ -93,7 +93,7 @@ async function main() {
     assert.ifError(unsafe.error);
     assert.ok(unsafe.html.includes('transition: "\\u003c/script>\\u003cscript>"'));
 
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeckml-transitions-'));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-transitions-'));
     const input = path.join(dir, 'slides.sdml');
     const output = path.join(dir, 'slides.html');
     try {

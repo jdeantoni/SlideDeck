@@ -6,7 +6,7 @@ import * as path from 'path';
 import open from 'open';
 import type { Presentation } from '../language/generated/ast';
 import { HtmlGenerator } from '../generator/html-generator';
-import {createSlideDeckMlServices} from "../language/slide-deck-module";
+import {createSlideDeckServices} from "../language/slide-deck-module";
 import {NodeFileSystem} from "langium/node";
 import {URI} from "vscode-uri";
 import { DevServer } from '../dev-server/server';
@@ -15,14 +15,14 @@ import { InteractiveElementDetector } from '../generator/interactive-element-det
 const program = new Command();
 
 program
-    .name('slidedeckml')
-    .description('Compile SlideDeckML files to reveal.js HTML presentations')
-    .version('1.0.5');
+    .name('slidedeck')
+    .description('Compile SlideDeck files to reveal.js HTML presentations')
+    .version('1.0.6');
 
 program
     .command('compile')
-    .description('Compile a SlideDeckML file to HTML')
-    .argument('<input>', 'Input .sdml file')
+    .description('Compile a SlideDeck file to HTML')
+    .argument('<input>', 'Input .slidedeck or .sdml file')
     .option('-o, --output <file>', 'Output HTML file', 'presentation.html')
     .action(async (input: string, options: { output: string }) => {
         try {
@@ -36,7 +36,7 @@ program
 program
     .command('dev')
     .description('Start development server with live preview')
-    .argument('[input]', 'Optional input .sdml file to load')
+    .argument('[input]', 'Optional input .slidedeck or .sdml file to load')
     .option('-p, --port <number>', 'Port number', '3000')
     .option('--no-open', 'Do not open browser automatically')
     .action(async (input: string | undefined, options: { port: string, open: boolean }) => {
@@ -89,7 +89,7 @@ async function compile(inputFile: string, outputFile: string): Promise<void> {
     const content = fs.readFileSync(inputFile, 'utf-8');
 
     // Create Langium services
-    const services = createSlideDeckMlServices(NodeFileSystem).SlideDeckMl;
+    const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
 
     // Parse the document
     const document = services.shared.workspace.LangiumDocumentFactory.fromString(

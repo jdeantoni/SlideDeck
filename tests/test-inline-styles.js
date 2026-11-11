@@ -98,7 +98,7 @@ async function main() {
     assert.ifError(result.error);
     for (const fragment of expected) assert.ok(result.html.includes(fragment), fragment);
 
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeckml-inline-'));
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-inline-'));
     const source = path.join(tempDir, 'slides.sdml');
     const output = path.join(tempDir, 'slides.html');
     try {

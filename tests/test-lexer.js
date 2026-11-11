@@ -1,12 +1,12 @@
 const fs = require('fs');
-const {createSlideDeckMlServices} = require('./out/language/slide-deck-module');
+const {createSlideDeckServices} = require('./out/language/slide-deck-module');
 const {NodeFileSystem} = require('langium/node');
 
 const content = `# Test
 - Item 1
 1. Numbered`;
 
-const services = createSlideDeckMlServices(NodeFileSystem).SlideDeckMl;
+const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
 const lexer = services.parser.Lexer;
 
 const tokens = lexer.tokenize(content);

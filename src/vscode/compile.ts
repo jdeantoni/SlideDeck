@@ -5,17 +5,17 @@ import { CompilerService } from '../services/compiler-service';
 
 export async function compileHtml(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
-    if (!editor || editor.document.languageId !== 'slidedeckml') {
-        void vscode.window.showErrorMessage('Open a SlideDeckML file before compiling.');
+    if (!editor || editor.document.languageId !== 'slidedeck') {
+        void vscode.window.showErrorMessage('Open a SlideDeck file before compiling.');
         return;
     }
     const document = editor.document;
     if (document.uri.scheme !== 'file') {
-        void vscode.window.showErrorMessage('Save the SlideDeckML file locally before compiling.');
+        void vscode.window.showErrorMessage('Save the SlideDeck file locally before compiling.');
         return;
     }
     if (!vscode.workspace.isTrusted) {
-        void vscode.window.showErrorMessage('Trust this workspace before compiling a SlideDeckML file.');
+        void vscode.window.showErrorMessage('Trust this workspace before compiling a SlideDeck file.');
         return;
     }
 

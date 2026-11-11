@@ -1,19 +1,19 @@
 #!/bin/bash
 #
-# Build and compile SlideDeckML files to HTML
+# Build and compile SlideDeck files to HTML
 #
 # Usage:
 #   ./build-and-compile.sh <input> [output] [--skip-build]
 #
 # Arguments:
-#   input       Path to a .sdml file or directory containing .sdml files
+#   input       Path to a .slidedeck or .sdml file, or a directory containing them
 #   output      Output directory for generated HTML files (optional, default: same as input)
 #   --skip-build Skip the build step (langium:generate and tsc)
 #
 # Examples:
-#   ./build-and-compile.sh examples/demo.sdml
+#   ./build-and-compile.sh examples/sdml/01-simple-markdown.slidedeck
 #   ./build-and-compile.sh examples output
-#   ./build-and-compile.sh examples/demo.sdml "" --skip-build
+#   ./build-and-compile.sh examples/sdml/01-simple-markdown.slidedeck "" --skip-build
 
 set -e
 
@@ -93,16 +93,25 @@ if [ -f "$INPUT" ]; then
     fi
     
 elif [ -d "$INPUT" ]; then
-    # Directory - compile all .sdml files
-    sdml_files=("$INPUT"/*.sdml)
-    
-    if [ ! -e "${sdml_files[0]}" ]; then
-        print_error "No .sdml files found in $INPUT"
+    # Directory - compile all supported files
+    shopt -s nullglob
+    sdml_files=("$INPUT"/*.slidedeck "$INPUT"/*.sdml)
+    shopt -u nullglob
+
+    if [ "${#sdml_files[@]}" -eq 0 ]; then
+        print_error "No .slidedeck or .sdml files found in $INPUT"
         exit 1
     fi
+
+    for file in "${sdml_files[@]}"; do
+        if [[ "$file" == *.slidedeck && -f "${file%.slidedeck}.sdml" ]]; then
+            print_error "Multiple presentation files would generate $(basename "${file%.slidedeck}").html"
+            exit 1
+        fi
+    done
     
     count=${#sdml_files[@]}
-    print_info "Found $count .sdml file(s) in $INPUT"
+    print_info "Found $count presentation file(s) in $INPUT"
     
     success_count=0
     fail_count=0
@@ -121,10 +130,10 @@ elif [ -d "$INPUT" ]; then
         print_info "Compiling $filename..."
         if node ./out/cli/main.js compile "$file" -o "$output_file"; then
             print_success "Generated: $output_file"
-            ((success_count++))
+            ((success_count+=1))
         else
             print_error "Failed to compile $filename"
-            ((fail_count++))
+            ((fail_count+=1))
         fi
     done
     

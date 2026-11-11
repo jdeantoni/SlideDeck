@@ -26,7 +26,7 @@ async function main() {
     assert.strictEqual(result.slideCount, 2);
     check(result.html);
 
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeckml-numbers-'));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-numbers-'));
     const input = path.join(dir, 'slides.sdml');
     const output = path.join(dir, 'slides.html');
     try {

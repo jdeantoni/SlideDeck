@@ -1,4 +1,4 @@
-# SlideDeckML
+# SlideDeck
 
 A powerful Domain-Specific Language (DSL) for creating modern, interactive reveal.js presentations using an intuitive markdown-like syntax.
 
@@ -25,7 +25,9 @@ We selected **reveal.js** as our target framework and **Langium** as our DSL imp
 - [**Baptiste ROYER**](https://github.com/BaptisteRoyer24)
 - [**Théo VIDAL**](https://github.com/Dalvii)
 
-**Repository**: https://github.com/RoxaneBacon/sse-dsl-SlideDeckML
+**Repository**: https://github.com/jdeantoni/SlideDeck
+
+**Original project**: https://github.com/RoxaneBacon/sse-dsl-SlideDeckML
 
 ## Documentation
 
@@ -61,8 +63,8 @@ We selected **reveal.js** as our target framework and **Langium** as our DSL imp
 
 ```bash
 # Clone the repository
-git clone https://github.com/RoxaneBacon/sse-dsl-SlideDeckML.git
-cd sse-dsl-SlideDeckML
+git clone https://github.com/jdeantoni/SlideDeck.git
+cd SlideDeck
 
 # Install dependencies
 npm install
@@ -78,7 +80,8 @@ npm run build
 
 ### 1. Write Your Presentation
 
-Create a `.sdml` file with your content. Here's a simple example:
+Create a `.slidedeck` file with your content. Existing `.sdml` files remain supported.
+Here's a simple example:
 
 ```sdml
 {
@@ -87,8 +90,8 @@ Create a `.sdml` file with your content. Here's a simple example:
     theme: "black"
 }
 ===
-# Welcome to SlideDeckML
-This is my first slide created with SlideDeckML!
+# Welcome to SlideDeck
+This is my first slide created with SlideDeck!
 
 ===
 
@@ -199,41 +202,41 @@ location, and may not work in the live preview.
 For **Windows (PowerShell)**:
 ```powershell
 # Compile a single file
-.\build-and-compile.ps1 -InputPath examples/sdml/01-simple-markdown.sdml
+.\build-and-compile.ps1 -InputPath examples/sdml/01-simple-markdown.slidedeck
 
 # Compile all files in a directory
 .\build-and-compile.ps1 -InputPath examples/sdml -OutputPath examples/html
 
 # Skip build step (if already built)
-.\build-and-compile.ps1 -InputPath examples/sdml/01-simple-markdown.sdml -SkipBuild
+.\build-and-compile.ps1 -InputPath examples/sdml/01-simple-markdown.slidedeck -SkipBuild
 ```
 
 For **Linux/Mac (Bash)**:
 ```bash
 # Compile a single file
-./build-and-compile.sh examples/sdml/01-simple-markdown.sdml
+./build-and-compile.sh examples/sdml/01-simple-markdown.slidedeck
 
 # Compile all files in a directory
 ./build-and-compile.sh examples/sdml examples/html
 
 # Skip build step (if already built)
-./build-and-compile.sh examples/sdml/01-simple-markdown.sdml "" --skip-build
+./build-and-compile.sh examples/sdml/01-simple-markdown.slidedeck "" --skip-build
 ```
 
 **Option B: Manual compilation**
 
 ```bash
 # Using npm script
-npm run compile examples/sdml/demo.sdml -o output.html
+npm run compile examples/sdml/01-simple-markdown.slidedeck -o output.html
 
 # Using CLI directly
-node out/cli/main.js compile examples/sdml/demo.sdml -o output.html
+node out/cli/main.js compile examples/sdml/01-simple-markdown.slidedeck -o output.html
 ```
 
 The build scripts automatically:
 - Regenerate the parser (`npm run langium:generate`)
 - Compile TypeScript (`npm run build`)
-- Compile the specified `.sdml` file(s) to HTML
+- Compile the specified `.slidedeck` or `.sdml` file(s) to HTML
 - Provide colored progress messages and error reporting
 
 ### 3. Open in Browser
@@ -268,7 +271,7 @@ metadata, for example:
 For live editing and preview:
 
 ```bash
-npm run dev examples/sdml/demo.sdml
+npm run dev examples/sdml/01-simple-markdown.slidedeck
 ```
 
 This starts a development server with its own browser editor and live preview.
@@ -276,20 +279,20 @@ Edit there and press Ctrl+S to save; the server does not watch external edits.
 
 ### VS Code native editor and preview
 
-The VS Code extension lets you edit `.sdml` files in the normal editor and view
+The VS Code extension lets you edit `.slidedeck` and `.sdml` files in the normal editor and view
 slides beside it, without starting the development server:
 
 1. Open a trusted workspace in desktop VS Code (or a remote VS Code workspace
    with a Node.js extension host).
-2. Install the packaged SlideDeckML extension, or run it from source: run
+2. Install the packaged SlideDeck extension, or run it from source: run
    `npm install`, `npm run langium:generate`, and `npm run build`, then open
    this repository in VS Code and press **F5** to launch the extension host.
-3. Open an `.sdml` file in the extension host and run **SlideDeckML: Open
+3. Open a `.slidedeck` or `.sdml` file in the extension host and run **SlideDeck: Open
    Preview to the Side** from the Command Palette, or use the editor title
    action.
 
 To generate standalone HTML, click **Generate HTML** in the editor title bar
-or run **SlideDeckML: Generate HTML** from the Command Palette. Choose an
+or run **SlideDeck: Generate HTML** from the Command Palette. Choose an
 output file in the save dialog (the default is beside the source). The
 current editor contents, including unsaved edits, are compiled; the source
 and output must be files on the extension host's filesystem. Save a new
@@ -298,8 +301,8 @@ overwritten after the save dialog's confirmation. As with the CLI, local
 videos are copied to a matching `-assets` directory next to the HTML.
 
 With VS Code 1.97 or later, paste an image or copy an image file into a saved
-`.sdml` editor to create an image in an `img` folder beside the source and
-insert its SlideDeckML image reference. Generated names are unique and do not
+SlideDeck editor to create an image in an `img` folder beside the source and
+insert its SlideDeck image reference. Generated names are unique and do not
 overwrite existing images. Regular text pastes are unchanged. The source must
 be on the extension host's filesystem.
 
@@ -320,7 +323,12 @@ The extension provides syntax coloring, language-server diagnostics and
 completion, and snippets. Type `sdml-` and choose a suggestion such as
 `sdml-slide`, `sdml-fragment`, `sdml-link`, or `sdml-footnote` (or press
 Ctrl+Space). If coloring is missing, check that the language mode in the
-bottom-right corner is **SlideDeckML**.
+bottom-right corner is **SlideDeck**.
+
+The extension identifier is now `slidedeck.slidedeck`. Uninstall the old
+`slidedeckml.slidedeckml` extension after installing SlideDeck to avoid
+conflicting associations for `.sdml` files. The CLI command is now `slidedeck`;
+existing presentation syntax remains unchanged.
 
 The preview runs presentation scripts in a webview and is disabled in
 untrusted workspaces. It loads reveal.js and other libraries from their CDNs,
@@ -336,31 +344,31 @@ The `examples/` folder contains comprehensive examples demonstrating all feature
 
 | Example | Description |
 |---------|-------------|
-| `01-simple-markdown.sdml` | Basic markdown syntax |
-| `02-code-highlighting.sdml` | Code blocks with syntax highlighting |
-| `03-code-sync.sdml` | Synchronized code fragments |
-| `04-latex.sdml` | Mathematical equations with LaTeX |
-| `05-styling.sdml` | Text styling and formatting |
-| `06-media.sdml` | Images and videos |
-| `07-absolute-positioning.sdml` | Custom element positioning |
-| `08-template-academic.sdml` | Academic presentation template |
-| `09-template-business.sdml` | Business presentation template |
-| `10-template-technical.sdml` | Technical presentation template |
-| `11-template-minimal.sdml` | Minimalist template |
-| `12-template-conference.sdml` | Conference presentation template |
-| `13-chalkboard-simple.sdml` | Basic chalkboard functionality |
-| `14-chalkboard-advanced.sdml` | Advanced chalkboard features |
-| `16-fragments.sdml` | Fragment animations |
-| `17-transitions.sdml` | Slide transitions |
-| `18-youtube-media.sdml` | Embedded YouTube videos |
-| `19-integrated-ide.sdml` | Live code editor integration |
-| `20-qrcode.sdml` | QR code generation |
-| `21-quiz.sdml` | Interactive quiz system |
-| `complete-demo.sdml` | Comprehensive feature showcase |
+| `01-simple-markdown.slidedeck` | Basic markdown syntax |
+| `02-code-highlighting.slidedeck` | Code blocks with syntax highlighting |
+| `03-code-sync.slidedeck` | Synchronized code fragments |
+| `04-latex.slidedeck` | Mathematical equations with LaTeX |
+| `05-styling.slidedeck` | Text styling and formatting |
+| `06-media.slidedeck` | Images and videos |
+| `07-absolute-positioning.slidedeck` | Custom element positioning |
+| `08-template-academic.slidedeck` | Academic presentation template |
+| `09-template-business.slidedeck` | Business presentation template |
+| `10-template-technical.slidedeck` | Technical presentation template |
+| `11-template-minimal.slidedeck` | Minimalist template |
+| `12-template-conference.slidedeck` | Conference presentation template |
+| `13-chalkboard-simple.slidedeck` | Basic chalkboard functionality |
+| `14-chalkboard-advanced.slidedeck` | Advanced chalkboard features |
+| `16-fragments.slidedeck` | Fragment animations |
+| `17-transitions.slidedeck` | Slide transitions |
+| `18-youtube-media.slidedeck` | Embedded YouTube videos |
+| `19-integrated-ide.slidedeck` | Live code editor integration |
+| `20-qrcode.slidedeck` | QR code generation |
+| `21-quiz.slidedeck` | Interactive quiz system |
+| `complete-demo.slidedeck` | Comprehensive feature showcase |
 
 ## Interactive Quiz Server
 
-SlideDeckML includes a standalone quiz server for real-time interactive presentations.
+SlideDeck includes a standalone quiz server for real-time interactive presentations.
 
 ### Setup
 
@@ -457,7 +465,7 @@ For complete syntax documentation, refer to the **[User Guide](GUIDE_UTILISATEUR
 ## 🏗️ Project Architecture
 
 ```
-sse-dsl-SlideDeckML/
+SlideDeck/
 ├── src/
 │   ├── language/
 │   │   ├── slide-deck.langium           # Grammar definition (DSL syntax)
@@ -470,12 +478,12 @@ sse-dsl-SlideDeckML/
 │   ├── quiz-server/                     # Quiz server implementation
 │   └── extension.ts                     # VS Code extension
 ├── examples/
-│   ├── sdml/                            # Example .sdml files
+│   ├── sdml/                            # Example .slidedeck files
 │   ├── html/                            # Generated HTML presentations
 │   └── templates/                       # Presentation templates
 ├── standalone-quiz-server/              # Deployable quiz server
 ├── syntaxes/
-│   └── slidedeckml.tmLanguage.json      # Syntax highlighting definition
+│   └── slidedeck.tmLanguage.json      # Syntax highlighting definition
 ├── docs/
 │   └── RAPPORT.md                       # Technical report (French)
 ├── tests/                               # Unit tests
@@ -532,7 +540,7 @@ node tests/test-parse.js
 
 ## Available Themes
 
-SlideDeckML supports all standard reveal.js themes:
+SlideDeck supports all standard reveal.js themes:
 
 - `black` (default)
 - `white`
@@ -601,6 +609,6 @@ MIT License - See the project for details.
 ## Contact
 
 For questions or support:
-- **Repository**: https://github.com/RoxaneBacon/sse-dsl-SlideDeckML
+- **Repository**: https://github.com/jdeantoni/SlideDeck
 - **Course**: Domain Specific Language (DSL) - SI5/M2 INFO
 - **Institution**: Université Côte d'Azur

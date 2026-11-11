@@ -56,7 +56,7 @@ async function main() {
         check(result.html);
     }
 
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeckml-comments-'));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-comments-'));
     const input = path.join(dir, 'slides.sdml');
     const output = path.join(dir, 'slides.html');
     try {

@@ -1,26 +1,26 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Build and compile SlideDeckML files to HTML
+    Build and compile SlideDeck files to HTML
 .DESCRIPTION
-    This script builds the Langium grammar and compiles .sdml files to HTML presentations.
+    This script builds the Langium grammar and compiles .slidedeck or .sdml files to HTML presentations.
     It can process a single file or all files in a directory.
 .PARAMETER Input
-    Path to a .sdml file or directory containing .sdml files
+    Path to a .slidedeck or .sdml file or directory containing them
 .PARAMETER Output
     Output directory for generated HTML files (default: same as input)
 .PARAMETER SkipBuild
     Skip the build step (langium:generate and tsc)
 .EXAMPLE
-    .\build-and-compile.ps1 -InputPath examples/demo.sdml
+    .\build-and-compile.ps1 -InputPath examples/sdml/01-simple-markdown.slidedeck
 .EXAMPLE
     .\build-and-compile.ps1 -InputPath examples -OutputPath output
 .EXAMPLE
-    .\build-and-compile.ps1 -InputPath examples/demo.sdml -SkipBuild
+    .\build-and-compile.ps1 -InputPath examples/sdml/01-simple-markdown.slidedeck -SkipBuild
 #>
 
 param(
-    [Parameter(Mandatory=$true, HelpMessage="Path to .sdml file or directory")]
+    [Parameter(Mandatory=$true, HelpMessage="Path to .slidedeck or .sdml file or directory")]
     [string]$InputPath,
     
     [Parameter(Mandatory=$false, HelpMessage="Output directory for HTML files")]
@@ -81,15 +81,25 @@ if (Test-Path $InputPath -PathType Leaf) {
     }
     
 } elseif (Test-Path $InputPath -PathType Container) {
-    # Directory - compile all .sdml files
-    $sdmlFiles = Get-ChildItem -Path $InputPath -Filter "*.sdml" -File
+    # Directory - compile all supported files
+    $sdmlFiles = @(Get-ChildItem -Path $InputPath -File | Where-Object { $_.Extension -in '.slidedeck', '.sdml' })
     
     if ($sdmlFiles.Count -eq 0) {
-        Write-Error-Custom "No .sdml files found in $InputPath"
+        Write-Error-Custom "No .slidedeck or .sdml files found in $InputPath"
         exit 1
     }
+
+    $outputNames = @{}
+    foreach ($file in $sdmlFiles) {
+        $name = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
+        if ($outputNames.ContainsKey($name)) {
+            Write-Error-Custom "Multiple presentation files would generate $name.html"
+            exit 1
+        }
+        $outputNames[$name] = $true
+    }
     
-    Write-Info "Found $($sdmlFiles.Count) .sdml file(s) in $InputPath"
+    Write-Info "Found $($sdmlFiles.Count) presentation file(s) in $InputPath"
     
     $successCount = 0
     $failCount = 0

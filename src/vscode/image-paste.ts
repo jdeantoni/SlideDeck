@@ -52,7 +52,7 @@ export class ImagePasteProvider implements vscode.DocumentPasteEditProvider {
             }
             if (token.isCancellationRequested) return;
             if (document.uri.scheme !== 'file') {
-                void vscode.window.showWarningMessage('Save the SlideDeckML file before pasting an image.');
+                void vscode.window.showWarningMessage('Save the SlideDeck file before pasting an image.');
                 return;
             }
 
@@ -67,7 +67,7 @@ export class ImagePasteProvider implements vscode.DocumentPasteEditProvider {
             const before = ranges.some(range => document.lineAt(range.start.line).text.slice(0, range.start.character).trim().length > 0);
             const after = ranges.some(range => document.lineAt(range.end.line).text.slice(range.end.character).trim().length > 0);
             const insertText = `${before ? '\n' : ''}${syntax}${after ? '\n' : ''}`;
-            const paste = new vscode.DocumentPasteEdit(insertText, 'Insert SlideDeckML image', this.kind);
+            const paste = new vscode.DocumentPasteEdit(insertText, 'Insert SlideDeck image', this.kind);
             paste.additionalEdit = edit;
             return [paste];
         } catch (error) {
@@ -79,12 +79,12 @@ export class ImagePasteProvider implements vscode.DocumentPasteEditProvider {
 
 export function registerImagePaste(): vscode.Disposable | undefined {
     if (!vscode.languages.registerDocumentPasteEditProvider) {
-        void vscode.window.showWarningMessage('Pasting images into SlideDeckML requires VS Code 1.97 or later.');
+        void vscode.window.showWarningMessage('Pasting images into SlideDeck requires VS Code 1.97 or later.');
         return;
     }
-    const kind = vscode.DocumentDropOrPasteEditKind.Empty.append('slidedeckml', 'image');
+    const kind = vscode.DocumentDropOrPasteEditKind.Empty.append('slidedeck', 'image');
     return vscode.languages.registerDocumentPasteEditProvider(
-        { language: 'slidedeckml' },
+        { language: 'slidedeck' },
         new ImagePasteProvider(kind),
         { providedPasteEditKinds: [kind], pasteMimeTypes: ['image/*', 'files', 'text/uri-list'] }
     );

@@ -77,7 +77,7 @@ async function main() {
     assert.strictEqual(await provider.provideDocumentPasteEdits(document, [range], new Map([['text/uri-list', webUri]]), {}, token), undefined);
     const unsaved = { ...document, uri: uri('untitled', '/Untitled-1') };
     assert.strictEqual(await provider.provideDocumentPasteEdits(unsaved, [range], new Map([['image/png', item(data)]]), {}, token), undefined);
-    assert.match(notices.pop(), /Save the SlideDeckML file/);
+    assert.match(notices.pop(), /Save the SlideDeck file/);
     const bad = { asFile: () => ({ name: 'bad.png', data: async () => { throw new Error('Clipboard failed'); } }) };
     assert.strictEqual(await provider.provideDocumentPasteEdits(document, [range], new Map([['image/png', bad]]), {}, token), undefined);
     assert.match(notices.pop(), /Clipboard failed/);
