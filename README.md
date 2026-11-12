@@ -56,7 +56,7 @@ We selected **reveal.js** as our target framework and **Langium** as our DSL imp
 
 ### Project website
 
-The static landing page, getting-started guide and copyable feature examples
+The static landing page, getting-started guide, hands-on tutorial and copyable feature examples
 live in `website/`. Open
 `website/index.html` locally to preview them. The Pages workflow deploys this
 directory on pushes to `main` and can also be started manually. It builds the

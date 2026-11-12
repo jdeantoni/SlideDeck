@@ -11,11 +11,11 @@
   <header class="site-header">
     <nav class="nav wrap" aria-label="Main navigation">
       <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">S<span>.</span></span> SlideDeck</a>
-      <div class="nav-links"><a href="guide.html" aria-current="page">Getting started</a><a href="features.html">Feature examples</a><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></div>
+      <div class="nav-links"><a href="guide.html" aria-current="page">Getting started</a><a href="tutorial.html">Tutorial</a><a href="features.html">Feature examples</a><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></div>
     </nav>
   </header>
   <main class="guide-layout wrap">
-    <aside class="guide-sidebar"><p class="eyebrow">ON THIS PAGE</p><nav aria-label="Guide sections"><a href="#install">Install in VS Code</a><a href="#write">Write your slides</a><a href="#preview">Open the preview</a><a href="#compile">Generate HTML</a><a href="#present">Start presenting</a><a href="#source">From source and CLI</a><a href="#learn">Learn more</a></nav></aside>
+    <aside class="guide-sidebar"><p class="eyebrow">ON THIS PAGE</p><nav aria-label="Guide sections"><a href="#install">Install in VS Code</a><a href="#write">Write your slides</a><a href="#paste-image">Paste an image</a><a href="#preview">Open the preview</a><a href="#compile">Generate HTML</a><a href="#present">Start presenting</a><a href="#source">From source and CLI</a><a href="#learn">Learn more</a></nav></aside>
     <article class="guide">
       <p class="eyebrow">DOCUMENTATION / GETTING STARTED</p>
       <h1>Your first <em>SlideDeck.</em></h1>
@@ -39,6 +39,12 @@ Your first slide.
 - Write in **bold** and *italic*
 - Share your ideas</code></pre>
         <p>The editor provides syntax highlighting, diagnostics, completion and snippets: type <code>sdml-</code> to explore them.</p>
+      </section>
+      <section id="paste-image"><span class="step">ADD AN IMAGE</span><h2>Copy and paste an image</h2>
+        <p>With VS Code 1.97 or later, save your SlideDeck file, then copy an image (for example, a screenshot) or an image file. Place the cursor in the SlideDeck editor and paste with <strong>Ctrl+V</strong> (or <strong>Cmd+V</strong> on macOS).</p>
+        <p>SlideDeck saves a copy in an <code>img</code> folder beside your source file and inserts a reference like:</p>
+        <pre><code>![Image](./img/image-unique-name.png)</code></pre>
+        <p>The generated filename is unique; existing images are not overwritten. Keep the <code>img</code> folder with your source file. The source must be a saved file on the extension host's filesystem. Regular text pastes are unchanged.</p>
       </section>
       <section id="preview"><span class="step">03 / PREVIEW</span><h2>See your slides as you edit</h2>
         <p>With the SlideDeck file active, click <strong>Open Preview to the Side</strong> in the editor title bar, or run <strong>SlideDeck: Open Preview to the Side</strong> from the Command Palette. The preview follows unsaved edits and the editor cursor. Double-click non-interactive content on a slide to return to its source.</p>
@@ -65,7 +71,7 @@ npm run build</code></pre>
 npm run dev talk.slidedeck</code></pre>
         <p>To run the extension from source, open the repository in VS Code and press <strong>F5</strong> to launch an extension host. See the <a href="https://github.com/jdeantoni/SlideDeck#usage">README</a> for more options.</p>
       </section>
-      <section id="learn"><span class="step">NEXT</span><h2>Keep exploring</h2><p>Discover styled blocks, fragments, notes and interactive editors.</p><div class="guide-links"><a href="features.html">Try feature examples <span>→</span></a><a href="https://github.com/jdeantoni/SlideDeck#usage">Read the full README <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/blob/main/GUIDE_UTILISATEUR.md">User guide <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples">Browse examples <span>↗</span></a></div></section>
+      <section id="learn"><span class="step">NEXT</span><h2>Keep exploring</h2><p>Discover styled blocks, fragments, notes and interactive editors.</p><div class="guide-links"><a href="tutorial.html">Follow the step-by-step tutorial <span>→</span></a><a href="features.html">Try feature examples <span>→</span></a><a href="https://github.com/jdeantoni/SlideDeck#usage">Read the full README <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/blob/main/GUIDE_UTILISATEUR.md">User guide <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples">Browse examples <span>↗</span></a></div></section>
     </article>
   </main>
   <footer class="footer wrap"><span>SlideDeck <span class="footer-dot">●</span> Made for sharing ideas.</span><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></footer>

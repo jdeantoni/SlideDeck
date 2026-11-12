@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Build a SlideDeck presentation step by step in VS Code.">
+  <title>Build your first presentation — SlideDeck</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="examples.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">S<span>.</span></span> SlideDeck</a>
+      <div class="nav-links"><a href="guide.html">Getting started</a><a href="tutorial.html" aria-current="page">Tutorial</a><a href="features.html">Feature examples</a><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></div>
+    </nav>
+  </header>
+  <main class="guide-layout wrap">
+    <aside class="guide-sidebar"><p class="eyebrow">YOUR PRESENTATION</p><nav aria-label="Tutorial steps">
+      <a href="#start">1. First slide</a><a href="#preview">2. Live preview</a><a href="#image">3. Add an image</a><a href="#layout">4. Move and resize</a><a href="#style">5. Add style</a><a href="#fragments">6. Reveal ideas</a><a href="#draw">7. Draw</a><a href="#present">8. Present</a>
+    </nav></aside>
+    <article class="guide reference">
+      <p class="eyebrow">HANDS-ON / VS CODE</p>
+      <h1>Make a presentation, <em>together.</em></h1>
+      <p class="lead">Start small, then add an image, layout, style and animation to the same deck.</p>
+      <p>You'll need the <a href="guide.html#install">SlideDeck VS Code extension</a>, a trusted workspace, and internet access for the preview. Image pasting requires VS Code 1.97 or later. Each step builds on the previous one; save your file as you go.</p>
+      <section id="start"><span class="step">01 / START</span><h2>Create your first slide</h2>
+        <p>In VS Code, create a file named <code>talk.slidedeck</code>. Paste this into the empty file and save it:</p>
+        <pre data-example="first slide"><code>{
+  author: "Your Name"
+  title: "My ideas"
+}
+===
+# A small idea
+This is my first SlideDeck presentation.</code></pre>
+        <p><code>===</code> separates slides; <code>#</code> creates a heading. The metadata names your deck.</p>
+      </section>
+      <section id="preview"><span class="step">02 / PREVIEW</span><h2>See it come to life</h2>
+        <p>With the file active, click <strong>Open Preview to the Side</strong> in the editor title bar, or run <strong>SlideDeck: Open Preview to the Side</strong> from the Command Palette. Your first slide appears next to the source. Edit its text and watch the preview update; the preview follows the editor cursor to the current slide.</p>
+      </section>
+      <section id="image"><span class="step">03 / IMAGE</span><h2>Add a picture</h2>
+        <p>Append this second slide at the end of the file:</p>
+        <pre data-example="image slide"><code>===
+## An idea in pictures
+A picture helps tell the story.</code></pre>
+        <p>Save the file, copy an image or screenshot, and paste it at the end of the new slide in the <strong>editor</strong> with <strong>Ctrl+V</strong> (or <strong>Cmd+V</strong> on macOS). The extension creates an <code>img</code> folder beside your file and inserts an image reference with a unique filename. Keep that folder with your deck. If you cannot paste an image, put an image beside the source and type a reference such as <code>![Picture](./picture.png)</code> with the actual filename.</p>
+        <p>Check that the picture appears in the preview. The inserted filename will differ from anyone else's; keep your own image reference in the following steps.</p>
+      </section>
+      <section id="layout"><span class="step">04 / LAYOUT</span><h2>Move and resize it</h2>
+        <ol><li>On the picture slide, turn on <strong>Edit layout</strong> in the preview.</li><li>Drag the picture to move it. Click it and drag the bottom-right handle to resize; hold <strong>Shift</strong> while resizing to preserve its proportions.</li><li>Wait for the preview to update after each edit, then save the source. Turn off <strong>Edit layout</strong> when finished.</li></ol>
+        <p>The editor records the position and size as <code>{offset: '…px …px'}</code> and <code>{size: '…px …px'}</code> suffixes on your image line. Your values depend on the drag. The changes carry over to generated HTML; use Undo to revert a source edit.</p>
+      </section>
+      <section id="style"><span class="step">05 / STYLE</span><h2>Give your text a frame</h2>
+        <p>On the picture slide, replace the line <code>A picture helps tell the story.</code> with this block. Leave your image line, including its generated filename and any offset or size, unchanged below it:</p>
+        <pre data-example="styled text block"><code>::: {width: '60%'; margin: '0 auto'; background: '#e2edca'; color: '#1d2730'; padding: '20px'; border-radius: '12px'}
+A picture helps tell the story.
+:::</code></pre>
+        <p>The block gives the text a colored frame and a width. You can also use <strong>Edit layout</strong> to drag a styled block. A block's width changes its container, not necessarily the image inside it; use the image resize handle for the picture itself.</p>
+      </section>
+      <section id="fragments"><span class="step">06 / ANIMATE</span><h2>Reveal ideas one by one</h2>
+        <p>Append this third slide at the end of your file. Each <code>::: {animate: "fade-in"}</code> block becomes a fragment:</p>
+        <pre data-example="fragment slide"><code>===
+## What's next?
+::: {animate: "fade-in"}
+Start with an idea.
+:::
+::: {animate: "fade-in"}
+Then share it with the world.
+:::</code></pre>
+        <p>Navigate to the slide in the preview and advance through it to reveal each line. Try adding a hover note by replacing the first line inside its fragment with:</p>
+        <pre data-example="hover note"><code>Start with [an idea]{note: 'A little more context'}.</code></pre>
+        <p>Hover over the marked text to see the browser tooltip. Tooltips may not be available on touch devices or through keyboard focus, so keep essential information visible.</p>
+      </section>
+      <section id="draw"><span class="step">07 / DRAW</span><h2>Add a drawn annotation</h2>
+        <p>On any slide in the preview, select <strong>Draw</strong>, choose the arrow tool, color and width, and drag to draw. Click <strong>Save fragments</strong>, then save the source. SlideDeck creates an SVG under <code>img</code> and adds a fragment; advance the presentation to reveal it.</p>
+        <p>Use <strong>Edit layout</strong> to move or resize a saved drawing as a whole, including on an unrevealed fragment. Individual arrow endpoints and presentation-time dragging are not supported. Undoing the source insertion does not delete the SVG.</p>
+      </section>
+      <section id="present"><span class="step">08 / SHARE</span><h2>Present your work</h2>
+        <p>Click <strong>Generate HTML</strong> in the editor title bar to choose an output file. Or click <strong>Start Presentation</strong> to generate HTML beside your source and open a new Firefox window. You will be asked before an existing HTML file is overwritten. Configure <code>slidedeck.browserExecutable</code> and <code>slidedeck.browserArguments</code> to use another browser.</p>
+        <p>Starting a browser requires a local VS Code extension host. In a remote workspace, generate the HTML and open it locally. Generated presentations load libraries from CDNs and may require internet access.</p>
+        <div class="guide-links"><a href="features.html">Explore more feature examples <span>→</span></a><a href="guide.html">Return to the getting-started guide <span>→</span></a></div>
+      </section>
+    </article>
+  </main>
+  <footer class="footer wrap"><span>SlideDeck <span class="footer-dot">●</span> Made for sharing ideas.</span><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></footer>
+</body>
+</html>

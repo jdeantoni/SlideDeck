@@ -12,7 +12,7 @@
   <header class="site-header">
     <nav class="nav wrap" aria-label="Main navigation">
       <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">S<span>.</span></span> SlideDeck</a>
-      <div class="nav-links"><a href="guide.html">Getting started</a><a href="features.html" aria-current="page">Feature examples</a><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></div>
+      <div class="nav-links"><a href="guide.html">Getting started</a><a href="tutorial.html">Tutorial</a><a href="features.html" aria-current="page">Feature examples</a><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></div>
     </nav>
   </header>
   <main class="guide-layout wrap">
@@ -24,6 +24,7 @@
       <h1>Learn by <em>doing.</em></h1>
       <p class="lead">Small examples, ready to copy into a <code>.slidedeck</code> file.</p>
       <p>Each SlideDeck example below is a complete presentation. Save it as <code>talk.slidedeck</code>, then compile or preview it using the <a href="guide.html">getting-started guide</a>. Use the copy button, or select the text manually. Read the notes for assets, internet access and other prerequisites.</p>
+      <p>New to SlideDeck? <a href="tutorial.html">Build one presentation step by step</a> before exploring these examples.</p>
 
       <section id="basics"><h2>Slides and text</h2>
         <h3>Metadata, headings and formatting</h3>
@@ -113,6 +114,9 @@ Positioned and rotated
 :::</code></pre>
       </section>
       <section id="media"><h2>Images and video</h2>
+        <h3>Paste an image in VS Code</h3>
+        <p>With VS Code 1.97 or later, save your SlideDeck file, copy an image or image file, and paste it into the SlideDeck editor with <strong>Ctrl+V</strong> (or <strong>Cmd+V</strong> on macOS). The extension stores a copy in an <code>img</code> folder beside the source and inserts a reference such as <code>![Image](./img/image-unique-name.png)</code>. Keep that folder with your source file. See the <a href="guide.html#paste-image">step-by-step guide</a>.</p>
+        <h3>Use an existing image</h3>
         <p>For this example, put <code>talk.slidedeck</code> in the repository root: the image path points to an image included in the repository. If you installed the extension without cloning the repository, replace the path with your own image or URL.</p>
         <pre data-example="image"><code># An image
 ![Logo](examples/templates/template2/assets/image_logo.png){offset: '20px 10px'}{size: '250px 100px'}</code></pre>
@@ -207,7 +211,7 @@ visualization: barChart
 # Draw on this slide</code></pre>
         <h3>VS Code preview: move, resize and save drawings</h3>
         <p>Open the native preview in a trusted workspace. Select <strong>Edit layout</strong> to drag images or styled blocks; select an image and drag its corner to resize it. Shift preserves proportions while resizing. <strong>Draw</strong> lets you create pen strokes, arrows, rectangles and ellipses; <strong>Save fragments</strong> stores each as an SVG and a fragment in the source.</p>
-        <p>In layout mode drag the visible bounds of a saved drawing or its corner to move or resize it. These are whole-image transforms, not arrow endpoint editing. Save the source file to retain changes. Undo does not delete generated SVG files. Presentation-time dragging is not supported. The preview follows the editor's current slide; double-click non-interactive slide content to return to its source. With VS Code 1.97 or later, paste an image into a saved SlideDeck file to insert and store it.</p>
+        <p>In layout mode drag the visible bounds of a saved drawing or its corner to move or resize it. These are whole-image transforms, not arrow endpoint editing. Save the source file to retain changes. Undo does not delete generated SVG files. Presentation-time dragging is not supported. The preview follows the editor's current slide; double-click non-interactive slide content to return to its source.</p>
       </section>
       <section id="templates"><h2>Themes and templates</h2>
         <p>Select a reveal.js theme through metadata. Starter decks for academic, business, conference, technical and minimal layouts are available in the <a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples/templates">template directory</a>; copy one as the basis for a presentation.</p>

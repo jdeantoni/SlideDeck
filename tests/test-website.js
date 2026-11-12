@@ -8,7 +8,7 @@ async function main() {
     const directory = path.resolve(__dirname, '../website');
     const workflow = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/pages.yml'), 'utf8');
     assert.match(workflow, /npx --yes @vscode\/vsce@4\.1\.0 package --out website\/slidedeck\.vsix/);
-    for (const name of ['index.html', 'guide.html', 'features.html']) {
+    for (const name of ['index.html', 'guide.html', 'features.html', 'tutorial.html']) {
         const html = fs.readFileSync(path.join(directory, name), 'utf8');
         assert.match(html, /<html lang="en">/);
         assert.match(html, /name="viewport"/);
@@ -28,18 +28,44 @@ async function main() {
     const landing = fs.readFileSync(path.join(directory, 'index.html'), 'utf8');
     assert.match(landing, /href="slidedeck\.vsix" download/);
     assert.match(guide, /href="slidedeck\.vsix" download/);
-    const sections = ['install', 'write', 'preview', 'compile', 'present', 'source'];
+    const sections = ['install', 'write', 'paste-image', 'preview', 'compile', 'present', 'source'];
     const positions = sections.map(id => guide.indexOf(`<section id="${id}">`));
     assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])));
     for (const command of ['SlideDeck: Open Preview to the Side', 'SlideDeck: Generate HTML', 'SlideDeck: Start Presentation']) {
         assert.ok(guide.includes(command), `Missing command: ${command}`);
     }
+    assert.ok(guide.includes('VS Code 1.97 or later'));
+    assert.ok(guide.includes('![Image](./img/image-unique-name.png)'));
     const example = guide.match(/<pre><code>(\{\n  author:[\s\S]*?)<\/code><\/pre>/);
     assert.ok(example, 'Missing presentation example');
     const result = await new CompilerService().compile(example[1]);
     assert.ifError(result.error);
     assert.ok(result.html.includes('<h1>Hello, SlideDeck</h1>'));
     assert.ok(result.html.includes('<strong>bold</strong>'));
+    const tutorial = fs.readFileSync(path.join(directory, 'tutorial.html'), 'utf8');
+    const snippets = Object.fromEntries([...tutorial.matchAll(/<pre data-example="([^"]+)"><code>([\s\S]*?)<\/code><\/pre>/g)]
+        .map(([, name, text]) => [name, text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')]));
+    assert.deepStrictEqual(Object.keys(snippets), ['first slide', 'image slide', 'styled text block', 'fragment slide', 'hover note']);
+    const compiler = new CompilerService();
+    const sourcePath = path.resolve(__dirname, '../talk.slidedeck');
+    const checkTutorial = async (source, slideCount, expected) => {
+        const compiled = await compiler.compile(source, undefined, sourcePath);
+        assert.ifError(compiled.error);
+        assert.strictEqual(compiled.slideCount, slideCount);
+        for (const fragment of expected) assert.ok(compiled.html.includes(fragment), `Tutorial missing ${fragment}`);
+    };
+    let deck = snippets['first slide'];
+    await checkTutorial(deck, 1, ['<h1>A small idea</h1>']);
+    deck += '\n' + snippets['image slide'] + '\n![Image](examples/templates/template2/assets/image_logo.png)';
+    await checkTutorial(deck, 2, ['<h2>An idea in pictures</h2>', 'data:image/png;base64,']);
+    deck = deck.replace('image_logo.png)', "image_logo.png){offset: '20px 10px'}{size: '250px 100px'}");
+    await checkTutorial(deck, 2, ['translate: 20px 10px', 'width: 250px; height: 100px']);
+    deck = deck.replace('A picture helps tell the story.', snippets['styled text block']);
+    await checkTutorial(deck, 2, ['background: #e2edca', 'translate: 20px 10px']);
+    deck += '\n' + snippets['fragment slide'];
+    await checkTutorial(deck, 3, ['class="fragment fade-in"', 'Then share it with the world.']);
+    deck = deck.replace('Start with an idea.', snippets['hover note']);
+    await checkTutorial(deck, 3, ['title="A little more context" data-sd-note']);
     const features = fs.readFileSync(path.join(directory, 'features.html'), 'utf8');
     const expected = {
         basics: '<strong>bold</strong>',
