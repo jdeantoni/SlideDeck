@@ -1,6 +1,5 @@
 import {
     LineContent,
-    CodeBlock,
     isHeader,
     isList,
     isParagraph,
@@ -30,7 +29,6 @@ export class LineContentHandler {
     private fragmentParser: FragmentParser;
     private ideGenerator: IdeGenerator;
     private ideRuntime: IdeRuntimeGenerator;
-    private lastCodeBlock: CodeBlock | null = null;
 
     constructor(elementGenerator: ElementGenerator, styleParser: StyleParser, ideRuntime: IdeRuntimeGenerator) {
         this.elementGenerator = elementGenerator;
@@ -85,11 +83,10 @@ export class LineContentHandler {
             return this.elementGenerator.generateQrCode(line);
         }
         if (isCodeBlock(line)) {
-            this.lastCodeBlock = line;
             return this.elementGenerator.generateCodeBlock(line);
         }
         if (isSyncFragments(line)) {
-            return await this.elementGenerator.generateSyncFragments(line, this.lastCodeBlock);
+            return await this.elementGenerator.generateSyncFragments(line);
         }
         if (isEditor(line)) {
             this.ideRuntime.enable();
@@ -152,10 +149,9 @@ export class LineContentHandler {
             } else if (isQrCode(element)) {
                 containerHtml += this.elementGenerator.generateQrCode(element, '') + '\n';
             } else if (isCodeBlock(element)) {
-                this.lastCodeBlock = element;
                 containerHtml += this.elementGenerator.generateCodeBlock(element, '') + '\n';
             } else if (isSyncFragments(element)) {
-                containerHtml += await this.elementGenerator.generateSyncFragments(element, this.lastCodeBlock) + '\n';
+                containerHtml += await this.elementGenerator.generateSyncFragments(element) + '\n';
             } else if (isEditor(element)) {
                 this.ideRuntime.enable();
                 containerHtml += this.ideGenerator.generateEditor(element, '') + '\n';
@@ -198,10 +194,9 @@ export class LineContentHandler {
             } else if (isMedia(element)) {
                 containerHtml += await this.elementGenerator.generateMedia(element, '') + '\n';
             } else if (isCodeBlock(element)) {
-                this.lastCodeBlock = element;
                 containerHtml += this.elementGenerator.generateCodeBlock(element, '') + '\n';
             } else if (isSyncFragments(element)) {
-                containerHtml += await this.elementGenerator.generateSyncFragments(element, this.lastCodeBlock) + '\n';
+                containerHtml += await this.elementGenerator.generateSyncFragments(element) + '\n';
             } else if (isEditor(element)) {
                 this.ideRuntime.enable();
                 containerHtml += this.ideGenerator.generateEditor(element, '') + '\n';
@@ -266,10 +261,9 @@ export class LineContentHandler {
             } else if (isMedia(element)) {
                 containerHtml += await this.elementGenerator.generateMedia(element, '') + '\n';
             } else if (isCodeBlock(element)) {
-                this.lastCodeBlock = element;
                 containerHtml += this.elementGenerator.generateCodeBlock(element, '') + '\n';
             } else if (isSyncFragments(element)) {
-                containerHtml += await this.elementGenerator.generateSyncFragments(element, this.lastCodeBlock) + '\n';
+                containerHtml += await this.elementGenerator.generateSyncFragments(element) + '\n';
             } else if (isEditor(element)) {
                 this.ideRuntime.enable();
                 containerHtml += this.ideGenerator.generateEditor(element) + '\n';
@@ -285,11 +279,4 @@ export class LineContentHandler {
         return containerHtml;
     }
 
-    /**
-     * Reset the last code block reference (useful between slides)
-     */
-    public resetLastCodeBlock(): void {
-        this.lastCodeBlock = null;
-        this.ideGenerator.resetCounter();
-    }
 }

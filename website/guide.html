@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Get started with SlideDeck, from installation to your first presentation.">
+  <title>Getting started — SlideDeck</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">S<span>.</span></span> SlideDeck</a>
+      <div class="nav-links"><a href="guide.html" aria-current="page">Getting started</a><a href="features.html">Feature examples</a><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></div>
+    </nav>
+  </header>
+  <main class="guide-layout wrap">
+    <aside class="guide-sidebar"><p class="eyebrow">ON THIS PAGE</p><nav aria-label="Guide sections"><a href="#install">Installation</a><a href="#write">Write a presentation</a><a href="#compile">Generate HTML</a><a href="#preview">Live preview</a><a href="#learn">Learn more</a></nav></aside>
+    <article class="guide">
+      <p class="eyebrow">DOCUMENTATION / GETTING STARTED</p>
+      <h1>Your first <em>SlideDeck.</em></h1>
+      <p class="lead">From an idea to an HTML presentation, one step at a time.</p>
+      <section id="install"><span class="step">01</span><h2>Install from source</h2><p>You'll need Node.js 16 or newer, npm and Git. Clone the repository, install its dependencies, generate the parser, and build:</p>
+        <pre><code>git clone https://github.com/jdeantoni/SlideDeck.git
+cd SlideDeck
+npm install
+npm run langium:generate
+npm run build</code></pre>
+      </section>
+      <section id="write"><span class="step">02</span><h2>Write your slides</h2><p>Create a file named <code>talk.slidedeck</code>. Separate slides with <code>===</code>:</p>
+        <pre><code>{
+  author: "Your Name"
+  title: "My Presentation"
+}
+===
+# Hello, SlideDeck
+Your first slide.
+===
+## What's next?
+- Write in **bold** and *italic*
+- Share your ideas</code></pre>
+        <p>Existing <code>.sdml</code> files are supported too.</p>
+      </section>
+      <section id="compile"><span class="step">03</span><h2>Generate your presentation</h2><p>Run the compiler and open the resulting HTML in a browser:</p>
+        <pre><code>node out/cli/main.js compile talk.slidedeck -o talk.html</code></pre>
+        <p>Generated presentations load reveal.js and other libraries from CDNs, so internet access may be required.</p>
+      </section>
+      <section id="preview"><span class="step">04</span><h2>Preview as you work</h2><p>Start the browser editor and live preview:</p><pre><code>npm run dev talk.slidedeck</code></pre><p>Or use the VS Code extension to edit and preview side by side. Install a packaged extension or launch it from source with <strong>F5</strong>, then run <strong>SlideDeck: Open Preview to the Side</strong>. See the <a href="https://github.com/jdeantoni/SlideDeck#vs-code-native-editor-and-preview">VS Code instructions</a> for details.</p></section>
+      <section id="learn"><span class="step">05</span><h2>Keep exploring</h2><p>Discover styled blocks, fragments, notes, drawings and interactive editors in the full documentation.</p><div class="guide-links"><a href="features.html">Try feature examples <span>→</span></a><a href="https://github.com/jdeantoni/SlideDeck#usage">Read the full README <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/blob/main/GUIDE_UTILISATEUR.md">User guide <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples">Browse examples <span>↗</span></a></div></section>
+    </article>
+  </main>
+  <footer class="footer wrap"><span>SlideDeck <span class="footer-dot">●</span> Made for sharing ideas.</span><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></footer>
+</body>
+</html>

@@ -54,9 +54,20 @@ We selected **reveal.js** as our target framework and **Langium** as our DSL imp
 
 ## Quick Start
 
+### Project website
+
+The static landing page, getting-started guide and copyable feature examples
+live in `website/`. Open
+`website/index.html` locally to preview them. The Pages workflow deploys this
+directory on pushes to `main` and can also be started manually. To enable it,
+set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
+The expected project URL is `https://jdeantoni.github.io/SlideDeck/` once the
+workflow has run successfully. Links to the full documentation and examples
+point to this repository on GitHub.
+
 ### Prerequisites
 
-- **Node.js** (version 14 or higher)
+- **Node.js** (version 16 or higher)
 - **npm** (comes with Node.js)
 
 ### Installation
@@ -75,6 +86,9 @@ npm run langium:generate
 # Build the project
 npm run build
 ```
+
+Run the test scripts with `npm test`. This regenerates the parser and builds
+the project first; dependencies must already be installed.
 
 ## Usage
 
@@ -360,6 +374,12 @@ image lines (including images in styled blocks and fragments), not videos,
 QR codes, or images inside synchronized fragments. Wait for the preview to
 finish updating before dragging again.
 
+In **Edit layout**, click an image and drag its bottom-right handle to resize
+it. Hold Shift while resizing to preserve its proportions. The size is saved
+as slide-pixel dimensions in the image source, for example
+`![Logo](img/logo.png){size: '400px 200px'}`. Resizing can change surrounding
+layout; use Undo to restore the previous dimensions.
+
 **Edit layout** also moves styled blocks (`::: {…} … :::`) as a unit,
 including their headings, text, lists and images. Drag the block's content;
 Shift-drag an image to move its surrounding block rather than the image.
@@ -377,6 +397,14 @@ SlideDeck file to keep the source edits. In the generated presentation the
 annotations appear in drawing order as you advance the fragments; they are
 static images, not stroke-by-stroke animations. Existing fragment ordering
 and explicit fragment indices still apply.
+
+To reposition a saved drawing, enable **Edit layout** and drag the dashed box
+around the visible drawing. Drag its bottom-right handle to resize it; hold
+Shift to preserve proportions. Drawings in unrevealed fragments are also
+editable in this mode. The transform is saved in the SlideDeck source and
+applies in the generated presentation. Each drawing is manipulated as a
+whole; individual arrow endpoints and presentation-time editing are not
+supported.
 
 Drawings are drafts until saved. Return to their original slide to save or
 clear them. If the source changes while a draft is open, it cannot be saved

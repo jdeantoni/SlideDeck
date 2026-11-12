@@ -163,6 +163,15 @@ async function main() {
 
     const imagePath = path.join(__dirname, '../examples/templates/template2/assets/image_logo.png');
     document.text = `# First\n===\n::: {width: '50%'}\n![Logo](${imagePath})\n:::`;
+    let fixtureSvg;
+    if (process.env.SLIDEDECK_PREVIEW_TEST_HTML) {
+        fixtureSvg = path.join(require('os').tmpdir(), `slidedeck-drawing-${process.pid}.svg`);
+        const { annotationSvg } = require('../out/vscode/annotation');
+        require('fs').writeFileSync(fixtureSvg, annotationSvg({
+            tool: 'arrow', color: '#ff0000', width: 4, points: [{ x: 100, y: 120 }, { x: 320, y: 240 }]
+        }, 960, 700));
+    }
+    document.text += `\n::: {animate: "fade-in"}\n::: {.sd-annotation-layer}\n![Annotation](${fixtureSvg || imagePath})\n:::\n:::`;
     document.version++;
     callbacks.change({ document });
     await sleep(600);
@@ -175,10 +184,17 @@ async function main() {
         require('fs').writeFileSync(process.env.SLIDEDECK_PREVIEW_TEST_HTML, html);
     }
     callbacks.message({ type: 'layoutMode', enabled: true });
-    callbacks.message({ type: 'moveImage', id: imageId, x: 25.25, y: -10, slide: 1, revision: imageRevision });
+    callbacks.message({ type: 'resizeImage', id: imageId, width: 400, height: 200, slide: 1, revision: imageRevision });
     await sleep(0);
-    assert.ok(document.text.includes("{offset: '25.3px -10px'}"));
-    callbacks.message({ type: 'moveImage', id: imageId, x: 30, y: 0, slide: 1, revision: imageRevision });
+    assert.ok(document.text.includes("{size: '400px 200px'}"));
+    await sleep(600);
+    callbacks.message({ type: 'ready' });
+    messages.pop();
+    const resizedRevision = Number(panel.webview.html.match(/y: current\.y \+ delta\.y, slide: current\.index, revision: (\d+)/)[1]);
+    callbacks.message({ type: 'moveImage', id: imageId, x: 25.25, y: -10, slide: 1, revision: resizedRevision });
+    await sleep(0);
+    assert.ok(document.text.includes("{offset: '25.3px -10px'}{size: '400px 200px'}"));
+    callbacks.message({ type: 'moveImage', id: imageId, x: 30, y: 0, slide: 1, revision: resizedRevision });
     assert.match(callbacks.warning, /out of date/);
     await sleep(600);
     assert.ok(panel.webview.html.includes('translate: 25.3px -10px'));
@@ -208,7 +224,42 @@ async function main() {
     await sleep(600);
     callbacks.message({ type: 'ready' });
     messages.pop();
-    const annotationRevision = Number(panel.webview.html.match(/height: drawingSize\.height, strokes, revision: (\d+)/)[1]);
+    const annotationId = Number(panel.webview.html.match(/class="sd-annotation-layer"[^>]*data-sd-block="(\d+)"/)[1]);
+    const resizeRevision = Number(panel.webview.html.match(/height: drawingSize\.height, strokes, revision: (\d+)/)[1]);
+    callbacks.message({ type: 'resizeAnnotation', id: annotationId, x: 1.5, y: 2, originX: 98, originY: 118, slide: 1, revision: resizeRevision });
+    await sleep(0);
+    assert.ok(document.text.includes("--sd-annotation-scale-x: '1.5'; --sd-annotation-scale-y: '2'; transform-origin: '98px 118px'"));
+    callbacks.message({ type: 'resizeAnnotation', id: annotationId, x: 3, y: 3, originX: 98, originY: 118, slide: 1, revision: resizeRevision });
+    assert.match(callbacks.warning, /out of date/);
+    await sleep(600);
+    assert.ok(panel.webview.html.includes('--sd-annotation-scale-x: 1.5'));
+    callbacks.message({ type: 'ready' });
+    messages.pop();
+    let annotationRevision = Number(panel.webview.html.match(/height: drawingSize\.height, strokes, revision: (\d+)/)[1]);
+    const beforeInvalidAnnotation = document.text;
+    callbacks.message({ type: 'resizeAnnotation', id: annotationId, x: Infinity, y: 2, originX: 98, originY: 118, slide: 1, revision: annotationRevision });
+    assert.match(callbacks.warning, /Invalid annotation dimensions/);
+    assert.strictEqual(document.text, beforeInvalidAnnotation);
+    callbacks.message({ type: 'moveBlock', id: annotationId, x: 20, y: -5, slide: 1, revision: annotationRevision });
+    await sleep(0);
+    assert.ok(document.text.includes("translate: '20px -5px'"));
+    await sleep(600);
+    callbacks.message({ type: 'ready' });
+    messages.pop();
+    annotationRevision = Number(panel.webview.html.match(/height: drawingSize\.height, strokes, revision: (\d+)/)[1]);
+    if (process.env.SLIDEDECK_PREVIEW_RESIZED_TEST_HTML) {
+        const html = panel.webview.html.replace('<head>', `<head><script>window.__messages=[]; window.acquireVsCodeApi=()=>({postMessage:m=>window.__messages.push(m)});</script>`);
+        require('fs').writeFileSync(process.env.SLIDEDECK_PREVIEW_RESIZED_TEST_HTML, html);
+    }
+    callbacks.message({ type: 'resizeAnnotation', id: annotationId, x: 2, y: 3, originX: 98, originY: 118, slide: 1, revision: annotationRevision });
+    await sleep(0);
+    assert.ok(document.text.includes("translate: '20px -5px'"));
+    assert.ok(document.text.includes("--sd-annotation-scale-x: '2'; --sd-annotation-scale-y: '3'"));
+    assert.strictEqual((document.text.match(/--sd-annotation-scale-x:/g) || []).length, 1);
+    await sleep(600);
+    callbacks.message({ type: 'ready' });
+    messages.pop();
+    annotationRevision = Number(panel.webview.html.match(/height: drawingSize\.height, strokes, revision: (\d+)/)[1]);
     callbacks.message({ type: 'saveAnnotations', revision: annotationRevision, slide: 1, width: 960, height: 700,
         strokes: [{ tool: 'pen', color: '#ff0033', width: 4, points: [{ x: 1, y: 2 }, { x: 3, y: 4 }] }] });
     await sleep(0);
@@ -252,6 +303,7 @@ async function main() {
     untrusted.open();
     assert.match(callbacks.error, /Trust this workspace/);
     untrusted.dispose();
+    if (fixtureSvg) require('fs').unlinkSync(fixtureSvg);
     console.log('VS Code preview tests passed');
 }
 

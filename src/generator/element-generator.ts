@@ -3,7 +3,7 @@ import { VideoAssetManager } from "./video-asset-manager";
 import { StyleParser } from "./style-parser";
 import { isRootCstNode } from "langium";
 import { List, Media, NestedStyledElement, StyledElement, OrderedListItem, UnorderedListItem, isOrderedListItem } from "../language/generated/ast";
-import { getImageOffset } from "./image-position";
+import { getImageOffset, getImageSize } from "./image-position";
 import { getBlockOffset } from "./block-position";
 import * as path from 'path';
 
@@ -201,6 +201,11 @@ export class ElementGenerator {
             const base64Url = await ImageConverter.convertToBase64Async(url, basePath);
             
             const offset = getImageOffset(content);
+            const size = getImageSize(content);
+            if (size) {
+                const sizing = `width: ${size.width}px; height: ${size.height}px; max-width: none; max-height: none`;
+                style = style ? style.replace(/"$/, `; ${sizing}"`) : ` style="${sizing}"`;
+            }
             if (offset.x !== 0 || offset.y !== 0) {
                 const translate = `translate: ${offset.x}px ${offset.y}px`;
                 style = style ? style.replace(/"$/, `; ${translate}"`) : ` style="${translate}"`;
@@ -540,10 +545,9 @@ export class ElementGenerator {
     /**
      * Generate synchronized fragments that appear with code highlighting
      * @param syncFragments The sync fragments AST node
-     * @param lastCodeBlock The previous code block to sync with
      * @returns The HTML string for the synchronized fragments
      */
-    public async generateSyncFragments(syncFragments: any, lastCodeBlock: any | null): Promise<string> {
+    public async generateSyncFragments(syncFragments: any): Promise<string> {
         if (!syncFragments.fragments || syncFragments.fragments.length === 0) {
             return '';
         }
@@ -572,8 +576,10 @@ export class ElementGenerator {
                     const base64Url = await ImageConverter.convertToBase64Async(url, basePath);
                     
                     const offset = getImageOffset(fragment.media);
+                    const size = getImageSize(fragment.media);
                     const translate = offset.x || offset.y ? ` translate: ${offset.x}px ${offset.y}px;` : '';
-                    content = `<img src="${base64Url}" alt="${this.textProcessor.escapeHtml(alt)}" style="max-width: 100%; height: auto;${translate}" />`;
+                    const sizing = size ? `width: ${size.width}px; height: ${size.height}px; max-width: none; max-height: none;` : 'max-width: 100%; height: auto;';
+                    content = `<img src="${base64Url}" alt="${this.textProcessor.escapeHtml(alt)}" style="${sizing}${translate}" />`;
                 }
             } else if (fragment.text) {
                 // Process text with inline formatting

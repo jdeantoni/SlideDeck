@@ -3,6 +3,8 @@
 .vscodeignore
 tests/**
 docs/**
+website/**
+.github/**
 examples/**
 src/language/**
 src/generator/**

@@ -36,13 +36,13 @@ export class DevServer {
 
     private setupRoutes(): void {
         // Main page
-        this.app.get('/', (req, res) => {
+        this.app.get('/', (_req, res) => {
             const publicDir = path.join(__dirname, '../../src/dev-server/public');
             res.sendFile(path.join(publicDir, 'index.html'));
         });
 
         // Get initial content
-        this.app.get('/api/initial-content', (req, res) => {
+        this.app.get('/api/initial-content', (_req, res) => {
             res.json({
                 content: this.initialContent,
                 filePath: this.options.initialFile || null

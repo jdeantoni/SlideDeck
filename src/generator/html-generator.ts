@@ -1,4 +1,4 @@
-import { Presentation, Slide, isCodeBlock, isSyncFragments, isStyledElement, isFragmentElement, LineContent, Editor, Output } from "../language/generated/ast";
+import { Presentation, isCodeBlock, isSyncFragments, isStyledElement, isFragmentElement, LineContent, Editor, Output } from "../language/generated/ast";
 import { ElementGenerator } from "./element-generator";
 import { TemplateGenerator } from "./template";
 import { StyleParser } from "./style-parser";

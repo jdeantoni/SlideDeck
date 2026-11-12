@@ -1,4 +1,5 @@
-// Test regex patterns directly
+const assert = require('assert');
+
 const headerPattern = /(###|##|#)[ \t]+[^\r\n]+/;
 const unorderedPattern = /[\-\*\+][ \t]+[^\r\n]+/;
 const orderedPattern = /[0-9]+\.[ \t]+[^\r\n]+/;
@@ -10,10 +11,12 @@ const testLines = [
     "1. Numbered"
 ];
 
-testLines.forEach(line => {
-    console.log(`\nTesting: "${line}"`);
-    console.log('  Header match:', headerPattern.test(line));
-    console.log('  Unordered match:', unorderedPattern.test(line));
-    console.log('  Ordered match:', orderedPattern.test(line));
-    console.log('  Text match:', textPattern.test(line));
-});
+assert.deepStrictEqual(testLines.map(line => [
+    headerPattern.test(line), unorderedPattern.test(line),
+    orderedPattern.test(line), textPattern.test(line)
+]), [
+    [true, false, false, true],
+    [false, true, false, true],
+    [false, false, true, true]
+]);
+console.log('Pattern tests passed');

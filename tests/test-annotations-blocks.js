@@ -3,7 +3,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { CompilerService } = require('../out/services/compiler-service');
-const { getBlockOffset, withBlockOffset } = require('../out/generator/block-position');
+const { getBlockOffset, withBlockOffset, withAnnotationScale } = require('../out/generator/block-position');
 const { annotationSvg, validateAnnotations } = require('../out/vscode/annotation');
 
 async function main() {
@@ -31,11 +31,23 @@ async function main() {
     const movedAgain = withBlockOffset(moved, "{.box; color: 'red'; translate: '25px -8.5px'}", { x: 2, y: 3 });
     assert.strictEqual((movedAgain.match(/translate:/g) || []).length, 1);
     assert.ok(withBlockOffset(':::\nText\n:::', undefined, { x: 2, y: 3 }).startsWith("::: {translate: '2px 3px'}"));
+    const annotation = '::: {.sd-annotation-layer}\n![Annotation](./annotation.svg)\n:::';
+    const scaled = withAnnotationScale(annotation, '{.sd-annotation-layer}', { x: 1.5, y: 2, originX: 98, originY: 118 });
+    assert.ok(scaled.includes("--sd-annotation-scale-x: '1.5'; --sd-annotation-scale-y: '2'; transform-origin: '98px 118px'"));
+    const movedAnnotation = withBlockOffset(scaled, "{.sd-annotation-layer; --sd-annotation-scale-x: '1.5'; --sd-annotation-scale-y: '2'; transform-origin: '98px 118px'}", { x: 10, y: -3 });
+    assert.ok(movedAnnotation.includes("translate: '10px -3px'"));
+    const commaStyle = "{.sd-annotation-layer, color: 'red', --sd-annotation-scale-x: '1', --sd-annotation-scale-y: '1', transform-origin: '0px 0px', translate: '10px -3px'}";
+    const resizedAgain = withAnnotationScale(`::: ${commaStyle}\nText\n:::`, commaStyle, { x: 2, y: 3, originX: 98, originY: 118 });
+    assert.ok(resizedAgain.includes("color: 'red'"));
+    assert.ok(resizedAgain.includes("translate: '10px -3px'"));
+    assert.strictEqual((resizedAgain.match(/--sd-annotation-scale-x:/g) || []).length, 1);
+    assert.ok(resizedAgain.includes("--sd-annotation-scale-x: '2'; --sd-annotation-scale-y: '3'; transform-origin: '98px 118px'"));
+    assert.throws(() => withAnnotationScale(source, "{.box; color: 'red'}", { x: 2, y: 2, originX: 0, originY: 0 }));
 
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-annotation-'));
     try {
         fs.writeFileSync(path.join(dir, 'annotation.svg'), annotationSvg(strokes[0], 960, 700));
-        const fragment = '::: {animate: "fade-in"}\n::: {.sd-annotation-layer}\n![Annotation](./annotation.svg)\n:::\n:::';
+        const fragment = `::: {animate: "fade-in"}\n${movedAnnotation}\n:::`;
         const document = `${moved}\n${fragment}\n${fragment}\n===\n# Next slide`;
         const compiler = new CompilerService();
         const preview = await compiler.compile(document, undefined, path.join(dir, 'slides.slidedeck'), { previewImagePositions: true });
@@ -48,6 +60,7 @@ async function main() {
         assert.ok(preview.html.includes('class="fragment fade-in"'));
         assert.ok(preview.html.includes('class="sd-annotation-layer"'));
         assert.ok(preview.html.includes('data:image/svg+xml;base64,'));
+        assert.ok(preview.html.includes('--sd-annotation-scale-x: 1.5; --sd-annotation-scale-y: 2; transform-origin: 98px 118px; translate: 10px -3px'));
         assert.strictEqual(document.slice(preview.slideEndOffsets[0], preview.slideEndOffsets[0] + 1), '\n');
         const standalone = await compiler.compile(document, undefined, path.join(dir, 'slides.slidedeck'));
         assert.ifError(standalone.error);

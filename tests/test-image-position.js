@@ -1,12 +1,16 @@
 const assert = require('assert');
 const path = require('path');
 const { CompilerService } = require('../out/services/compiler-service');
-const { getImageOffset, withImageOffset } = require('../out/generator/image-position');
+const { getImageOffset, withImageOffset, getImageSize, withImageSize } = require('../out/generator/image-position');
 
 async function main() {
     const image = path.join(__dirname, '../examples/templates/template2/assets/image_logo.png');
     const original = `![Logo](${image})`;
     const moved = withImageOffset(original, { x: 30.5, y: -7 });
+    const resized = withImageSize(moved, 400, 200);
+    assert.deepStrictEqual(getImageSize(resized), { width: 400, height: 200 });
+    assert.deepStrictEqual(getImageOffset(resized), { x: 30.5, y: -7 });
+    assert.strictEqual(withImageOffset(resized, { x: 4, y: 5 }), `${original}{offset: '4px 5px'}{size: '400px 200px'}`);
     assert.deepStrictEqual(getImageOffset(moved), { x: 30.5, y: -7 });
     assert.strictEqual(withImageOffset(moved, { x: -12, y: 0 }), `${original}{offset: '-12px 0px'}`);
 
@@ -27,6 +31,9 @@ async function main() {
     assert.ok(standalone.html.includes('style="translate: 30.5px -7px"'));
     assert.ok(!standalone.html.includes('data-sd-image='));
     assert.deepStrictEqual(standalone.imageMappings, []);
+    const sized = await compiler.compile(resized);
+    assert.ifError(sized.error);
+    assert.ok(sized.html.includes('width: 400px; height: 200px; max-width: none; max-height: none; translate: 30.5px -7px'));
 
     const sync = await compiler.compile('```js\nhello\n```\n:::[sync-fragments]\n' + moved + '\n:::[sync-fragments]');
     assert.ifError(sync.error);

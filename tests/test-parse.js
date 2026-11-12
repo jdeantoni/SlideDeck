@@ -1,29 +1,20 @@
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {createSlideDeckServices} = require('./out/language/slide-deck-module');
-const {NodeFileSystem} = require('langium/node');
-const {URI} = require('vscode-uri');
+const { createSlideDeckServices } = require('../out/language/slide-deck-module');
+const { NodeFileSystem } = require('langium/node');
 
-async function test() {
-    const content = fs.readFileSync('./examples/minimal.sdml', 'utf-8');
-    
-    const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
-    
-    const document = services.shared.workspace.LangiumDocumentFactory.fromString(
-        content,
-        URI.file(path.resolve('./examples/minimal.sdml'))
-    );
-    
-    await services.shared.workspace.DocumentBuilder.build([document], { validationChecks: 'all' });
-    
-    const presentation = document.parseResult.value;
-    
-    console.log(JSON.stringify(presentation, (key, value) => {
-        if (key === '$container' || key === '$containerProperty' || key === '$containerIndex' || key === '$document' || key === '$cstNode') {
-            return undefined;
-        }
-        return value;
-    }, 2));
-}
-
-test().catch(console.error);
+const source = fs.readFileSync(path.join(__dirname, '../examples/sdml/01-simple-markdown.slidedeck'), 'utf8');
+const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
+const result = services.parser.LangiumParser.parse(source);
+assert.deepStrictEqual(result.lexerErrors, []);
+assert.deepStrictEqual(result.parserErrors, []);
+assert.strictEqual(result.value.metadata.title, 'Simple Markdown Test');
+assert.strictEqual(result.value.slides.slides.length, 6);
+const lines = result.value.slides.slides[0].blocks[0].lines;
+assert.deepStrictEqual(lines.map(line => [line.$type, line.level, line.text]), [
+    ['Header', '#', 'Main Title (H1)'],
+    ['Header', '##', 'Subtitle (H2)'],
+    ['Header', '###', 'Sub-subtitle (H3)']
+]);
+console.log('Parser tests passed');

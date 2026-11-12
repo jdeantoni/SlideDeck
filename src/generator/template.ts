@@ -352,6 +352,10 @@ ${slidesContent}
             const slide = layer.closest('section');
             const fragment = layer.closest('.fragment');
             if (!slide || !fragment) return;
+            const scaleX = layer.style.getPropertyValue('--sd-annotation-scale-x');
+            const scaleY = layer.style.getPropertyValue('--sd-annotation-scale-y');
+            if (scaleX && scaleY) layer.style.scale = scaleX + ' ' + scaleY;
+            layer.dataset.sdAnnotationSlide = slide.getAttribute('data-slide-index');
             annotationLayers.push({ layer, slide, fragment });
             layer.style.display = 'none';
             slidesContainer.appendChild(layer);
@@ -361,7 +365,9 @@ ${slidesContent}
             annotationLayers.forEach(({ layer, slide, fragment }) => {
                 layer.style.display = slide === current && fragment.classList.contains('visible') ? 'block' : 'none';
             });
+            document.dispatchEvent(new Event('sd-annotations-changed'));
         }
+        window.sdUpdateAnnotationLayers = updateAnnotationLayers;
         Reveal.on('ready', updateAnnotationLayers);
         Reveal.on('slidechanged', updateAnnotationLayers);
         Reveal.on('fragmentshown', updateAnnotationLayers);

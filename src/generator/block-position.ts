@@ -24,3 +24,23 @@ export function withBlockOffset(content: string, style: string | undefined, offs
         : `${body}${body.trim() ? '; ' : ''}${value}`;
     return content.slice(0, index) + `{${updated}}` + content.slice(index + style.length);
 }
+
+export function withAnnotationScale(content: string, style: string | undefined,
+    scale: { x: number; y: number; originX: number; originY: number }): string {
+    if (!style || !/(?:^|[\s{;,])\.sd-annotation-layer(?=[\s;},])/.test(style)) {
+        throw new Error('Cannot resize a block that is not an annotation layer.');
+    }
+    const index = content.indexOf(style);
+    if (index < 0) throw new Error('Cannot locate the annotation style.');
+    let body = style.slice(1, -1);
+    for (const [key, value] of [
+        ['--sd-annotation-scale-x', String(scale.x)],
+        ['--sd-annotation-scale-y', String(scale.y)],
+        ['transform-origin', `${scale.originX}px ${scale.originY}px`]
+    ]) {
+        const pattern = new RegExp(`(^|[;,])\\s*${key}\\s*:\\s*(?:'[^']*'|"[^"]*"|[^;,]*)`, 'g');
+        body = body.replace(pattern, '$1').replace(/[;,]\s*(?=[;,])/g, '').replace(/[;,]\s*$/, '');
+        body += `; ${key}: '${value}'`;
+    }
+    return content.slice(0, index) + `{${body}}` + content.slice(index + style.length);
+}

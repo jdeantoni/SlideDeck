@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Copy and try examples of SlideDeck features.">
+  <title>Feature examples — SlideDeck</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="examples.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">S<span>.</span></span> SlideDeck</a>
+      <div class="nav-links"><a href="guide.html">Getting started</a><a href="features.html" aria-current="page">Feature examples</a><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></div>
+    </nav>
+  </header>
+  <main class="guide-layout wrap">
+    <aside class="guide-sidebar"><p class="eyebrow">FEATURES</p><nav aria-label="Feature sections">
+      <a href="#basics">Slides and text</a><a href="#lists">Lists and quotes</a><a href="#links">Links and QR</a><a href="#notes">Notes and footnotes</a><a href="#styling">Styles and layout</a><a href="#media">Images and video</a><a href="#code">Code and math</a><a href="#animation">Fragments and transitions</a><a href="#interactive">Editors and quizzes</a><a href="#drawing">Drawing and preview</a><a href="#templates">Themes and templates</a>
+    </nav></aside>
+    <article class="guide reference">
+      <p class="eyebrow">DOCUMENTATION / EXAMPLES</p>
+      <h1>Learn by <em>doing.</em></h1>
+      <p class="lead">Small examples, ready to copy into a <code>.slidedeck</code> file.</p>
+      <p>Each SlideDeck example below is a complete presentation. Save it as <code>talk.slidedeck</code>, then compile or preview it using the <a href="guide.html">getting-started guide</a>. Use the copy button, or select the text manually. Read the notes for assets, internet access and other prerequisites.</p>
+
+      <section id="basics"><h2>Slides and text</h2>
+        <h3>Metadata, headings and formatting</h3>
+        <p>Metadata is optional; when present, put <code>author</code> then <code>title</code> first. Separate slides with <code>===</code>. Use up to three heading levels.</p>
+        <pre data-example="basics"><code>{
+  author: "Ada"
+  title: "My first deck"
+  theme: "white"
+}
+===
+# Welcome
+This is **bold**, *italic*, and __underlined__.
+===
+## Next slide
+### A smaller heading
+// This comment is not shown</code></pre>
+        <p>Comments can also use <code>/* ... */</code> across multiple lines. Put comments on separate lines; inline comment markers in slide text remain visible.</p>
+      </section>
+      <section id="lists"><h2>Lists and quotes</h2>
+        <p>Indent a child marker at least to the start of its parent's text. List items are single-line.</p>
+        <pre data-example="lists"><code># Things to do
+- Plan
+  - Gather ideas
+  - Make a draft
+1. Rehearse
+2. Present
+&gt; Keep the message clear.</code></pre>
+      </section>
+      <section id="links"><h2>Links and QR codes</h2>
+        <p>Links use <code>![label] "destination"</code>; images use parentheses instead. The special <code>QR</code> label generates an image from an online QR service.</p>
+        <pre data-example="links"><code># Find out more
+Read ![the SlideDeck repository] "https://github.com/jdeantoni/SlideDeck".
+![QR] "https://github.com/jdeantoni/SlideDeck"</code></pre>
+        <p>Links can also use <code>mailto:</code>, relative paths or fragments. Check relative links in the generated HTML.</p>
+      </section>
+      <section id="notes"><h2>Inline styles, notes and footnotes</h2>
+        <p>Use an inline span for part of a line. Hover notes use the browser's native tooltip and may not be accessible to keyboard or touch users.</p>
+        <pre data-example="notes"><code># Explain a concept
+This is [important]{color: 'red'; font-weight: 'bold'}.
+[Hover here]{note: 'More context'} for a note.
+[*A term*]{footnote: ['A styled explanation']{color: 'blue'}}</code></pre>
+        <p>Footnotes appear at the end of the slide, even if their reference is inside an unrevealed fragment. Inline styles apply to a span, not to the containing list item.</p>
+      </section>
+      <section id="styling"><h2>Styles and layout</h2>
+        <h3>Styled blocks and list width</h3>
+        <p>Block styles use CSS properties. Set a container width to constrain a whole list.</p>
+        <pre data-example="styles"><code># A compact list
+::: {width: '50%'; margin: '0 auto'; color: 'teal'}
+- First point
+- A longer point that wraps within the container
+:::</code></pre>
+        <p>Use a class such as <code>.callout</code> in a block or inline span and define it in the metadata <code>css</code> field:</p>
+        <pre data-example="classes"><code>{
+  author: "Ada"
+  title: "Classes"
+  css: ".reveal .callout { color: teal; }"
+}
+===
+# Reusable styles
+::: {.callout}
+This block uses a class.
+:::
+This [word]{.callout} uses it too.</code></pre>
+        <h3>Columns and nested blocks</h3>
+        <p><code>columns</code> and <code>gap</code> create a grid of individual children. Use <code>::::</code> with nested <code>:::</code> blocks to group multiple elements in each column.</p>
+        <pre data-example="columns"><code># Two grouped columns
+:::: {.columns}
+::: {.column; width: '50%'}
+### Left
+First group
+:::
+::: {.column; width: '50%'}
+### Right
+Second group
+:::
+::::</code></pre>
+        <pre data-example="grid"><code># A simple grid
+::: {columns: 2; gap: 20}
+### One
+### Two
+:::</code></pre>
+        <h3>Positioning and transforms</h3>
+        <p><code>horizontal-margin</code> and <code>vertical-margin</code> position in pixels; <code>calque</code> sets the layer. Transform shortcuts include <code>rotate</code>, <code>scale</code>, <code>translate-x</code>, <code>translate-y</code> and <code>skew</code>.</p>
+        <pre data-example="position"><code># Place an element
+::: {horizontal-margin: 100; vertical-margin: 200; calque: 2; rotate: -5}
+Positioned and rotated
+:::</code></pre>
+      </section>
+      <section id="media"><h2>Images and video</h2>
+        <p>Run this from the repository root with <code>talk.slidedeck</code> there: the image path points to an image included in the repository. Replace it with your own relative path or URL.</p>
+        <pre data-example="image"><code># An image
+![Logo](examples/templates/template2/assets/image_logo.png){offset: '20px 10px'}{size: '250px 100px'}</code></pre>
+        <p>Image dimensions and offsets are in slide pixels. Images are embedded during compilation. For local video, use the same syntax with a video file; the compiler copies it into an assets folder beside the HTML.</p>
+        <pre data-example="video"><code># A YouTube video
+![Video](https://www.youtube.com/watch?v=dQw4w9WgXcQ)</code></pre>
+        <p>YouTube playback requires a network connection and permission from the video provider.</p>
+        <p>This local-video example also assumes the source file is in the repository root. Replace the path with your own video if needed.</p>
+        <pre data-example="local-video"><code># A local video
+![Demo](examples/sdml/final-pres-assets/Exemple_preview.mp4)</code></pre>
+      </section>
+      <section id="code"><h2>Code and math</h2>
+        <h3>Syntax highlighting and progressive steps</h3>
+        <p>Specify the language and optional highlight mode in the opening fence. Modes include <code>all</code>, <code>none</code>, <code>line-by-line</code>, <code>block</code>, <code>function</code> and <code>class</code>. Advance through line-by-line highlights using the presentation controls.</p>
+        <pre data-example="code"><code># Code
+```javascript [highlight:line-by-line]
+const x = 2;
+console.log(x);
+```</code></pre>
+        <h3>Synchronized fragments</h3>
+        <p>Use <code>[---]</code> between explanations. Add <code>keep</code> after <code>sync-fragments</code> to accumulate them rather than replace them.</p>
+        <pre data-example="sync"><code># Explain code
+```javascript [highlight:line-by-line]
+let x = 1;
+x += 2;
+```
+:::[sync-fragments]
+Start at one
+[---]
+Add two
+:::[sync-fragments]</code></pre>
+        <h3>Mathematics</h3>
+        <p>Write inline math between dollar signs and use a <code>latex</code> code block for display math. Include a LaTeX block in the presentation to enable math rendering; it loads KaTeX from a CDN.</p>
+        <pre data-example="math"><code># Mathematics
+Inline: $E = mc^2$
+```latex
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+```</code></pre>
+      </section>
+      <section id="animation"><h2>Fragments and transitions</h2>
+        <p>Advance to reveal each fragment. Use <code>index: 0</code> inside the fragment attributes to control ordering. The presentation-wide transition belongs in metadata; a slide can override it at its start.</p>
+        <pre data-example="animation"><code>{
+  author: "Ada"
+  title: "Animation"
+  transition: "none"
+}
+===
+# Reveal ideas
+::: {animate: "fade-in"}
+First idea
+:::
+::: {animate: "fade-in"}
+Second idea
+:::
+===
+{transition: "fade"}
+# A different transition</code></pre>
+      </section>
+      <section id="interactive"><h2>Interactive content</h2>
+        <h3>Embedded code editor</h3>
+        <p>Connect an editor to an output by using the same quoted ID. Supported languages are <code>javascript</code>, <code>python</code> and <code>sql</code>. Monaco and execution runtimes require internet access.</p>
+        <pre data-example="editor"><code># Try JavaScript
+,,,ide javascript
+```
+console.log("Hello!");
+```
+output: "result"
+,,,
+output: "result"</code></pre>
+        <h3>Live quiz</h3>
+        <p>Start the quiz server from the project root with <code>npm run quiz-server</code>. It listens on port 4433. Serve the generated presentation over HTTP using a hostname reachable by participants; the quiz connects to that same hostname on port 4433. Opening the HTML directly as a file is not suitable for a shared quiz. See the <a href="https://github.com/jdeantoni/SlideDeck#interactive-quiz-server">quiz setup instructions</a>.</p>
+        <pre data-example="quiz"><code>:::quiz
+"Quick quiz"
+showJoinQrCode: true
+question: "Which number is even?"
+choice "one": "1"
+choice "two": "2"
+correct: "two"
+showResultsOnDemand: true
+visualization: barChart
+:::</code></pre>
+      </section>
+      <section id="drawing"><h2>Drawing and visual layout</h2>
+        <h3>Presentation chalkboard</h3>
+        <p>Press <strong>C</strong> for the slide notes canvas or <strong>B</strong> for the chalkboard; <strong>D</strong> downloads drawings. This plugin is separate from preview drawings and loads online.</p>
+        <pre data-example="chalkboard"><code>{
+  author: "Ada"
+  title: "Draw while presenting"
+  chalkboard: "true"
+}
+===
+# Draw on this slide</code></pre>
+        <h3>VS Code preview: move, resize and save drawings</h3>
+        <p>Open the native preview in a trusted workspace. Select <strong>Edit layout</strong> to drag images or styled blocks; select an image and drag its corner to resize it. Shift preserves proportions while resizing. <strong>Draw</strong> lets you create pen strokes, arrows, rectangles and ellipses; <strong>Save fragments</strong> stores each as an SVG and a fragment in the source.</p>
+        <p>In layout mode drag the visible bounds of a saved drawing or its corner to move or resize it. These are whole-image transforms, not arrow endpoint editing. Save the source file to retain changes. Undo does not delete generated SVG files. Presentation-time dragging is not supported. The preview follows the editor's current slide; double-click non-interactive slide content to return to its source. With VS Code 1.97 or later, paste an image into a saved SlideDeck file to insert and store it.</p>
+      </section>
+      <section id="templates"><h2>Themes and templates</h2>
+        <p>Select a reveal.js theme through metadata. Starter decks for academic, business, conference, technical and minimal layouts are available in the <a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples/templates">template directory</a>; copy one as the basis for a presentation.</p>
+        <pre data-example="theme"><code>{
+  author: "Ada"
+  title: "Theme example"
+  theme: "white"
+  css: ".reveal h1 { color: teal; }"
+}
+===
+# A themed slide</code></pre>
+        <p>For more detail and complete examples, see the <a href="https://github.com/jdeantoni/SlideDeck#usage">README</a> and <a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples/sdml">example gallery</a>.</p>
+      </section>
+    </article>
+  </main>
+  <footer class="footer wrap"><span>SlideDeck <span class="footer-dot">●</span> Made for sharing ideas.</span><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></footer>
+</body>
+</html>

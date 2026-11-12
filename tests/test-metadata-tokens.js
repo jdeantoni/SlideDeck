@@ -1,15 +1,16 @@
+const assert = require('assert');
 const fs = require('fs');
-const {createSlideDeckServices} = require('./out/language/slide-deck-module');
-const {NodeFileSystem} = require('langium/node');
+const path = require('path');
+const { createSlideDeckServices } = require('../out/language/slide-deck-module');
+const { NodeFileSystem } = require('langium/node');
 
-const content = fs.readFileSync('./examples/with-metadata.sdml', 'utf-8');
-console.log('Content:', content.substring(0, 100));
-
+const source = fs.readFileSync(path.join(__dirname, '../examples/sdml/01-simple-markdown.slidedeck'), 'utf8');
 const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
-const lexer = services.parser.Lexer;
-
-const tokens = lexer.tokenize(content);
-console.log('\nFirst 10 tokens:');
-tokens.tokens.slice(0, 10).forEach(token => {
-    console.log(`  ${token.tokenType.name}: "${token.image.substring(0, 50).replace(/\n/g, '\\n')}"`);
-});
+const result = services.parser.Lexer.tokenize(source);
+assert.deepStrictEqual(result.errors, []);
+assert.deepStrictEqual(result.tokens.slice(0, 10).map(token => [token.tokenType.name, token.image]), [
+    ['{', '{'], ['author', 'author'], [':', ':'], ['STRING', '"SlideDeckML Team"'],
+    ['title', 'title'], [':', ':'], ['STRING', '"Simple Markdown Test"'], ['}', '}'],
+    ['SLIDE_SEPARATOR', '===\n'], ['HEADER_LEVEL', '#']
+]);
+console.log('Metadata example token tests passed');

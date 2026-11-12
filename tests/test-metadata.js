@@ -1,27 +1,18 @@
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {createSlideDeckServices} = require('./out/language/slide-deck-module');
-const {NodeFileSystem} = require('langium/node');
-const {URI} = require('vscode-uri');
+const { createSlideDeckServices } = require('../out/language/slide-deck-module');
+const { NodeFileSystem } = require('langium/node');
 
-async function test() {
-    const content = fs.readFileSync('./examples/with-metadata.sdml', 'utf-8');
-    
-    const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
-    
-    const document = services.shared.workspace.LangiumDocumentFactory.fromString(
-        content,
-        URI.file(path.resolve('./examples/with-metadata.sdml'))
-    );
-    
-    await services.shared.workspace.DocumentBuilder.build([document], { validationChecks: 'all' });
-    
-    const presentation = document.parseResult.value;
-    
-    console.log('Metadata:', presentation.metadata);
-    if (presentation.metadata) {
-        console.log('Block:', presentation.metadata.block);
-    }
-}
+const source = fs.readFileSync(path.join(__dirname, '../examples/sdml/01-simple-markdown.slidedeck'), 'utf8');
+const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
+const result = services.parser.LangiumParser.parse(source);
+assert.deepStrictEqual(result.lexerErrors, []);
+assert.deepStrictEqual(result.parserErrors, []);
+assert.strictEqual(result.value.metadata.author, 'SlideDeckML Team');
+assert.strictEqual(result.value.metadata.title, 'Simple Markdown Test');
+assert.ok(result.value.slides.slides.length > 0);
 
-test().catch(console.error);
+const missingTitle = services.parser.LangiumParser.parse('{\nauthor: "A"\n}\n===\n# Slide');
+assert.ok(missingTitle.parserErrors.length > 0, 'Metadata without a title must be rejected');
+console.log('Metadata parser tests passed');

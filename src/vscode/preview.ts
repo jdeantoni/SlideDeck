@@ -2,8 +2,8 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 import * as vscode from 'vscode';
 import { CompilerService } from '../services/compiler-service';
-import { getImageOffset, withImageOffset } from '../generator/image-position';
-import { getBlockOffset, withBlockOffset } from '../generator/block-position';
+import { getImageOffset, withImageOffset, withImageSize } from '../generator/image-position';
+import { getBlockOffset, withBlockOffset, withAnnotationScale } from '../generator/block-position';
 import { annotationSvg, validateAnnotations } from './annotation';
 
 export class PreviewManager implements vscode.Disposable {
@@ -96,6 +96,10 @@ class SlidePreview implements vscode.Disposable {
                     void this.moveElement(message, 'image');
                 } else if (message && message.type === 'moveBlock') {
                     void this.moveElement(message, 'block');
+                } else if (message && message.type === 'resizeImage') {
+                    void this.resizeImage(message);
+                } else if (message && message.type === 'resizeAnnotation') {
+                    void this.resizeAnnotation(message);
                 } else if (message && message.type === 'layoutError' && typeof message.text === 'string') {
                     void vscode.window.showWarningMessage(message.text);
                 } else if (message && message.type === 'saveAnnotations') {
@@ -104,6 +108,82 @@ class SlidePreview implements vscode.Disposable {
             })
         );
         this.schedule();
+    }
+
+    private async resizeAnnotation(message: { revision: unknown; id: unknown; x: unknown; y: unknown; originX: unknown; originY: unknown; slide: unknown }): Promise<void> {
+        if (!this.layoutMode || typeof message.id !== 'number' || !Number.isInteger(message.id) ||
+            typeof message.slide !== 'number' || !Number.isInteger(message.slide) || message.slide < 0 ||
+            message.slide >= this.startLines.length) return;
+        if (message.revision !== this.displayedRevision || this.document.version !== this.compiledVersion) {
+            void vscode.window.showWarningMessage('The preview is out of date. Wait for it to update before resizing an annotation.');
+            return;
+        }
+        const values = [message.x, message.y, message.originX, message.originY];
+        if (!values.every(value => typeof value === 'number' && Number.isFinite(value)) ||
+            typeof message.x !== 'number' || typeof message.y !== 'number' ||
+            typeof message.originX !== 'number' || typeof message.originY !== 'number' ||
+            message.x < 0.01 || message.y < 0.01 || message.x > 100 || message.y > 100 ||
+            Math.abs(message.originX) > 10000 || Math.abs(message.originY) > 10000) {
+            void vscode.window.showWarningMessage('Invalid annotation dimensions.');
+            return;
+        }
+        const mapping = this.blockMappings.get(message.id);
+        if (!mapping) return;
+        const range = new vscode.Range(this.document.positionAt(mapping.start), this.document.positionAt(mapping.end));
+        if (this.document.getText(range) !== mapping.content) {
+            void vscode.window.showWarningMessage('The annotation source has changed. Wait for the preview to update.');
+            return;
+        }
+        try {
+            const round = (value: number): number => Math.round(value * 1000) / 1000;
+            const text = withAnnotationScale(mapping.content, mapping.style, {
+                x: round(message.x), y: round(message.y),
+                originX: round(message.originX), originY: round(message.originY)
+            });
+            const edit = new vscode.WorkspaceEdit();
+            edit.replace(this.document.uri, range, text);
+            this.pendingSlide = message.slide;
+            if (!await vscode.workspace.applyEdit(edit)) {
+                this.pendingSlide = undefined;
+                void vscode.window.showErrorMessage('Could not update the annotation size in the source file.');
+            }
+        } catch (error) {
+            this.pendingSlide = undefined;
+            void vscode.window.showErrorMessage(`Could not resize the annotation: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    private async resizeImage(message: { revision: unknown; id: unknown; width: unknown; height: unknown; slide: unknown }): Promise<void> {
+        if (!this.layoutMode || typeof message.id !== 'number' || !Number.isInteger(message.id) ||
+            typeof message.width !== 'number' || !Number.isFinite(message.width) || message.width < 1 || message.width > 10000 ||
+            typeof message.height !== 'number' || !Number.isFinite(message.height) || message.height < 1 || message.height > 10000 ||
+            typeof message.slide !== 'number' || !Number.isInteger(message.slide) || message.slide < 0 ||
+            message.slide >= this.startLines.length) return;
+        if (message.revision !== this.displayedRevision || this.document.version !== this.compiledVersion) {
+            void vscode.window.showWarningMessage('The preview is out of date. Wait for it to update before resizing an image.');
+            return;
+        }
+        const mapping = this.imageMappings.get(message.id);
+        if (!mapping) return;
+        const range = new vscode.Range(this.document.positionAt(mapping.start), this.document.positionAt(mapping.end));
+        if (this.document.getText(range) !== mapping.content) {
+            void vscode.window.showWarningMessage('The image source has changed. Wait for the preview to update.');
+            return;
+        }
+        const edit = new vscode.WorkspaceEdit();
+        const width = Math.round(message.width * 10) / 10;
+        const height = Math.round(message.height * 10) / 10;
+        edit.replace(this.document.uri, range, withImageSize(mapping.content, width, height));
+        try {
+            this.pendingSlide = message.slide;
+            if (!await vscode.workspace.applyEdit(edit)) {
+                this.pendingSlide = undefined;
+                void vscode.window.showErrorMessage('Could not update the image size in the source file.');
+            }
+        } catch (error) {
+            this.pendingSlide = undefined;
+            void vscode.window.showErrorMessage(`Could not update the image size: ${error instanceof Error ? error.message : String(error)}`);
+        }
     }
 
     public reveal(): void {
@@ -320,6 +400,10 @@ class SlidePreview implements vscode.Disposable {
         return `<div id="sdml-preview-error" role="alert" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#822;color:white;padding:12px;white-space:pre-wrap"></div>
 ${presentation ? `<style>
 body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; outline: 2px dashed #19a7ff; outline-offset: 3px; touch-action: none; }
+body.sd-layout-mode .sd-annotation-layer { outline: none; }
+.sd-annotation-hit { position: fixed; z-index: 99990; box-sizing: border-box; border: 1px dashed #19a7ff; cursor: move; touch-action: none; }
+.sd-annotation-handle { position: absolute; right: -7px; bottom: -7px; width: 14px; height: 14px; background: #007acc; border: 1px solid white; cursor: nwse-resize; }
+#sd-resize-image { position: fixed; z-index: 99997; width: 14px; height: 14px; padding: 0; border: 1px solid white; background: #007acc; cursor: nwse-resize; touch-action: none; }
 #sd-layout-toggle { position: fixed; top: 8px; right: 8px; z-index: 99998; padding: 6px 10px; background: #222; color: white; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; }
 #sd-layout-toggle[aria-pressed="true"] { background: #075b8d; }
 #sd-annotation-toolbar { position: fixed; top: 42px; right: 8px; z-index: 99998; background: #222; color: white; padding: 6px; border-radius: 4px; display: flex; gap: 5px; align-items: center; }
@@ -327,7 +411,7 @@ body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; out
 #sd-annotation-toolbar [hidden] { display: none; }
 #sd-annotation-toolbar button[aria-pressed="true"] { background: #075b8d; color: white; }
 .sd-annotation-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 9999; touch-action: none; }
-</style><button id="sd-layout-toggle" type="button" aria-pressed="${this.layoutMode}" title="Drag images or styled blocks; Shift-drag an image to move its surrounding block">Edit layout</button>
+</style><button id="sd-resize-image" type="button" hidden aria-label="Resize selected image" title="Drag to resize; hold Shift to preserve proportions"></button><button id="sd-layout-toggle" type="button" aria-pressed="${this.layoutMode}" title="Drag images or styled blocks; Shift-drag an image to move its surrounding block">Edit layout</button>
 <div id="sd-annotation-toolbar"><button id="sd-draw-toggle" type="button" aria-pressed="false">Draw</button>
 <span id="sd-draw-controls" hidden><label>Tool <select id="sd-draw-tool"><option value="pen">Pen</option><option value="rectangle">Rectangle</option><option value="ellipse">Ellipse</option><option value="arrow">Arrow</option></select></label>
 <label>Color <input id="sd-draw-color" type="color" value="#ff3333"></label>
@@ -339,6 +423,97 @@ body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; out
     let slide = 0;
     let layoutMode = ${presentation && this.layoutMode};
     let drag = null;
+    let selectedImage = null;
+    let resize = null;
+    let annotationDrag = null;
+    const annotationBounds = new WeakMap();
+    const annotationControls = new Map();
+    let annotationRefresh = 0;
+    async function getAnnotationBounds(layer) {
+        if (annotationBounds.has(layer)) return annotationBounds.get(layer);
+        const image = layer.querySelector('img');
+        if (!image) throw new Error('Annotation image is missing.');
+        await image.decode();
+        const width = image.naturalWidth, height = image.naturalHeight;
+        if (!width || !height || width * height > 16000000) throw new Error('Annotation image dimensions are unsupported.');
+        const bitmap = document.createElement('canvas');
+        bitmap.width = width; bitmap.height = height;
+        const context = bitmap.getContext('2d', { willReadFrequently: true });
+        context.drawImage(image, 0, 0);
+        const pixels = context.getImageData(0, 0, width, height).data;
+        let left = width, top = height, right = -1, bottom = -1;
+        for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+            if (pixels[(y * width + x) * 4 + 3] > 0) {
+                left = Math.min(left, x); top = Math.min(top, y);
+                right = Math.max(right, x); bottom = Math.max(bottom, y);
+            }
+        }
+        if (right < left) throw new Error('Annotation image has no visible pixels.');
+        const bounds = { left: left / width, top: top / height, width: (right - left + 1) / width, height: (bottom - top + 1) / height };
+        annotationBounds.set(layer, bounds);
+        return bounds;
+    }
+    function positionAnnotationControl(layer, control, bounds) {
+        const rect = layer.getBoundingClientRect();
+        control.style.left = (rect.left + bounds.left * rect.width) + 'px';
+        control.style.top = (rect.top + bounds.top * rect.height) + 'px';
+        control.style.width = Math.max(8, bounds.width * rect.width) + 'px';
+        control.style.height = Math.max(8, bounds.height * rect.height) + 'px';
+    }
+    async function refreshAnnotationControls() {
+        const refresh = ++annotationRefresh;
+        for (const control of annotationControls.values()) control.remove();
+        annotationControls.clear();
+        const current = currentIndex();
+        for (const layer of document.querySelectorAll('.reveal .slides > .sd-annotation-layer[data-sd-block]')) {
+            if (!layoutMode || Number(layer.dataset.sdAnnotationSlide) !== current) continue;
+            layer.style.display = 'block';
+            try {
+                const bounds = await getAnnotationBounds(layer);
+                if (refresh !== annotationRefresh || !layoutMode || current !== currentIndex()) return;
+                const control = document.createElement('div');
+                control.className = 'sd-annotation-hit';
+                control.title = 'Drag to move; drag the corner to resize (Shift preserves proportions)';
+                const handle = document.createElement('div');
+                handle.className = 'sd-annotation-handle';
+                control.appendChild(handle);
+                document.body.appendChild(control);
+                annotationControls.set(layer, control);
+                positionAnnotationControl(layer, control, bounds);
+                control.addEventListener('pointerdown', event => {
+                    if (event.button !== 0) return;
+                    const rect = control.getBoundingClientRect();
+                    const scales = getComputedStyle(layer).scale;
+                    const parts = scales === 'none' ? [1, 1] : scales.split(' ').map(Number);
+                    const existingOrigin = layer.style.transformOrigin;
+                    const origin = existingOrigin ? existingOrigin.split(' ').map(parseFloat) :
+                        [bounds.left * layer.offsetWidth, bounds.top * layer.offsetHeight];
+                    annotationDrag = { pointer: event.pointerId, layer, control, bounds, startX: event.clientX, startY: event.clientY,
+                        x: Number(layer.dataset.sdX), y: Number(layer.dataset.sdY), slide: current,
+                        scaleX: parts[0], scaleY: parts[1] ?? parts[0], originX: origin[0], originY: origin[1],
+                        width: rect.width, height: rect.height, resizing: event.target === handle, moved: false,
+                        previousTranslate: layer.style.translate, previousScale: layer.style.scale,
+                        previousOrigin: layer.style.transformOrigin };
+                    control.setPointerCapture(event.pointerId);
+                    event.preventDefault(); event.stopPropagation();
+                });
+            } catch (error) {
+                if (refresh !== annotationRefresh) return;
+                vscode.postMessage({ type: 'layoutError', text: 'Cannot edit annotation: ' + String(error) });
+            }
+        }
+    }
+    const resizeHandle = document.getElementById('sd-resize-image');
+    function updateResizeHandle() {
+        if (!resizeHandle || !selectedImage || !layoutMode || !selectedImage.isConnected) {
+            if (resizeHandle) resizeHandle.hidden = true;
+            return;
+        }
+        const rect = selectedImage.getBoundingClientRect();
+        resizeHandle.style.left = (rect.right - 7) + 'px';
+        resizeHandle.style.top = (rect.bottom - 7) + 'px';
+        resizeHandle.hidden = false;
+    }
     let drawingMode = false;
     const toggle = document.getElementById('sd-layout-toggle');
     if (toggle) {
@@ -346,7 +521,11 @@ body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; out
         toggle.addEventListener('click', () => {
             if (drawingMode) return;
             layoutMode = !layoutMode;
+            if (!layoutMode) selectedImage = null;
+            updateResizeHandle();
             document.body.classList.toggle('sd-layout-mode', layoutMode);
+            if (!layoutMode && window.sdUpdateAnnotationLayers) window.sdUpdateAnnotationLayers();
+            void refreshAnnotationControls();
             toggle.setAttribute('aria-pressed', String(layoutMode));
             vscode.postMessage({ type: 'layoutMode', enabled: layoutMode });
         });
@@ -500,6 +679,18 @@ body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; out
         if (Number.isInteger(index) && index >= 0) vscode.postMessage({ type: 'revealSource', index, revision: ${revision} });
     });
     document.addEventListener('pointerdown', event => {
+        if (layoutMode && event.target === resizeHandle && selectedImage && event.button === 0) {
+            const rect = selectedImage.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+            resize = { pointer: event.pointerId, image: selectedImage, startX: event.clientX, startY: event.clientY,
+                width: selectedImage.offsetWidth, height: selectedImage.offsetHeight,
+                scaleX: selectedImage.offsetWidth / rect.width, scaleY: selectedImage.offsetHeight / rect.height,
+                oldWidth: selectedImage.style.width, oldHeight: selectedImage.style.height,
+                oldMaxWidth: selectedImage.style.maxWidth, oldMaxHeight: selectedImage.style.maxHeight,
+                slide: currentIndex(), moved: false };
+            resizeHandle.setPointerCapture(event.pointerId);
+            event.preventDefault(); event.stopPropagation(); return;
+        }
         if (drawingMode && canvas && event.target === canvas && event.button === 0 && !saving) {
             const rect = canvas.getBoundingClientRect();
             const point = { x: (event.clientX - rect.left) * canvas.width / rect.width,
@@ -518,6 +709,8 @@ body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; out
             event.target.closest('img[data-sd-image], [data-sd-block]');
         const current = Reveal.getCurrentSlide();
         if (!image || !current || !current.contains(image)) return;
+        selectedImage = image.matches('img[data-sd-image]') ? image : null;
+        updateResizeHandle();
         const index = Number(current.getAttribute('data-slide-index'));
         if (!Number.isInteger(index) || index < 0) return;
         let matrix = new DOMMatrix();
@@ -538,6 +731,33 @@ body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; out
         event.stopPropagation();
     });
     document.addEventListener('pointermove', event => {
+        if (annotationDrag && annotationDrag.pointer === event.pointerId) {
+            const a = annotationDrag;
+            const dx = event.clientX - a.startX, dy = event.clientY - a.startY;
+            if (Math.hypot(dx, dy) < 3 && !a.moved) return;
+            a.moved = true;
+            if (a.resizing) {
+                const sx = Math.max(0.01, a.scaleX * (1 + dx / a.width));
+                const sy = event.shiftKey ? a.scaleY * sx / a.scaleX : Math.max(0.01, a.scaleY * (1 + dy / a.height));
+                a.layer.style.transformOrigin = a.originX + 'px ' + a.originY + 'px';
+                a.layer.style.scale = sx + ' ' + sy;
+            } else {
+                const slides = document.querySelector('.reveal .slides');
+                const rect = slides.getBoundingClientRect();
+                a.layer.style.translate = (a.x + dx * slides.clientWidth / rect.width) + 'px ' +
+                    (a.y + dy * slides.clientHeight / rect.height) + 'px';
+            }
+            positionAnnotationControl(a.layer, a.control, a.bounds);
+            event.preventDefault(); event.stopPropagation(); return;
+        }
+        if (resize && resize.pointer === event.pointerId) {
+            let width = Math.max(1, resize.width + (event.clientX - resize.startX) * resize.scaleX);
+            let height = Math.max(1, resize.height + (event.clientY - resize.startY) * resize.scaleY);
+            if (event.shiftKey) height = width * resize.height / resize.width;
+            resize.image.style.width = width + 'px'; resize.image.style.height = height + 'px';
+            resize.image.style.maxWidth = 'none'; resize.image.style.maxHeight = 'none';
+            resize.moved = true; updateResizeHandle(); event.preventDefault(); event.stopPropagation(); return;
+        }
         if (drawing === event.pointerId && sketch && canvas) {
             const rect = canvas.getBoundingClientRect();
             const point = { x: (event.clientX - rect.left) * canvas.width / rect.width,
@@ -552,10 +772,37 @@ body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; out
         drag.moved = true;
         const delta = new DOMPoint(dx, dy, 0, 0).matrixTransform(drag.inverse);
         drag.image.style.translate = (drag.x + delta.x) + 'px ' + (drag.y + delta.y) + 'px';
+        updateResizeHandle();
         event.preventDefault();
         event.stopPropagation();
     });
     function finishDrag(event, cancelled) {
+        if (annotationDrag && annotationDrag.pointer === event.pointerId) {
+            const a = annotationDrag; annotationDrag = null;
+            const scale = a.layer.style.scale.split(' ').map(Number);
+            const translate = a.layer.style.translate.split(' ').map(parseFloat);
+            a.layer.style.translate = a.previousTranslate; a.layer.style.scale = a.previousScale;
+            a.layer.style.transformOrigin = a.previousOrigin;
+            positionAnnotationControl(a.layer, a.control, a.bounds);
+            if (!cancelled && a.moved) {
+                if (a.resizing) vscode.postMessage({ type: 'resizeAnnotation', id: Number(a.layer.dataset.sdBlock),
+                    x: scale[0], y: scale[1], originX: a.originX, originY: a.originY, slide: a.slide, revision: ${revision} });
+                else vscode.postMessage({ type: 'moveBlock', id: Number(a.layer.dataset.sdBlock),
+                    x: translate[0], y: translate[1], slide: a.slide, revision: ${revision} });
+            }
+            event.preventDefault(); event.stopPropagation(); return;
+        }
+        if (resize && resize.pointer === event.pointerId) {
+            const current = resize;
+            resize = null;
+            const width = current.image.offsetWidth, height = current.image.offsetHeight;
+            current.image.style.width = current.oldWidth; current.image.style.height = current.oldHeight;
+            current.image.style.maxWidth = current.oldMaxWidth; current.image.style.maxHeight = current.oldMaxHeight;
+            updateResizeHandle();
+            if (!cancelled && current.moved) vscode.postMessage({ type: 'resizeImage',
+                id: Number(current.image.dataset.sdImage), width, height, slide: current.slide, revision: ${revision} });
+            event.preventDefault(); event.stopPropagation(); return;
+        }
         if (drawing === event.pointerId && sketch) {
             if (!cancelled && strokes.length < 100) { strokes.push(sketch); persistSketch(); }
             else if (!cancelled) vscode.postMessage({ type: 'layoutError', text: 'Save at most 100 drawings at a time.' });
@@ -581,6 +828,8 @@ body.sd-layout-mode :is(img[data-sd-image], [data-sd-block]) { cursor: move; out
         if (layoutMode && event.target instanceof Element && event.target.closest('img[data-sd-image]')) event.preventDefault();
     });
     if (window.Reveal) {
+        document.addEventListener('sd-annotations-changed', () => { void refreshAnnotationControls(); });
+        window.addEventListener('resize', () => { void refreshAnnotationControls(); });
         if (Reveal.isReady()) navigate();
         else Reveal.on('ready', navigate);
         Reveal.on('slidechanged', () => {
