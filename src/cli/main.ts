@@ -4,20 +4,15 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import open from 'open';
-import type { Presentation } from '../language/generated/ast';
-import { HtmlGenerator } from '../generator/html-generator';
-import {createSlideDeckServices} from "../language/slide-deck-module";
-import {NodeFileSystem} from "langium/node";
-import {URI} from "vscode-uri";
 import { DevServer } from '../dev-server/server';
-import { InteractiveElementDetector } from '../generator/interactive-element-detector';
+import { CompilerService } from '../services/compiler-service';
 
 const program = new Command();
 
 program
     .name('slidedeck')
     .description('Compile SlideDeck files to reveal.js HTML presentations')
-    .version('1.0.14');
+    .version('1.0.15');
 
 program
     .command('compile')
@@ -88,49 +83,14 @@ async function compile(inputFile: string, outputFile: string): Promise<void> {
     // Read input file
     const content = fs.readFileSync(inputFile, 'utf-8');
 
-    // Create Langium services
-    const services = createSlideDeckServices(NodeFileSystem).SlideDeck;
-
-    // Parse the document
-    const document = services.shared.workspace.LangiumDocumentFactory.fromString(
-        content,
-        URI.file(path.resolve(inputFile))
-    );
-
-    // Build the document (validate and link)
-    await services.shared.workspace.DocumentBuilder.build([document], { validationChecks: 'all' });
-
-    // Check for parse errors
-    if (document.parseResult.lexerErrors.length > 0) {
-        console.error('Lexer errors:');
-        document.parseResult.lexerErrors.forEach(error => {
-            console.error(`  Line ${error.line}: ${error.message}`);
-        });
-        throw new Error('Failed to parse document');
-    }
-
-    if (document.parseResult.parserErrors.length > 0) {
-        console.error('Parser errors:');
-        document.parseResult.parserErrors.forEach(error => {
-            console.error(`  Line ${error.token.startLine}: ${error.message}`);
-        });
-        throw new Error('Failed to parse document');
-    }
-
-    // Extract AST
-    const presentation = document.parseResult.value as Presentation;
-
-    // Check for interactive elements and inform user
-    if (InteractiveElementDetector.hasInteractiveElements(presentation)) {
+    const result = await new CompilerService().compile(content, undefined, path.resolve(inputFile), undefined, path.resolve(outputFile));
+    if (result.error) throw new Error(result.error);
+    if (result.hasInteractiveElements) {
         console.log('Quiz/Poll detected - remember to start the server with: npm run quiz-server and to expose your port for participants to join.');
     }
 
-    // Generate HTML
-    const htmlGenerator = new HtmlGenerator();
-    const html = await htmlGenerator.generateHTML(presentation, path.resolve(inputFile), path.resolve(outputFile));
-
     // Write output file
-    fs.writeFileSync(outputFile, html, 'utf-8');
+    fs.writeFileSync(outputFile, result.html, 'utf-8');
 
     console.log(`✓ Generated: ${outputFile}`);
     console.log(`  Open it in your browser to view the presentation!`);

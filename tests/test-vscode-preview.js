@@ -277,6 +277,19 @@ async function main() {
     assert.strictEqual(panel.webview.html, previousHtml);
     assert.strictEqual(messages.pop().type, 'error');
 
+    const headerPath = path.relative('/tmp/slides', path.resolve(__dirname, '../examples/templates/shared-header.slidedeck'));
+    document.text = `@import ${JSON.stringify(headerPath)}\n{\n  title: "Preview override"\n}\n===\n# First\n===\n# Second`;
+    document.version++;
+    callbacks.change({ document });
+    await sleep(600);
+    assert.ok(panel.webview.html.includes('<title>Preview override</title>'));
+    assert.ok(panel.webview.html.includes('content="SlideDeck Team"'));
+    callbacks.message({ type: 'ready' });
+    messages.pop();
+    editor.selection.active.line = 7;
+    callbacks.selection({ textEditor: editor, selections: [editor.selection] });
+    assert.deepStrictEqual(messages.pop(), { type: 'slide', index: 1 });
+
     const originalCompile = CompilerService.prototype.compile;
     CompilerService.prototype.compile = async function(source, ...args) {
         if (source.includes('Slow')) await sleep(700);

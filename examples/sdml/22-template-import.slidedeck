@@ -1,0 +1,10 @@
+@import "../templates/shared-header.slidedeck"
+{
+    title: "A presentation using a shared header"
+}
+===
+# Shared style, personal title
+This presentation inherits its theme and CSS from a reusable header.
+===
+# Another slide
+Edit the shared header and recompile to update this deck.

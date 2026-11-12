@@ -214,6 +214,22 @@ visualization: barChart
         <p>In layout mode drag the visible bounds of a saved drawing or its corner to move or resize it. These are whole-image transforms, not arrow endpoint editing. Save the source file to retain changes. Undo does not delete generated SVG files. Presentation-time dragging is not supported. The preview follows the editor's current slide; double-click non-interactive slide content to return to its source.</p>
       </section>
       <section id="templates"><h2>Themes and templates</h2>
+        <h3>Share a header between presentations</h3>
+        <p>Save a header-only file named <code>shared-header.slidedeck</code> beside your deck:</p>
+        <pre><code>{
+  author: "Ada"
+  title: "Default title"
+  theme: "white"
+  css: ".reveal h1 { color: teal; }"
+}</code></pre>
+        <p>At the beginning of your presentation, import it and optionally override individual fields. These are two separate files, not a single copyable snippet:</p>
+        <pre><code>@import "shared-header.slidedeck"
+{
+  title: "My presentation"
+}
+===
+# Welcome</code></pre>
+        <p>The import path is relative to the presentation. The template must contain only a metadata header with author and title; the overrides use the usual metadata order. Asset paths in metadata are relative to the presentation. Save the deck before importing; the preview reads template changes on the next deck edit or compilation. See the <a href="https://github.com/jdeantoni/SlideDeck/blob/main/examples/sdml/22-template-import.slidedeck">working example</a>.</p>
         <p>Select a reveal.js theme through metadata. Starter decks for academic, business, conference, technical and minimal layouts are available in the <a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples/templates">template directory</a>; copy one as the basis for a presentation.</p>
         <pre data-example="theme"><code>{
   author: "Ada"

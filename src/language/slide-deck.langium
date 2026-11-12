@@ -2,8 +2,21 @@ grammar SlideDeck
 
 // A document may be empty; metadata, when present, precedes all slides.
 entry Presentation:
-    (metadata=Metadata)?
+    (template=TemplateImport (overrides=MetadataOverrides)? | metadata=Metadata)?
     (slides=SlideSection)?;
+
+// A template import can be followed by a partial metadata block of overrides.
+TemplateImport:
+    declaration=TEMPLATE_IMPORT;
+
+MetadataOverrides:
+    '{' ('author' ':' author=STRING)? ('title' ':' title=STRING)? ('theme' ':' theme=STRING)? ('logo' ':' logo=STRING)? ('css' ':' css=STRING)?
+    ('transition' ':' transition=STRING)?
+    ('chalkboard' ':' chalkboard=STRING)? ('chalkboard-theme' ':' chalkboardTheme=STRING)?
+    ('chalkboard-boardmarker-width' ':' chalkboardBoardmarkerWidth=STRING)? ('chalkboard-chalk-width' ':' chalkboardChalkWidth=STRING)?
+    ('chalkboard-chalk-effect' ':' chalkboardChalkEffect=STRING)? ('chalkboard-src' ':' chalkboardSrc=STRING)?
+    ('chalkboard-readonly' ':' chalkboardReadonly=STRING)? ('chalkboard-buttons' ':' chalkboardButtons=STRING)?
+    ('chalkboard-transition' ':' chalkboardTransition=STRING)? '}';
 
 SlideSection:
     (SLIDE_SEPARATOR)? slides+=Slide (SLIDE_SEPARATOR slides+=Slide)* (SLIDE_SEPARATOR)?;
@@ -110,6 +123,9 @@ VisualizationType returns string:
     'barChart' | 'pieChart';
 
 // Specific terminals precede the general line-text terminal below.
+terminal TEMPLATE_IMPORT returns string:
+    /@import[ \t]+"(?:\\.|[^"\\\r\n])*"/;
+
 terminal CODE_BLOCK returns string:
     /```[a-zA-Z0-9_\-]*(?:\s*\[(?:(?:highlight:\s*(?:block|function|class|line-by-line|all|none))|(?:lines:\s*["'][^"']+["'])|(?:start:\s*\d+)|\s)+\])?[\r\n]([\s\S]*?)```/;
 
@@ -151,7 +167,7 @@ terminal BOOLEAN returns boolean:
 // Exclude line prefixes and keywords reserved for other constructs. This token
 // covers an entire remaining line; comments within slide text stay as text.
 terminal PARAGRAPH_TEXT returns string:
-    /(?!(###|##|#)[ \t]+)(?![ \t]*[\-\*\+][ \t]+)(?![ \t]*[0-9]+\.[ \t]+)(?![ \t]*\/(?:\/|\*))(?!>)(?!\!\[[^\]]+\]\()(?!:::)(?!```)(?!,,,)(?!===)(?!---)(?!\[\-\-\-\])(?![\s]*\{)(?![\s]*\})(?![ \t]*!\[QR\])(?![\s]*true)(?![\s]*false)(?![\s]*author)(?![\s]*title)(?![\s]*css)(?![\s]*logo)(?![\s]*theme)(?![\s]*transition)(?![\s]*chalkboard)(?![\s]*python)(?![\s]*sql)(?![\s]*javascript)(?![\s]*output)(?![\s]*question)(?![\s]*freeText)(?![\s]*choice)(?![\s]*choices)(?![\s]*correct)(?![\s]*results)(?![\s]*showResultsOnDemand)(?![\s]*showJoinQrCode)(?![\s]*visualization)(?![\s]*maxLength)(?![\s]*barChart)(?![\s]*pieChart)(?![\s]*:)(?!")(?!\.)[^\r\n]+/;
+    /(?!@import[ \t]+")(?!(###|##|#)[ \t]+)(?![ \t]*[\-\*\+][ \t]+)(?![ \t]*[0-9]+\.[ \t]+)(?![ \t]*\/(?:\/|\*))(?!>)(?!\!\[[^\]]+\]\()(?!:::)(?!```)(?!,,,)(?!===)(?!---)(?!\[\-\-\-\])(?![\s]*\{)(?![\s]*\})(?![ \t]*!\[QR\])(?![\s]*true)(?![\s]*false)(?![\s]*author)(?![\s]*title)(?![\s]*css)(?![\s]*logo)(?![\s]*theme)(?![\s]*transition)(?![\s]*chalkboard)(?![\s]*python)(?![\s]*sql)(?![\s]*javascript)(?![\s]*output)(?![\s]*question)(?![\s]*freeText)(?![\s]*choice)(?![\s]*choices)(?![\s]*correct)(?![\s]*results)(?![\s]*showResultsOnDemand)(?![\s]*showJoinQrCode)(?![\s]*visualization)(?![\s]*maxLength)(?![\s]*barChart)(?![\s]*pieChart)(?![\s]*:)(?!")(?!\.)[^\r\n]+/;
 
 terminal STRING returns string:
     /"(?:\\.|[^"\\])*"/;

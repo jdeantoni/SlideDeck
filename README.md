@@ -94,6 +94,45 @@ npm run build
 Run the test scripts with `npm test`. This regenerates the parser and builds
 the project first; dependencies must already be installed.
 
+### Reusable presentation headers
+
+Put a metadata header in a separate file, for example `shared-header.slidedeck`:
+
+```slidedeck
+{
+  author: "Your Name"
+  title: "Default title"
+  theme: "white"
+  css: ".reveal h1 { color: teal; }"
+}
+```
+
+Import it at the very beginning of a presentation. An optional partial
+metadata block immediately after the import overrides individual values:
+
+```slidedeck
+@import "shared-header.slidedeck"
+{
+  title: "My presentation"
+}
+===
+# Welcome
+```
+
+Paths are relative to the presentation file, not the current working
+directory. The imported file must contain only one metadata header with
+`author` and `title`, not slides or another import. Overrides follow the same
+property order as normal metadata; omitted properties retain template values.
+Asset paths in metadata remain relative to the presentation, not the header.
+Save a new presentation before importing; missing or invalid templates are
+reported as errors. Template changes are read on the next compilation or deck
+edit, not watched automatically by the preview.
+
+See `examples/sdml/22-template-import.slidedeck` and
+`examples/templates/shared-header.slidedeck` for a working pair.
+Examples 08–12 also import reusable academic, business, technical, minimal
+and conference headers from their corresponding `examples/templates/` folders.
+
 ## Usage
 
 ### 1. Write Your Presentation

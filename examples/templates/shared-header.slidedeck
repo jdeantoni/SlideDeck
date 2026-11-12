@@ -1,0 +1,7 @@
+{
+    author: "SlideDeck Team"
+    title: "Shared presentation"
+    theme: "white"
+    css: ".reveal h1 { color: teal; }"
+    transition: "fade"
+}

@@ -1,9 +1,12 @@
+import { isPresentation } from '../language/generated/ast';
 import type { Presentation } from '../language/generated/ast';
 import { HtmlGenerationOptions, HtmlGenerator } from '../generator/html-generator';
 import { createSlideDeckServices } from "../language/slide-deck-module";
 import { NodeFileSystem } from "langium/node";
 import { URI } from "vscode-uri";
 import * as path from 'path';
+import * as fs from 'fs/promises';
+import { InteractiveElementDetector } from '../generator/interactive-element-detector';
 
 export interface CompilationResult {
     html: string;
@@ -15,6 +18,7 @@ export interface CompilationResult {
     hasTemplate?: boolean;
     imageMappings?: Array<{ start: number; end: number; content: string }>;
     blockMappings?: Array<{ start: number; end: number; content: string; style?: string }>;
+    hasInteractiveElements?: boolean;
 }
 
 export interface SlideMapping {
@@ -74,6 +78,48 @@ export class CompilerService {
 
             // Extract AST
             const presentation = document.parseResult.value as Presentation;
+            if (presentation.template) {
+                if (!sourceFilePath) throw new Error('Save the presentation before importing a template.');
+                const declaration = presentation.template.declaration;
+                let templateName: string;
+                try {
+                    templateName = JSON.parse(declaration.slice(declaration.indexOf('"')));
+                } catch {
+                    throw new Error('Invalid template path in @import.');
+                }
+                if (!templateName || path.isAbsolute(templateName) || templateName.includes('\0')) {
+                    throw new Error('Template path must be a non-empty path relative to the presentation.');
+                }
+                const templatePath = path.resolve(path.dirname(sourceFilePath), templateName);
+                let templateSource: string;
+                try {
+                    templateSource = await fs.readFile(templatePath, 'utf8');
+                } catch (error) {
+                    throw new Error(`Cannot read template "${templateName}": ${error instanceof Error ? error.message : String(error)}`);
+                }
+                const template = this.services.parser.LangiumParser.parse(templateSource);
+                if (template.lexerErrors.length || template.parserErrors.length) {
+                    const details = [...template.lexerErrors.map(error => `Line ${error.line}: ${error.message}`),
+                        ...template.parserErrors.map(error => `Line ${error.token.startLine}: ${error.message}`)].join('\n');
+                    throw new Error(`Invalid template "${templateName}":\n${details}`);
+                }
+                const header = template.value;
+                if (!isPresentation(header) || !header.metadata || header.template || header.slides) {
+                    throw new Error(`Template "${templateName}" must contain only a metadata header with author and title.`);
+                }
+                const overrides = presentation.overrides;
+                if (overrides) {
+                    const keys = ['author', 'title', 'theme', 'logo', 'css', 'transition', 'chalkboard',
+                        'chalkboardTheme', 'chalkboardBoardmarkerWidth', 'chalkboardChalkWidth',
+                        'chalkboardChalkEffect', 'chalkboardSrc', 'chalkboardReadonly', 'chalkboardButtons',
+                        'chalkboardTransition'] as const;
+                    for (const key of keys) {
+                        const value = overrides[key];
+                        if (value !== undefined) header.metadata[key] = value;
+                    }
+                }
+                presentation.metadata = header.metadata;
+            }
 
             // Generate HTML
             const generator = new HtmlGenerator();
@@ -90,7 +136,14 @@ export class CompilerService {
             // Determine which slide to display based on cursor position
             let slideIndex: number | undefined;
             if (cursorLine !== undefined) {
-                slideIndex = this.getSlideIndexFromLine(content, cursorLine);
+                const slides = presentation.slides?.slides || [];
+                slideIndex = 0;
+                for (let index = 0; index < slides.length; index++) {
+                    const node = slides[index].$cstNode;
+                    if (node && node.range.start.line <= cursorLine) {
+                        slideIndex = index;
+                    }
+                }
             }
 
             return {
@@ -100,7 +153,8 @@ export class CompilerService {
                 slideStartLines: (presentation.slides?.slides || []).map(slide => slide.$cstNode?.range.start.line ?? 0),
                 slideEndOffsets: (presentation.slides?.slides || []).map(slide => slide.$cstNode?.end ?? -1),
                 imageMappings: generator.getImageMappings(),
-                blockMappings: generator.getBlockMappings()
+                blockMappings: generator.getBlockMappings(),
+                hasInteractiveElements: InteractiveElementDetector.hasInteractiveElements(presentation)
             };
 
         } catch (error) {

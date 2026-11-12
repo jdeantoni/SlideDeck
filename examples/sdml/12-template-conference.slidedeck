@@ -1,68 +1,7 @@
+@import "../templates/conference/conference-header.slidedeck"
 {
     author: "Dr. Emily Chen, Dr. Robert Kumar"
     title: "Deep Learning for Medical Image Analysis"
-    theme: "white"
-    css: ".reveal h1 {
-                color: #c0392b;
-                font-weight: 700;
-                text-transform: none;
-                border-bottom: 4px solid #c0392b;
-                padding-bottom: 20px;
-            }
-            .reveal h2 {
-                color: #2c3e50;
-                font-weight: 600;
-                margin-top: 0.8em;
-            }
-            .reveal h3 {
-                color: #7f8c8d;
-                font-weight: 500;
-                font-style: italic;
-            }
-            .header-banner {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 70px;
-                background: linear-gradient(to right, #c0392b 0%, #8e44ad 100%);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                z-index: 1000;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            }
-            .header-author {
-                color: #ffffff;
-                font-size: 16px;
-                font-weight: 600;
-                margin-left: 30px;
-            }
-            .header-logo {
-                height: 50px;
-                width: auto;
-                margin-right: 30px;
-            }
-            .reveal {
-                margin-top: 70px;
-            }
-            .reveal .slides section {
-                text-align: left;
-            }
-            .reveal blockquote {
-                background: #f8f9fa;
-                border-left: 5px solid #c0392b;
-                padding: 20px;
-                font-style: italic;
-                color: #2c3e50;
-            }
-            .reveal .footer-note {
-                position: fixed;
-                bottom: 10px;
-                right: 20px;
-                font-size: 14px;
-                color: #7f8c8d;
-            }"
 }
 ===
 ::: {text-align: 'center'; padding: '40px'}

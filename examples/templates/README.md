@@ -2,6 +2,28 @@
 
 This folder contains ready-to-use presentation templates. Each template is designed for a specific use case and includes pre-styled sections that you can customize.
 
+## Import a reusable header
+
+The `academic`, `business`, `technical`, `minimal` and `conference` folders
+also contain header-only files named `<style>-header.slidedeck`. Import one
+at the beginning of a presentation, using a path relative to that presentation:
+
+```slidedeck
+@import "../templates/academic/academic-header.slidedeck"
+{
+    author: "Your Name"
+    title: "Your Presentation"
+}
+===
+# First slide
+```
+
+The optional metadata block overrides the header's defaults. Edit the
+header file to change the theme or CSS for every deck that imports it.
+Examples 08–12 in `examples/sdml/` demonstrate each header. The
+`*-template.slidedeck` files described below are complete starter decks,
+not header-only imports.
+
 ## Available Templates
 
 ### 1. Academic Template (`academic/`)

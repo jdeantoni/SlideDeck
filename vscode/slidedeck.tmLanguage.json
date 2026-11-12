@@ -46,6 +46,7 @@
     },
     "block": {
       "patterns": [
+        { "name": "keyword.control.directive.slidedeck", "match": "^\\s*@import\\b" },
         { "name": "keyword.control.separator.slidedeck", "match": "^\\s*===\\s*$" },
         { "name": "keyword.control.directive.slidedeck", "match": ":{3,4}(?:quiz|\\[sync-fragments(?:\\s+keep)?\\])?" },
         { "name": "keyword.control.list.slidedeck", "match": "^\\s*(?:[-+*]|\\d+\\.)\\s+" },

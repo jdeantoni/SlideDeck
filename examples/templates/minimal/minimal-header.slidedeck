@@ -1,0 +1,32 @@
+{
+    author: "Your Name"
+    title: "Your Presentation"
+    theme: "white"
+    css: ".reveal h1 {
+                color: #2c3e50;
+                font-weight: 300;
+                font-size: 3em;
+                margin-bottom: 0.5em;
+            }
+            .reveal h2 {
+                color: #34495e;
+                font-weight: 300;
+                font-size: 2em;
+            }
+            .reveal h3 {
+                color: #7f8c8d;
+                font-weight: 400;
+            }
+            .reveal .slides section {
+                text-align: left;
+            }
+            .reveal ul, .reveal ol {
+                margin-left: 0;
+            }
+            .reveal li {
+                margin-bottom: 0.5em;
+            }
+            .reveal p {
+                line-height: 1.6;
+            }"
+}
