@@ -6,12 +6,15 @@ const { CompilerService } = require('../out/services/compiler-service');
 
 async function main() {
     const directory = path.resolve(__dirname, '../website');
+    const workflow = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/pages.yml'), 'utf8');
+    assert.match(workflow, /npx --yes @vscode\/vsce@4\.1\.0 package --out website\/slidedeck\.vsix/);
     for (const name of ['index.html', 'guide.html', 'features.html']) {
         const html = fs.readFileSync(path.join(directory, name), 'utf8');
         assert.match(html, /<html lang="en">/);
         assert.match(html, /name="viewport"/);
         for (const [, href] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
             if (/^(?:https?:|mailto:)/.test(href)) continue;
+            if (href === 'slidedeck.vsix') continue;
             const [file, fragment] = href.split('#');
             const target = file ? path.join(directory, file) : path.join(directory, name);
             assert.ok(fs.existsSync(target), `${name}: missing ${href}`);
@@ -22,6 +25,15 @@ async function main() {
     }
 
     const guide = fs.readFileSync(path.join(directory, 'guide.html'), 'utf8');
+    const landing = fs.readFileSync(path.join(directory, 'index.html'), 'utf8');
+    assert.match(landing, /href="slidedeck\.vsix" download/);
+    assert.match(guide, /href="slidedeck\.vsix" download/);
+    const sections = ['install', 'write', 'preview', 'compile', 'present', 'source'];
+    const positions = sections.map(id => guide.indexOf(`<section id="${id}">`));
+    assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])));
+    for (const command of ['SlideDeck: Open Preview to the Side', 'SlideDeck: Generate HTML', 'SlideDeck: Start Presentation']) {
+        assert.ok(guide.includes(command), `Missing command: ${command}`);
+    }
     const example = guide.match(/<pre><code>(\{\n  author:[\s\S]*?)<\/code><\/pre>/);
     assert.ok(example, 'Missing presentation example');
     const result = await new CompilerService().compile(example[1]);

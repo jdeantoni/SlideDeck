@@ -59,7 +59,11 @@ We selected **reveal.js** as our target framework and **Langium** as our DSL imp
 The static landing page, getting-started guide and copyable feature examples
 live in `website/`. Open
 `website/index.html` locally to preview them. The Pages workflow deploys this
-directory on pushes to `main` and can also be started manually. To enable it,
+directory on pushes to `main` and can also be started manually. It builds the
+VS Code extension and includes `slidedeck.vsix` in the deployed site. For a
+local preview of the download link, first build the project, then run
+`npx --yes @vscode/vsce@4.1.0 package --out website/slidedeck.vsix` (Node.js
+22 is used in the workflow). To enable deployment,
 set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
 The expected project URL is `https://jdeantoni.github.io/SlideDeck/` once the
 workflow has run successfully. Links to the full documentation and examples

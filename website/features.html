@@ -113,14 +113,14 @@ Positioned and rotated
 :::</code></pre>
       </section>
       <section id="media"><h2>Images and video</h2>
-        <p>Run this from the repository root with <code>talk.slidedeck</code> there: the image path points to an image included in the repository. Replace it with your own relative path or URL.</p>
+        <p>For this example, put <code>talk.slidedeck</code> in the repository root: the image path points to an image included in the repository. If you installed the extension without cloning the repository, replace the path with your own image or URL.</p>
         <pre data-example="image"><code># An image
 ![Logo](examples/templates/template2/assets/image_logo.png){offset: '20px 10px'}{size: '250px 100px'}</code></pre>
         <p>Image dimensions and offsets are in slide pixels. Images are embedded during compilation. For local video, use the same syntax with a video file; the compiler copies it into an assets folder beside the HTML.</p>
         <pre data-example="video"><code># A YouTube video
 ![Video](https://www.youtube.com/watch?v=dQw4w9WgXcQ)</code></pre>
         <p>YouTube playback requires a network connection and permission from the video provider.</p>
-        <p>This local-video example also assumes the source file is in the repository root. Replace the path with your own video if needed.</p>
+        <p>This local-video example also assumes the source file is in the repository root. If you installed the extension without cloning the repository, replace the path with your own video.</p>
         <pre data-example="local-video"><code># A local video
 ![Demo](examples/sdml/final-pres-assets/Exemple_preview.mp4)</code></pre>
       </section>

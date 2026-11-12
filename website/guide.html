@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Get started with SlideDeck, from installation to your first presentation.">
+  <meta name="description" content="Install the SlideDeck VS Code extension and create your first presentation.">
   <title>Getting started — SlideDeck</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -15,19 +15,18 @@
     </nav>
   </header>
   <main class="guide-layout wrap">
-    <aside class="guide-sidebar"><p class="eyebrow">ON THIS PAGE</p><nav aria-label="Guide sections"><a href="#install">Installation</a><a href="#write">Write a presentation</a><a href="#compile">Generate HTML</a><a href="#preview">Live preview</a><a href="#learn">Learn more</a></nav></aside>
+    <aside class="guide-sidebar"><p class="eyebrow">ON THIS PAGE</p><nav aria-label="Guide sections"><a href="#install">Install in VS Code</a><a href="#write">Write your slides</a><a href="#preview">Open the preview</a><a href="#compile">Generate HTML</a><a href="#present">Start presenting</a><a href="#source">From source and CLI</a><a href="#learn">Learn more</a></nav></aside>
     <article class="guide">
       <p class="eyebrow">DOCUMENTATION / GETTING STARTED</p>
       <h1>Your first <em>SlideDeck.</em></h1>
-      <p class="lead">From an idea to an HTML presentation, one step at a time.</p>
-      <section id="install"><span class="step">01</span><h2>Install from source</h2><p>You'll need Node.js 16 or newer, npm and Git. Clone the repository, install its dependencies, generate the parser, and build:</p>
-        <pre><code>git clone https://github.com/jdeantoni/SlideDeck.git
-cd SlideDeck
-npm install
-npm run langium:generate
-npm run build</code></pre>
+      <p class="lead">Install the VS Code extension, write your slides, and present them.</p>
+      <section id="install"><span class="step">01 / VS CODE</span><h2>Install the extension</h2>
+        <p>Use desktop VS Code 1.67 or newer. Download the extension, then install the VSIX in VS Code:</p>
+        <p><a class="button primary" href="slidedeck.vsix" download>Download the VS Code extension <span aria-hidden="true">↓</span></a></p>
+        <ol><li>Open the Command Palette (<strong>Ctrl+Shift+P</strong>, or <strong>Cmd+Shift+P</strong> on macOS).</li><li>Choose <strong>Extensions: Install from VSIX…</strong> and select the downloaded <code>slidedeck.vsix</code>.</li><li>Reload VS Code if prompted. Open a trusted workspace to use the preview.</li></ol>
+        <p>The extension recognizes <code>.slidedeck</code> and legacy <code>.sdml</code> files. If you have the old <code>slidedeckml.slidedeckml</code> extension, uninstall it to avoid conflicting file associations.</p>
       </section>
-      <section id="write"><span class="step">02</span><h2>Write your slides</h2><p>Create a file named <code>talk.slidedeck</code>. Separate slides with <code>===</code>:</p>
+      <section id="write"><span class="step">02 / WRITE</span><h2>Write your slides</h2><p>Create and save a file named <code>talk.slidedeck</code> anywhere in your workspace. Separate slides with <code>===</code>:</p>
         <pre><code>{
   author: "Your Name"
   title: "My Presentation"
@@ -39,14 +38,34 @@ Your first slide.
 ## What's next?
 - Write in **bold** and *italic*
 - Share your ideas</code></pre>
-        <p>Existing <code>.sdml</code> files are supported too.</p>
+        <p>The editor provides syntax highlighting, diagnostics, completion and snippets: type <code>sdml-</code> to explore them.</p>
       </section>
-      <section id="compile"><span class="step">03</span><h2>Generate your presentation</h2><p>Run the compiler and open the resulting HTML in a browser:</p>
-        <pre><code>node out/cli/main.js compile talk.slidedeck -o talk.html</code></pre>
-        <p>Generated presentations load reveal.js and other libraries from CDNs, so internet access may be required.</p>
+      <section id="preview"><span class="step">03 / PREVIEW</span><h2>See your slides as you edit</h2>
+        <p>With the SlideDeck file active, click <strong>Open Preview to the Side</strong> in the editor title bar, or run <strong>SlideDeck: Open Preview to the Side</strong> from the Command Palette. The preview follows unsaved edits and the editor cursor. Double-click non-interactive content on a slide to return to its source.</p>
+        <p>Use <strong>Edit layout</strong> to move images or styled blocks and resize images; use <strong>Draw</strong> and <strong>Save fragments</strong> to create saved annotation fragments. Save the source file to retain changes. See <a href="features.html#drawing">drawing and layout examples</a> for limitations.</p>
+        <p>The preview is disabled in untrusted workspaces and loads reveal.js and other libraries from the internet. It shows an error when the current source cannot be compiled.</p>
       </section>
-      <section id="preview"><span class="step">04</span><h2>Preview as you work</h2><p>Start the browser editor and live preview:</p><pre><code>npm run dev talk.slidedeck</code></pre><p>Or use the VS Code extension to edit and preview side by side. Install a packaged extension or launch it from source with <strong>F5</strong>, then run <strong>SlideDeck: Open Preview to the Side</strong>. See the <a href="https://github.com/jdeantoni/SlideDeck#vs-code-native-editor-and-preview">VS Code instructions</a> for details.</p></section>
-      <section id="learn"><span class="step">05</span><h2>Keep exploring</h2><p>Discover styled blocks, fragments, notes, drawings and interactive editors in the full documentation.</p><div class="guide-links"><a href="features.html">Try feature examples <span>→</span></a><a href="https://github.com/jdeantoni/SlideDeck#usage">Read the full README <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/blob/main/GUIDE_UTILISATEUR.md">User guide <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples">Browse examples <span>↗</span></a></div></section>
+      <section id="compile"><span class="step">04 / GENERATE</span><h2>Generate HTML</h2>
+        <p>Click <strong>Generate HTML</strong> in the editor title bar, or run <strong>SlideDeck: Generate HTML</strong>. Choose where to save the HTML; the current editor contents, including unsaved edits, are used. Save a new source file first so relative assets can be resolved. Local videos are copied into an assets folder beside the HTML.</p>
+        <p>Open the generated file in a browser. It loads reveal.js and other libraries from CDNs, so internet access may be required.</p>
+      </section>
+      <section id="present"><span class="step">05 / PRESENT</span><h2>Start your presentation</h2>
+        <p>Click <strong>Start Presentation</strong> in the editor title bar, or run <strong>SlideDeck: Start Presentation</strong>. SlideDeck generates HTML beside the source and opens a new Firefox window. If the HTML already exists, you will be asked before it is overwritten.</p>
+        <p>Choose another browser with the VS Code setting <code>slidedeck.browserExecutable</code>; adjust <code>slidedeck.browserArguments</code> if needed. Starting a browser requires a local VS Code extension host. In a remote workspace, generate the HTML and open it locally.</p>
+      </section>
+      <section id="source"><span class="step">ALTERNATIVE</span><h2>Build from source and use the CLI</h2>
+        <p>To develop SlideDeck or use the command line instead, install Node.js 16 or newer, npm and Git, then clone and build:</p>
+        <pre><code>git clone https://github.com/jdeantoni/SlideDeck.git
+cd SlideDeck
+npm install
+npm run langium:generate
+npm run build</code></pre>
+        <p>Compile a file to HTML or start the separate browser editor and live preview:</p>
+        <pre><code>node out/cli/main.js compile talk.slidedeck -o talk.html
+npm run dev talk.slidedeck</code></pre>
+        <p>To run the extension from source, open the repository in VS Code and press <strong>F5</strong> to launch an extension host. See the <a href="https://github.com/jdeantoni/SlideDeck#usage">README</a> for more options.</p>
+      </section>
+      <section id="learn"><span class="step">NEXT</span><h2>Keep exploring</h2><p>Discover styled blocks, fragments, notes and interactive editors.</p><div class="guide-links"><a href="features.html">Try feature examples <span>→</span></a><a href="https://github.com/jdeantoni/SlideDeck#usage">Read the full README <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/blob/main/GUIDE_UTILISATEUR.md">User guide <span>↗</span></a><a href="https://github.com/jdeantoni/SlideDeck/tree/main/examples">Browse examples <span>↗</span></a></div></section>
     </article>
   </main>
   <footer class="footer wrap"><span>SlideDeck <span class="footer-dot">●</span> Made for sharing ideas.</span><a href="https://github.com/jdeantoni/SlideDeck">GitHub ↗</a></footer>
