@@ -555,14 +555,18 @@ invalides reste affichée sous forme de texte.
 
 ### Symbole : `:::`
 
-Les délimiteurs `:::` permettent d'appliquer des styles CSS personnalisés à n'importe quel contenu.
+Les blocs `:::` se terminent par `::: end` et peuvent être imbriqués sans limite
+fixe. L'ouverture `::::` conserve le comportement de colonnes (flex par défaut).
+Pour migrer un ancien fichier, remplacez les fermetures `:::` et `::::` des
+blocs stylisés et des fragments animés par `::: end` ; les quiz et les
+fragments synchronisés conservent leurs délimiteurs.
 
 ### Syntaxe
 
 ```sdml
 ::: {propriété: 'valeur', propriété: 'valeur'}
 Contenu stylisé
-:::
+::: end
 ```
 
 ### Propriétés CSS courantes
@@ -587,7 +591,7 @@ Contenu stylisé
 ```sdml
 ::: {color: '#2c3e50', text-align: 'center'}
 # Titre centré en bleu foncé
-:::
+::: end
 ```
 
 #### Encadré avec fond
@@ -595,7 +599,7 @@ Contenu stylisé
 ```sdml
 ::: {background-color: '#f39c12', padding: '15px', border-radius: '8px'}
 Ceci est un paragraphe important avec un fond orange et des coins arrondis
-:::
+::: end
 ```
 
 #### Liste stylisée
@@ -605,7 +609,7 @@ Ceci est un paragraphe important avec un fond orange et des coins arrondis
 - Élément rouge
 - Deuxième élément
 - Troisième élément
-:::
+::: end
 ```
 
 #### Image stylisée
@@ -613,7 +617,7 @@ Ceci est un paragraphe important avec un fond orange et des coins arrondis
 ```sdml
 ::: {width: '50%', border: '3px solid #9b59b6', border-radius: '10px'}
 ![Image avec bordure](https://via.placeholder.com/600x400)
-:::
+::: end
 ```
 
 #### Citation avec style personnalisé
@@ -623,22 +627,22 @@ Ceci est un paragraphe important avec un fond orange et des coins arrondis
 ```sdml
 ::: {background: '#ecf0f1', border-left: '4px solid #3498db', padding: '15px', font-style: 'italic'}
 > Citation importante avec bordure bleue à gauche
-:::
+::: end
 ```sdml
 ```
 ===
 ::: {text-align: 'center', color: '#8e44ad', border-bottom: '3px solid #8e44ad', padding-bottom: '10px'}
 ## Titre avec bordure inférieure
-:::
+::: end
 
 ::: {background-color: '#f8f9fa', padding: '20px', border-radius: '10px', margin: '20px 0'}
 Paragraphe dans un encadré gris clair avec coins arrondis
-:::
+::: end
 
 ::: {display: 'grid', grid-template-columns: '1fr 1fr', gap: '20px'}
 ![Image 1](https://via.placeholder.com/300)
 ![Image 2](https://via.placeholder.com/300)
-:::
+::: end
 ````
 
 ---
@@ -692,7 +696,7 @@ Si vous voulez ajouter un élément qui apparaît sur chaque slide (logo, pied d
 ===
 ::: {position: 'fixed'; bottom: '20px'; right: '20px'; font-size: '14px'; color: '#666'}
 © 2026 - Mon Entreprise
-:::
+::: end
 
 # Ma première slide
 
@@ -701,7 +705,7 @@ Contenu...
 ===
 ::: {position: 'fixed'; bottom: '20px'; right: '20px'; font-size: '14px'; color: '#666'}
 © 2026 - Mon Entreprise
-:::
+::: end
 
 # Ma deuxième slide
 
@@ -750,7 +754,7 @@ x = 10
 Output: 10
 :::[sync-fragments]
 
-:::
+::: end
 ```
 ````
 
@@ -784,7 +788,7 @@ x = 10
 Output: 10
 :::[sync-fragments]
 
-:::
+::: end
 ```
 ````
 
@@ -818,7 +822,7 @@ save(img)
 ![Sauvegardée](img4.jpg)
 :::[sync-fragments]
 
-:::
+::: end
 ```
 ````
 
@@ -865,11 +869,11 @@ plt.title('Sinus Function')
 plt.show()
 ```
 output : "python-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 200}
 output : "python-output"
-:::
+::: end
 ```
 ````
 

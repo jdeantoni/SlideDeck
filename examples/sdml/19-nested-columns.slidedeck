@@ -15,14 +15,14 @@ Reveal.js column layout with `::::` delimiter
 ### Left Side
 - Point one
 - Point two
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Right Side
 - Point three
 - Point four
-:::
-::::
+::: end
+::: end
 
 ===
 # Three Nested Columns
@@ -31,18 +31,18 @@ Reveal.js column layout with `::::` delimiter
 ::: {.column; width: '33%'}
 ### First
 Content in first column
-:::
+::: end
 
 ::: {.column; width: '33%'}
 ### Second
 Content in second column
-:::
+::: end
 
 ::: {.column; width: '34%'}
 ### Third
 Content in third column
-:::
-::::
+::: end
+::: end
 
 ===
 # Colonnes sans attributs (optionnel)
@@ -51,18 +51,18 @@ Content in third column
 :::
 ### Column 1
 Les attributs de style sont optionnels !
-:::
+::: end
 
 :::
 ### Column 2
 Colonnes automatiques de taille égale
-:::
+::: end
 
 :::
 ### Column 3
 Syntaxe plus courte et plus simple
-:::
-::::
+::: end
+::: end
 
 ===
 # Sans .columns (display: flex automatique)
@@ -71,13 +71,13 @@ Syntaxe plus courte et plus simple
 :::
 ### Column A
 Pas besoin de .columns !
-:::
+::: end
 
 :::
 ### Column B
 display: flex est ajouté automatiquement
-:::
-::::
+::: end
+::: end
 
 ===
 # Columns with Different Widths
@@ -86,13 +86,13 @@ display: flex est ajouté automatiquement
 ::: {.column; width: '40%'}
 ### Narrow Column (40%)
 This column takes less space
-:::
+::: end
 
 ::: {.column; width: '60%'}
 ### Wide Column (60%)
 This column takes more space and has more content to display
-:::
-::::
+::: end
+::: end
 
 ===
 # Columns with Images
@@ -106,12 +106,12 @@ Key features:
 - Feature A
 - Feature B
 - Feature C
-:::
+::: end
 
 ::: {.column; width: '60%'}
 ![Product](https://placehold.co/500x300/3498db/white?text=Product+Image)
-:::
-::::
+::: end
+::: end
 
 ===
 # Mixed Content Columns
@@ -127,7 +127,7 @@ function greet(name) {
 
 console.log(greet("World"));
 ```
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Output
@@ -136,8 +136,8 @@ When you run this code, you'll see:
 > Hello, World!
 
 Simple and elegant!
-:::
-::::
+::: end
+::: end
 
 ===
 # Styled Columns Container
@@ -146,13 +146,13 @@ Simple and elegant!
 ::: {.column; width: '50%'}
 ### Styled Left
 Container has background
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Styled Right
 And padding applied
-:::
-::::
+::: end
+::: end
 
 ===
 # Columns with Individual Styles
@@ -161,13 +161,13 @@ And padding applied
 ::: {.column; width: '50%'; background: '#3498db'; color: 'white'; padding: '20px'; border-radius: '8px'}
 ### Blue Column
 This column has its own background
-:::
+::: end
 
 ::: {.column; width: '50%'; background: '#e74c3c'; color: 'white'; padding: '20px'; border-radius: '8px'}
 ### Red Column
 This one has a different color
-:::
-::::
+::: end
+::: end
 
 ===
 # Columns with Transform
@@ -176,13 +176,13 @@ This one has a different color
 ::: {.column; width: '50%'}
 ### Column A
 The entire container is rotated!
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Column B
 Both columns together
-:::
-::::
+::: end
+::: end
 
 ===
 # Four Nested Columns
@@ -191,23 +191,23 @@ Both columns together
 ::: {.column; width: '25%'; text-align: 'center'}
 ### A
 First
-:::
+::: end
 
 ::: {.column; width: '25%'; text-align: 'center'}
 ### B
 Second
-:::
+::: end
 
 ::: {.column; width: '25%'; text-align: 'center'}
 ### C
 Third
-:::
+::: end
 
 ::: {.column; width: '25%'; text-align: 'center'}
 ### D
 Fourth
-:::
-::::
+::: end
+::: end
 
 ===
 # Asymmetric Columns
@@ -218,15 +218,15 @@ Fourth
 This column takes up most of the space and contains the primary information.
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-:::
+::: end
 
 ::: {.column; width: '30%'}
 ### Sidebar
 - Note 1
 - Note 2
 - Note 3
-:::
-::::
+::: end
+::: end
 
 ===
 # Columns with Lists
@@ -238,7 +238,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 - Feature B
 - Feature C
 - Feature D
-:::
+::: end
 
 ::: {.column; width: '33%'}
 ### Benefits
@@ -246,15 +246,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 - Benefit 2
 - Benefit 3
 - Benefit 4
-:::
+::: end
 
 ::: {.column; width: '34%'}
 ### Pricing
 - Plan 1: $10
 - Plan 2: $20
 - Plan 3: $30
-:::
-::::
+::: end
+::: end
 
 ===
 # Columns with Quotes
@@ -263,12 +263,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 ::: {.column; width: '60%'}
 ### The Concept
 Innovation is at the heart of our mission. We strive to create solutions that make a difference.
-:::
+::: end
 
 ::: {.column; width: '40%'}
 > Innovation distinguishes between a leader and a follower.
-:::
-::::
+::: end
+::: end
 
 ===
 # Complex Nested Example
@@ -281,7 +281,7 @@ This demonstrates:
 - Gradient background
 - Custom styling
 - Full abstraction support
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Right Side
@@ -290,8 +290,8 @@ All features work together:
 2. Inline styles
 3. Background gradients
 4. Border radius
-:::
-::::
+::: end
+::: end
 
 ===
 # Columns + All Abstractions
@@ -303,13 +303,13 @@ Container has:
 - Rotation (-1deg)
 - Scale (1.05)
 - Transparency (10%)
-:::
+::: end
 
 ::: {.column; width: '50%'; padding-left: '20px'}
 ### Full Power
 This showcases the complete abstraction system working with Reveal.js columns!
-:::
-::::
+::: end
+::: end
 
 ===
 # Practical Use Case: Before/After
@@ -321,7 +321,7 @@ This showcases the complete abstraction system working with Reveal.js columns!
 - Complex CSS
 - Hard to read
 - Error-prone
-:::
+::: end
 
 ::: {.column; width: '50%'; background: '#2ecc71'; color: 'white'; padding: '20px'}
 ### After
@@ -329,8 +329,8 @@ This showcases the complete abstraction system working with Reveal.js columns!
 - Clean syntax
 - Easy to understand
 - Maintainable
-:::
-::::
+::: end
+::: end
 
 ===
 # End

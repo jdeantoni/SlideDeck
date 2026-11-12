@@ -72,7 +72,7 @@ async function main() {
         '',
         '::: {.block; color: \'blue\'}',
         '[Block content]{.inner}',
-        ':::',
+        '::: end',
         '',
         ':::[sync-fragments]',
         '[Synchronized]{.note}',

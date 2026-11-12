@@ -175,8 +175,21 @@ This is [important]{.highlight; font-size: '20px'; color: 'red'}.
 
 Classes must be defined in your presentation's CSS. Inline spans also work in
 headings, paragraphs, lists, and quotes; they can contain bold and italic text.
-Escape literal span delimiters with `\[` and `\]`. The existing `::: {…}`
-syntax remains available for styling entire blocks.
+Escape literal span delimiters with `\[` and `\]`. Use `::: {…}` and
+`::: end` to style a block. Blocks and animated fragments can be nested:
+
+```sdml
+::: {color: 'teal'}
+Outer content
+::: {font-size: '0.8em'}
+Inner content
+::: end
+::: end
+```
+
+**Migration:** replace the closing `:::` or `::::` of each styled or
+animated block with `::: end`. Quiz and synchronized-fragment delimiters
+are unchanged. A `::::` opening retains its column-layout defaults.
 
 For a native browser hover note, add a quoted `note` attribute:
 
@@ -423,7 +436,7 @@ as slide-pixel dimensions in the image source, for example
 `![Logo](img/logo.png){size: '400px 200px'}`. Resizing can change surrounding
 layout; use Undo to restore the previous dimensions.
 
-**Edit layout** also moves styled blocks (`::: {…} … :::`) as a unit,
+**Edit layout** also moves styled blocks (`::: {…} … ::: end`) as a unit,
 including their headings, text, lists and images. Drag the block's content;
 Shift-drag an image to move its surrounding block rather than the image.
 The offset is stored as a `translate` style on the block and its original

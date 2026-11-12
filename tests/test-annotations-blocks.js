@@ -23,21 +23,21 @@ async function main() {
         assert.ok(svg.includes(`stroke="${stroke.color}"`));
     }
 
-    const source = "::: {.box; color: 'red'}\n# Title\nText\n:::";
+    const source = "::: {.box; color: 'red'}\n# Title\nText\n::: end";
     const moved = withBlockOffset(source, "{.box; color: 'red'}", { x: 25, y: -8.5 });
     assert.ok(moved.startsWith("::: {.box; color: 'red'; translate: '25px -8.5px'}"));
     assert.deepStrictEqual(getBlockOffset("{.box; color: 'red'; translate: '25px -8.5px'}"), { x: 25, y: -8.5 });
     assert.strictEqual(getBlockOffset("{translate: '50% 1px'}"), undefined);
     const movedAgain = withBlockOffset(moved, "{.box; color: 'red'; translate: '25px -8.5px'}", { x: 2, y: 3 });
     assert.strictEqual((movedAgain.match(/translate:/g) || []).length, 1);
-    assert.ok(withBlockOffset(':::\nText\n:::', undefined, { x: 2, y: 3 }).startsWith("::: {translate: '2px 3px'}"));
-    const annotation = '::: {.sd-annotation-layer}\n![Annotation](./annotation.svg)\n:::';
+    assert.ok(withBlockOffset(':::\nText\n::: end', undefined, { x: 2, y: 3 }).startsWith("::: {translate: '2px 3px'}"));
+    const annotation = '::: {.sd-annotation-layer}\n![Annotation](./annotation.svg)\n::: end';
     const scaled = withAnnotationScale(annotation, '{.sd-annotation-layer}', { x: 1.5, y: 2, originX: 98, originY: 118 });
     assert.ok(scaled.includes("--sd-annotation-scale-x: '1.5'; --sd-annotation-scale-y: '2'; transform-origin: '98px 118px'"));
     const movedAnnotation = withBlockOffset(scaled, "{.sd-annotation-layer; --sd-annotation-scale-x: '1.5'; --sd-annotation-scale-y: '2'; transform-origin: '98px 118px'}", { x: 10, y: -3 });
     assert.ok(movedAnnotation.includes("translate: '10px -3px'"));
     const commaStyle = "{.sd-annotation-layer, color: 'red', --sd-annotation-scale-x: '1', --sd-annotation-scale-y: '1', transform-origin: '0px 0px', translate: '10px -3px'}";
-    const resizedAgain = withAnnotationScale(`::: ${commaStyle}\nText\n:::`, commaStyle, { x: 2, y: 3, originX: 98, originY: 118 });
+    const resizedAgain = withAnnotationScale(`::: ${commaStyle}\nText\n::: end`, commaStyle, { x: 2, y: 3, originX: 98, originY: 118 });
     assert.ok(resizedAgain.includes("color: 'red'"));
     assert.ok(resizedAgain.includes("translate: '10px -3px'"));
     assert.strictEqual((resizedAgain.match(/--sd-annotation-scale-x:/g) || []).length, 1);
@@ -47,7 +47,7 @@ async function main() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slidedeck-annotation-'));
     try {
         fs.writeFileSync(path.join(dir, 'annotation.svg'), annotationSvg(strokes[0], 960, 700));
-        const fragment = `::: {animate: "fade-in"}\n${movedAnnotation}\n:::`;
+        const fragment = `::: {animate: "fade-in"}\n${movedAnnotation}\n::: end`;
         const document = `${moved}\n${fragment}\n${fragment}\n===\n# Next slide`;
         const compiler = new CompilerService();
         const preview = await compiler.compile(document, undefined, path.join(dir, 'slides.slidedeck'), { previewImagePositions: true });

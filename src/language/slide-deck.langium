@@ -53,15 +53,15 @@ SyncFragments:
 FragmentItem:
     text=PARAGRAPH_TEXT | media=MEDIA_LINE;
 
-// Fragments and styled blocks use :::; :::: allows an additional nesting level.
+// Blocks end explicitly, allowing arbitrary nesting. :::: retains column defaults.
 FragmentElement:
-    STYLE_DELIMITER fragment=FRAGMENT_ATTRS elements+=(FragmentElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_DELIMITER;
+    STYLE_DELIMITER fragment=FRAGMENT_ATTRS elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
 
 NestedStyledElement:
-    NESTED_STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ NESTED_STYLE_DELIMITER;
+    NESTED_STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
 
 StyledElement:
-    STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_DELIMITER;
+    STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
 
 // Indentation is recovered from source positions by the generator for nested lists.
 List:
@@ -150,6 +150,8 @@ terminal STYLE_ATTRS returns string:
 
 terminal IDE_START: /,,,ide/;
 terminal IDE_DELIMITER: /,,,/;
+
+terminal STYLE_END: /:::[ \t]+end\b/;
 
 terminal NESTED_STYLE_DELIMITER: /::::/;
 

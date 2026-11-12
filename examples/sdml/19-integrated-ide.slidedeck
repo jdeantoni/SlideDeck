@@ -22,15 +22,15 @@ def fibonacci(n):
 print(fibonacci(5))    
 ```
 output : "python-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 0, vertical-margin: 420}
 output : "python-output"
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 570, vertical-margin: 100}
 ### Python editor with output at bottom for small exemples
-:::
+::: end
 
 ===
 
@@ -54,11 +54,11 @@ plt.grid(True, alpha=0.3)
 plt.show()
 ```
  output : "python-output-2",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 200}
 output : "python-output-2"
-:::
+::: end
 
 ===
 
@@ -79,11 +79,11 @@ for (let i = 0; i < 5; i++) {
 }
 ```
 output : "javascript-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: -50, vertical-margin: 500}
 output : "javascript-output"
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 130}
 ,,,ide sql 
@@ -93,11 +93,11 @@ INSERT INTO users (id, name) VALUES (1, 'Alice');
 SELECT * FROM users;
 ```
 output : "sql-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 500}
 output : "sql-output"
-:::
+::: end
 
 ===
 

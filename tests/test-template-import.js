@@ -13,7 +13,7 @@ async function main() {
     const output = path.join(dir, 'talk.html');
     try {
         fs.writeFileSync(template, '{\nauthor: "Template author"\ntitle: "Default title"\ntheme: "white"\ncss: ".reveal h1 { color: teal; }"\ntransition: "fade"\n}');
-        const source = '@import "header.sdml"\n{\n  title: "My title"\n}\n===\n# First\n===\n::: {color: red}\nSecond\n:::';
+        const source = '@import "header.sdml"\n{\n  title: "My title"\n}\n===\n# First\n===\n::: {color: red}\nSecond\n::: end';
         fs.writeFileSync(deckPath, source);
         const compiler = new CompilerService();
         let result = await compiler.compile(source, 7, deckPath, { previewImagePositions: true });

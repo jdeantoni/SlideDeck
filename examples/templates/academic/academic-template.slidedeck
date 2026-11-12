@@ -86,7 +86,7 @@ Your content here
 
 ::: {background: '#f8f9fa'; padding: '20px'; border-radius: '10px'}
 > Important note or quote
-:::
+::: end
 
 ===
 # Conclusion
@@ -106,4 +106,4 @@ Your content here
 [Your Contact Information]
 
 [Email/Website]
-:::
+::: end

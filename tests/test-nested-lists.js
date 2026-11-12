@@ -23,12 +23,12 @@ async function main() {
         '::: {.example}',
         '- Styled root',
         '  - Styled child',
-        ':::',
+        '::: end',
         '',
         '::: {animate: "fade-in"}',
         '- Fragment root',
         '\t- Tab child',
-        ':::'
+        '::: end'
     ].join('\n');
 
     const normalize = html => html.replace(/\s*\r?\n\s*/g, '').replace(/>\s+</g, '><');

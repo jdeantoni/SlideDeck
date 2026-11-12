@@ -21,12 +21,12 @@ Visit our GitHub repository:
 
 ::: {calque: 1, vertical-margin: 0}
 ## Multiple QR Code with positioning
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 200, vertical-margin: 200}
 ![QR] "https://github.com/RoxaneBacon/sse-dsl-SlideDeckML"
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 600, vertical-margin: 200}
 ![QR] "https://github.com/RoxaneBacon/sse-dsl-SlideDeckML"
-:::
+::: end

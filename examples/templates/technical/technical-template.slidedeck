@@ -83,7 +83,7 @@ Brief description of the technical problem
 - Issue 1: Description
 - Issue 2: Description
 - Issue 3: Description
-:::
+::: end
 
 ===
 # Architecture
@@ -104,7 +104,7 @@ Brief description of the technical problem
 - Infrastructure
 - Tools
 
-:::
+::: end
 
 ===
 # Implementation
@@ -136,16 +136,16 @@ class Example {
 - Fast execution
 - Low latency
 - Optimized queries
-:::
+::: end
 
 ::: {background: '#282c34'; padding: '20px'; border-radius: '10px'}
 ### Scalability
 - Horizontal scaling
 - Load balancing
 - Auto-scaling
-:::
+::: end
 
-:::
+::: end
 
 ===
 # Best Practices
@@ -167,4 +167,4 @@ class Example {
 [GitHub/Repository Link]
 
 [Email/Contact]
-:::
+::: end

@@ -10,11 +10,11 @@
 ===
 ::: {text-align: 'center'; color: '#3498db'; font-size: '48px'; font-weight: 'bold'}
 # SlideDeckML
-:::
+::: end
 
 ::: {text-align: 'center'; font-size: '24px'; color: '#95a5a6'}
 Complete Feature Demonstration
-:::
+::: end
 
 ===
 # Table of Contents
@@ -37,7 +37,7 @@ Complete Feature Demonstration
 ===
 ::: {background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 1: Simple Markdown
-:::
+::: end
 
 ===
 # Headers
@@ -80,7 +80,7 @@ Ordered:
 ===
 ::: {background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 2: Code Highlighting
-:::
+::: end
 
 ===
 # Mode: all
@@ -166,7 +166,7 @@ def process():
 ===
 ::: {background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 3: Synchronized Fragments
-:::
+::: end
 
 ===
 # Sync: line-by-line (replace)
@@ -190,7 +190,7 @@ x = 10
 Output: 10
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync: line-by-line (keep)
@@ -214,7 +214,7 @@ count = 30
 Output: 30
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync: with images
@@ -235,7 +235,7 @@ result = analyze(cleaned)
 ![Results](https://placehold.co/400x200/e74c3c/white?text=Results)
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync: mixed content
@@ -259,12 +259,12 @@ Updated: role="Admin"
 ![User](https://placehold.co/300x150/9b59b6/white?text=User+Object)
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 ::: {background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'; padding: '40px'; border-radius: '15px'; color: '#2c3e50'; text-align: 'center'}
 ## Part 4: LaTeX
-:::
+::: end
 
 ===
 # LaTeX Equations
@@ -310,29 +310,29 @@ cx + dy
 ===
 ::: {background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 5: Styling
-:::
+::: end
 
 ===
 # Text Styling
 
 ::: {color: '#e74c3c'; font-size: '28px'; font-weight: 'bold'}
 Styled text with color and size
-:::
+::: end
 
 ::: {background: '#3498db'; color: 'white'; padding: '20px'; border-radius: '10px'}
 Box with background and padding
-:::
+::: end
 
 ===
 # Border Styles
 
 ::: {border: '3px solid #2ecc71'; padding: '15px'; border-radius: '8px'}
 Content with border
-:::
+::: end
 
 ::: {border-left: '6px solid #f39c12'; padding-left: '20px'; background: '#ecf0f1'}
 Left accent border
-:::
+::: end
 
 ===
 # Styled Multiple Elements
@@ -346,41 +346,41 @@ This is styled content
 - Item two
 
 ![Styled Image](https://placehold.co/300x200/34495e/ecf0f1?text=Dark)
-:::
+::: end
 
 ===
 ::: {background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 6: Style Abstractions
-:::
+::: end
 
 ===
 # Transform: Rotate
 
 ::: {rotate: 15; background: '#3498db'; color: 'white'; padding: '20px'; border-radius: '10px'}
 This box is rotated 15 degrees! 
-:::
+::: end
 
 ::: {rotate: -10; background: '#e74c3c'; color: 'white'; padding: '20px'; border-radius: '10px'}
 This box is rotated -10 degrees!
-:::
+::: end
 
 ===
 # Transform: Scale
 
 ::: {scale: 1.3; color: '#2ecc71'; font-weight: 'bold'}
 Scaled up 1.3x
-:::
+::: end
 
 ::: {scale: 0.8; color: '#f39c12'}
 Scaled down 0.8x
-:::
+::: end
 
 ===
 # Transform: Translate
 
 ::: {translate-x: 100; translate-y: 50; color: '#9b59b6'; font-size: '24px'}
 Translated 100px right and 50px down
-:::
+::: end
 
 ===
 # Transform: Multiple
@@ -390,18 +390,18 @@ Translated 100px right and 50px down
 - Rotated 5°
 - Scaled 1.2x
 - Translated 50px right
-:::
+::: end
 
 ===
 # Transform: Transparency
 
 ::: {transparency: 30; background: '#e74c3c'; padding: '30px'; color: 'white'; font-size: '24px'}
 70% opaque (30% transparent)
-:::
+::: end
 
 ::: {transparency: 60; background: '#3498db'; padding: '30px'; color: 'white'; font-size: '24px'}
 40% opaque (60% transparent)
-:::
+::: end
 
 ===
 # Layout: Columns Shorthand
@@ -425,13 +425,13 @@ Both produce the same result!
 :::
 ### Left Column
 Simple nested column syntax - no need for columns: 2!
-:::
+::: end
 
 :::
 ### Right Column
 Much cleaner and easier to read!
-:::
-::::
+::: end
+::: end
 
 ===
 # Nested Columns: Basic
@@ -440,13 +440,13 @@ Much cleaner and easier to read!
 ::: {.column; width: '50%'}
 ### Left
 Standard Reveal.js columns
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Right
 Using `::::` delimiter
-:::
-::::
+::: end
+::: end
 
 ===
 # Nested Columns: Asymmetric
@@ -455,13 +455,13 @@ Using `::::` delimiter
 ::: {.column; width: '30%'}
 ### Narrow
 30% width
-:::
+::: end
 
 ::: {.column; width: '70%'}
 ### Wide
 70% width - perfect for content + sidebar layouts
-:::
-::::
+::: end
+::: end
 
 ===
 # Nested Columns: Styled
@@ -470,13 +470,13 @@ Using `::::` delimiter
 ::: {.column; width: '50%'; background: '#3498db'; color: 'white'; padding: '15px'; border-radius: '5px'}
 ### Blue Column
 Individual styling
-:::
+::: end
 
 ::: {.column; width: '50%'; background: '#e74c3c'; color: 'white'; padding: '15px'; border-radius: '5px'}
 ### Red Column
 Different colors
-:::
-::::
+::: end
+::: end
 
 ===
 # All Abstractions Together!
@@ -489,7 +489,7 @@ All abstractions combined:
 - Transforms (rotate, scale, transparency)
 - Nested columns
 - Custom styling
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Full Power
@@ -497,13 +497,13 @@ All abstractions combined:
 - Layouts ✓
 - Classes ✓
 - Nested ✓
-:::
-::::
+::: end
+::: end
 
 ===
 ::: {background: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'; padding: '40px'; border-radius: '15px'; color: '#2c3e50'; text-align: 'center'}
 ## Part 7: Media
-:::
+::: end
 
 ===
 # Images
@@ -520,7 +520,7 @@ All abstractions combined:
 
 ::: {width: '60%'; border: '5px solid #e74c3c'; border-radius: '15px'; box-shadow: '0 8px 16px rgba(0,0,0,0.3)'}
 ![Styled](https://placehold.co/700x400/f39c12/white?text=Styled+Image)
-:::
+::: end
 
 ===
 # Image Grid
@@ -528,18 +528,18 @@ All abstractions combined:
 ::::
 :::
 ![Left](https://placehold.co/400x300/3498db/white?text=Left)
-:::
+::: end
 
 :::
 ### Description
 Image with text in nested column layout
-:::
-::::
+::: end
+::: end
 
 ===
 ::: {background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)'; padding: '40px'; border-radius: '15px'; color: '#2c3e50'; text-align: 'center'}
 ## Part 8: Absolute Positioning
-:::
+::: end
 
 ===
 # Positioned Elements
@@ -548,42 +548,42 @@ Base content flows normally
 
 ::: {calque: 10; horizontal-margin: 200; vertical-margin: 150; color: '#e74c3c'; font-size: '36px'; font-weight: 'bold'}
 OVERLAY
-:::
+::: end
 
 ::: {calque: 5; horizontal-margin: 450; vertical-margin: 300; background: '#3498db'; color: 'white'; padding: '15px'; border-radius: '8px'}
 Floating box
-:::
+::: end
 
 ===
 # Layered Content
 
 ::: {calque: 1; horizontal-margin: 100; vertical-margin: 100; background: '#ecf0f1'; padding: '15px'}
 Layer 1 (z-index: 1)
-:::
+::: end
 
 ::: {calque: 5; horizontal-margin: 120; vertical-margin: 120; background: '#bdc3c7'; padding: '15px'}
 Layer 2 (z-index: 5)
-:::
+::: end
 
 ::: {calque: 10; horizontal-margin: 140; vertical-margin: 140; background: '#95a5a6'; padding: '15px'; color: 'white'}
 Layer 3 (z-index: 10)
-:::
+::: end
 
 ===
 # Positioned Images
 
 ::: {calque: 1; horizontal-margin: 100; vertical-margin: 100}
 ![Image 1](https://placehold.co/300x200/3498db/white?text=1)
-:::
+::: end
 
 ::: {calque: 5; horizontal-margin: 450; vertical-margin: 250}
 ![Image 2](https://placehold.co/250x150/e74c3c/white?text=2)
-:::
+::: end
 
 ===
 ::: {background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 9: Interactive Chalkboard
-:::
+::: end
 
 ===
 # Chalkboard Feature
@@ -640,7 +640,7 @@ Press **DEL** to clear when done.
 
 ::: {background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 9: QR Code
-:::
+::: end
 
 ===
 
@@ -653,7 +653,7 @@ Visit our GitHub repository:
 ===
 ::: {background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 10: Integrated IDE
-:::
+::: end
 
 ===
 # Integrated IDE Feature
@@ -678,15 +678,15 @@ def fibonacci(n):
 print(fibonacci(5))    
 ```
 output : "python-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 0, vertical-margin: 420}
 output : "python-output"
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 570, vertical-margin: 100}
 ### Python editor with output at bottom for small exemples
-:::
+::: end
 
 ===
 
@@ -710,11 +710,11 @@ plt.grid(True, alpha=0.3)
 plt.show()
 ```
  output : "python-output-2",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 200}
 output : "python-output-2"
-:::
+::: end
 
 ===
 
@@ -735,11 +735,11 @@ for (let i = 0; i < 5; i++) {
 }
 ```
 output : "javascript-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: -50, vertical-margin: 500}
 output : "javascript-output"
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 130}
 ,,,ide sql 
@@ -749,16 +749,16 @@ INSERT INTO users (id, name) VALUES (1, 'Alice');
 SELECT * FROM users;
 ```
 output : "sql-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 500}
 output : "sql-output"
-:::
+::: end
 
 ===
 ::: {background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 11: Interactive Quiz
-:::
+::: end
 
 ===
 
@@ -810,41 +810,41 @@ showResultsOnDemand : true
 ===
 ::: {background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 12: Fragment Animations
-:::
+::: end
 
 ===
 # Fragment Animations
 
 ::: {animate: "fade-in"}
 Fragment animations let you **reveal content incrementally**
-:::
+::: end
 
 ::: {animate: "fade-up"}
 This text slides up while fading in
-:::
+::: end
 
 ::: {animate: "highlight-blue"}
 And this one highlights in blue!
-:::
+::: end
 
 ===
 # Various Fragment Effects
 
 ::: {animate: "fade-out"}
 This will fade out
-:::
+::: end
 
 ::: {animate: "grow"}
 This will grow larger
-:::
+::: end
 
 ::: {animate: "shrink"}
 This will shrink
-:::
+::: end
 
 ::: {animate: "strike"}
 This gets struck through
-:::
+::: end
 
 ===
 # Nested Fragments
@@ -853,24 +853,24 @@ This gets struck through
 ::: {animate: "highlight-red"}
 ::: {animate: "semi-fade-out"}
 Fade in → Turn red → Semi fade out
-:::
-:::
-:::
+::: end
+::: end
+::: end
 
 ===
 # Custom Order
 
 ::: {animate: "fade-in" index: 3}
 **Third**: This appears last
-:::
+::: end
 
 ::: {animate: "fade-in" index: 1}
 **First**: This appears first
-:::
+::: end
 
 ::: {animate: "fade-in" index: 2}
 **Second**: This appears in the middle
-:::
+::: end
 
 ===
 # Fragments with Lists
@@ -878,17 +878,17 @@ Fade in → Turn red → Semi fade out
 ::: {animate: "fade-in"}
 - First batch of items
 - Appears together
-:::
+::: end
 
 ::: {animate: "highlight-green"}
 - Second batch
 - Highlights in green
-:::
+::: end
 
 ===
 ::: {background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; padding: '40px'; border-radius: '15px'; color: 'white'; text-align: 'center'}
 ## Part 13: Slide Transitions
-:::
+::: end
 
 ===
 
@@ -932,8 +932,8 @@ This slide: **fade-in slide-out**
 ===
 ::: {text-align: 'center'; color: '#3498db'; font-size: '64px'; font-weight: 'bold'}
 # Thank You!
-:::
+::: end
 
 ::: {text-align: 'center'; font-size: '28px'; color: '#7f8c8d'; margin-top: '30px'}
 SlideDeckML - All Features Demonstrated
-:::
+::: end

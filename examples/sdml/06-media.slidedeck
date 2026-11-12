@@ -35,11 +35,11 @@ Large:
 
 ::: {text-align: 'center'}
 ![Centered](https://placehold.co/500x300/2ecc71/white?text=Centered)
-:::
+::: end
 
 ::: {width: '60%'; margin: '0 auto'; border: '4px solid #e74c3c'; border-radius: '10px'}
 ![Bordered](https://placehold.co/700x400/f39c12/white?text=Bordered+Image)
-:::
+::: end
 
 ===
 # Images in Grid
@@ -49,7 +49,7 @@ Large:
 
 ### Description
 This is a grid layout with an image on the left and text on the right
-:::
+::: end
 
 ===
 # Images in Flexbox
@@ -60,7 +60,7 @@ This is a grid layout with an image on the left and text on the right
 ![Flex 2](https://placehold.co/250x200/2ecc71/white?text=2)
 
 ![Flex 3](https://placehold.co/250x200/9b59b6/white?text=3)
-:::
+::: end
 
 ===
 # Image with Quote
@@ -81,7 +81,7 @@ Simple video:
 
 ::: {width: '70%'; margin: '0 auto'}
 ![Big Buck Bunny](https://www.w3schools.com/html/mov_bbb.mp4)
-:::
+::: end
 
 ===
 # Video with Description

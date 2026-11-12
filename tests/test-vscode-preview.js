@@ -162,7 +162,7 @@ async function main() {
     assert.strictEqual(callbacks.warning, undefined);
 
     const imagePath = path.join(__dirname, '../examples/templates/template2/assets/image_logo.png');
-    document.text = `# First\n===\n::: {width: '50%'}\n![Logo](${imagePath})\n:::`;
+    document.text = `# First\n===\n::: {width: '50%'}\n![Logo](${imagePath})\n::: end`;
     let fixtureSvg;
     if (process.env.SLIDEDECK_PREVIEW_TEST_HTML) {
         fixtureSvg = path.join(require('os').tmpdir(), `slidedeck-drawing-${process.pid}.svg`);
@@ -171,7 +171,7 @@ async function main() {
             tool: 'arrow', color: '#ff0000', width: 4, points: [{ x: 100, y: 120 }, { x: 320, y: 240 }]
         }, 960, 700));
     }
-    document.text += `\n::: {animate: "fade-in"}\n::: {.sd-annotation-layer}\n![Annotation](${fixtureSvg || imagePath})\n:::\n:::`;
+    document.text += `\n::: {animate: "fade-in"}\n::: {.sd-annotation-layer}\n![Annotation](${fixtureSvg || imagePath})\n::: end\n::: end`;
     document.version++;
     callbacks.change({ document });
     await sleep(600);

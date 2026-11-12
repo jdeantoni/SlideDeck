@@ -25,7 +25,7 @@ Simplified syntax for grid layouts
 ![Image 2](https://placehold.co/300x200/2ecc71/white?text=2)
 
 ![Image 3](https://placehold.co/300x200/f39c12/white?text=3)
-:::
+::: end
 
 ===
 # Grid: Items individuels
@@ -38,7 +38,7 @@ Simplified syntax for grid layouts
 ### C
 
 ### D
-:::
+::: end
 
 ===
 # ❌ Grid NE MARCHE PAS pour du contenu groupé
@@ -64,13 +64,13 @@ Résultat : "### Column 1" dans cellule 1, "Content A" dans cellule 2, etc.
 ### Column 1
 Content A peut avoir
 plusieurs éléments
-:::
+::: end
 
 :::
 ### Column 2
 Content B aussi
-:::
-::::
+::: end
+::: end
 
 ===
 # Nested: Deux colonnes égales
@@ -81,15 +81,15 @@ Content B aussi
 - Point one
 - Point two
 - Point three
-:::
+::: end
 
 :::
 ### Right Side
 - Point four
 - Point five
 - Point six
-:::
-::::
+::: end
+::: end
 
 ===
 # Nested: Colonnes personnalisées
@@ -98,13 +98,13 @@ Content B aussi
 ::: {.column; width: '30%'}
 ### Sidebar (30%)
 Menu ou navigation
-:::
+::: end
 
 ::: {.column; width: '70%'}
 ### Main Content (70%)
 Zone de contenu principale avec beaucoup plus d'espace
-:::
-::::
+::: end
+::: end
 
 ===
 # Grid: Galerie d'images
@@ -118,7 +118,7 @@ Zone de contenu principale avec beaucoup plus d'espace
 ![F](https://placehold.co/200x150/1abc9c/white?text=F)
 ![G](https://placehold.co/200x150/e67e22/white?text=G)
 ![H](https://placehold.co/200x150/34495e/white?text=H)
-:::
+::: end
 
 ===
 # Gap: Espacement entre éléments
@@ -129,7 +129,7 @@ Petit gap (10px):
 ![2](https://placehold.co/150x100/3498db/white?text=2)
 ![3](https://placehold.co/150x100/3498db/white?text=3)
 ![4](https://placehold.co/150x100/3498db/white?text=4)
-:::
+::: end
 
 Grand gap (40px):
 ::: {columns: 4; gap: 40}
@@ -137,7 +137,7 @@ Grand gap (40px):
 ![2](https://placehold.co/150x100/e74c3c/white?text=2)
 ![3](https://placehold.co/150x100/e74c3c/white?text=3)
 ![4](https://placehold.co/150x100/e74c3c/white?text=4)
-:::
+::: end
 
 ===
 # Grid avec autres styles
@@ -146,7 +146,7 @@ Grand gap (40px):
 ![A](https://placehold.co/200x150/3498db/white?text=A)
 ![B](https://placehold.co/200x150/2ecc71/white?text=B)
 ![C](https://placehold.co/200x150/f39c12/white?text=C)
-:::
+::: end
 
 ===
 # Nested: Contenu mixte
@@ -160,7 +160,7 @@ function hello() {
     return "World";
 }
 ```
-:::
+::: end
 
 ::: {.column; width: '60%'}
 ### Description
@@ -170,8 +170,8 @@ Cette fonction retourne une simple chaîne.
 - Simple
 - Efficace
 - Testée
-:::
-::::
+::: end
+::: end
 
 ===
 # Nested: Trois colonnes avec largeurs
@@ -180,18 +180,18 @@ Cette fonction retourne une simple chaîne.
 ::: {.column; width: '25%'}
 ### 25%
 Sidebar gauche
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### 50%
 Contenu principal au centre
-:::
+::: end
 
 ::: {.column; width: '25%'}
 ### 25%
 Sidebar droite
-:::
-::::
+::: end
+::: end
 
 ===
 # Nested + Transforms
@@ -200,13 +200,13 @@ Sidebar droite
 :::
 ### Column A
 Avec rotation et scale!
-:::
+::: end
 
 :::
 ### Column B
 Les abstractions se combinent
-:::
-::::
+::: end
+::: end
 
 ===
 # Résumé

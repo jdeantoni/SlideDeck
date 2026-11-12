@@ -24,7 +24,7 @@ x = 10
 Output: 10
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync with line-by-line (Keep Mode)
@@ -48,7 +48,7 @@ count = 30
 Output: 30
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync with block highlighting
@@ -73,7 +73,7 @@ Greeting created
 Output printed
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync with function highlighting
@@ -96,7 +96,7 @@ Addition function defined
 Multiplication function defined
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync with class highlighting
@@ -122,7 +122,7 @@ Base class Animal
 Derived class Dog
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync with Images (Replace Mode)
@@ -143,7 +143,7 @@ result = analyze(cleaned)
 ![Results](https://placehold.co/400x200/e74c3c/white?text=Results)
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync Mixed Content (Keep Mode)
@@ -167,7 +167,7 @@ Updated: role="Admin"
 ![User Object](https://placehold.co/300x150/9b59b6/white?text=User+Object)
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync with all highlighting
@@ -185,7 +185,7 @@ Calculation complete
 Total displayed
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Sync with manual line numbers
@@ -207,4 +207,4 @@ Step 1 executed
 Steps 2 and 3 executed
 :::[sync-fragments]
 
-:::
+::: end

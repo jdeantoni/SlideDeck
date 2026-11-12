@@ -14,7 +14,7 @@ Alex Rivera
 Senior Software Architect
 
 TechConf 2025
-:::
+::: end
 
 ===
 # Overview
@@ -42,7 +42,7 @@ Moving from monolithic architecture to distributed microservices while maintaini
 - Long deployment cycles
 - Single point of failure
 
-:::
+::: end
 
 ===
 # Architecture
@@ -63,7 +63,7 @@ Moving from monolithic architecture to distributed microservices while maintaini
 - Docker / Kubernetes
 - RabbitMQ / Kafka
 
-:::
+::: end
 
 ===
 # Service Communication
@@ -139,7 +139,7 @@ eventBus.subscribe('order.created',
 );
 ```
 
-:::
+::: end
 
 ===
 # Scaling Strategy
@@ -160,7 +160,7 @@ eventBus.subscribe('order.created',
 - Kubernetes orchestration
 - Rolling deployments
 
-:::
+::: end
 
 ===
 # Monitoring & Observability
@@ -212,4 +212,4 @@ alerts:
 GitHub: github.com/alexrivera/microservices-demo
 
 alex.rivera@techcorp.com
-:::
+::: end

@@ -52,7 +52,7 @@ async function run() {
             '![QR] "https://example.com"',
             '::: {animate: "fade-in"}',
             'Text',
-            ':::',
+            '::: end',
             '```js',
             '// code comment',
             '```'
@@ -125,7 +125,7 @@ async function run() {
         const svg = annotationSvg({ tool: 'pen', color: '#ff0000', width: 4, points: [{ x: 1, y: 2 }, { x: 3, y: 4 }] }, 960, 700);
         edit.createFile(vscode.Uri.file(svgPath), { contents: Buffer.from(svg), overwrite: false });
         edit.insert(doc.uri, doc.positionAt(doc.getText().length),
-            '\n\n::: {animate: "fade-in"}\n::: {.sd-annotation-layer}\n![Annotation](./img/annotation.svg)\n:::\n:::');
+            '\n\n::: {animate: "fade-in"}\n::: {.sd-annotation-layer}\n![Annotation](./img/annotation.svg)\n::: end\n::: end');
         assert.ok(await vscode.workspace.applyEdit(edit));
         assert.ok(fs.existsSync(svgPath));
         const compiled = await new CompilerService().compile(doc.getText(), undefined, annotationSource);

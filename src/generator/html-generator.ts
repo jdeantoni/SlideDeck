@@ -1,4 +1,4 @@
-import { Presentation, isCodeBlock, isSyncFragments, isStyledElement, isFragmentElement, LineContent, Editor, Output } from "../language/generated/ast";
+import { Presentation, isCodeBlock, isSyncFragments, isStyledElement, isNestedStyledElement, isFragmentElement, LineContent, Editor, Output } from "../language/generated/ast";
 import { ElementGenerator } from "./element-generator";
 import { TemplateGenerator } from "./template";
 import { StyleParser } from "./style-parser";
@@ -121,7 +121,7 @@ export class HtmlGenerator {
         }
         
         // Recursively check styled elements
-        if (isStyledElement(line)) {
+        if (isStyledElement(line) || isNestedStyledElement(line)) {
             for (const element of line.elements) {
                 this.checkLineForFeatures(element);
             }

@@ -40,7 +40,7 @@ You can apply styling to YouTube embeds:
 
 ::: {text-align: 'center'}
 ![Centered Video](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-:::
+::: end
 
 ===
 
@@ -50,11 +50,11 @@ You can add multiple videos to a slide:
 
 ::: {display: 'inline-block'; width: '45%'; margin: '10px'}
 ![Video 1](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-:::
+::: end
 
 ::: {display: 'inline-block'; width: '45%'; margin: '10px'}
 ![Video 2](https://youtu.be/dQw4w9WgXcQ)
-:::
+::: end
 
 ===
 
@@ -82,14 +82,14 @@ YouTube embeds work with fragment animations:
 
 ::: {animate: "fade-up"}
 ![Animated YouTube](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-:::
+::: end
 
 ===
 
 ::: {text-align: 'center'; color: '#3498db'; font-size: '64px'}
 # All Media Formats!
-:::
+::: end
 
 ::: {text-align: 'center'; font-size: '24px'; color: '#7f8c8d'}
 Images • Videos • YouTube
-:::
+::: end

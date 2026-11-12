@@ -22,6 +22,7 @@ class SlideDeckTokenBuilder extends DefaultTokenBuilder {
                 t.name === 'MEDIA_LINE' ||
                 t.name === 'CODE_BLOCK' ||
                 t.name === 'NESTED_STYLE_DELIMITER' ||  // Must be before STYLE_DELIMITER
+                t.name === 'STYLE_END' ||
                 t.name === 'STYLE_DELIMITER' ||
                 t.name === 'STYLE_ATTRS' ||
                 t.name === 'TRANSITION_ATTR' ||

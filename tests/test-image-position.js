@@ -14,7 +14,7 @@ async function main() {
     assert.deepStrictEqual(getImageOffset(moved), { x: 30.5, y: -7 });
     assert.strictEqual(withImageOffset(moved, { x: -12, y: 0 }), `${original}{offset: '-12px 0px'}`);
 
-    const source = `# Test\n${original}\n::: {width: '50%'}\n${moved}\n:::\n::: {animate: "fade-in"}\n${original}\n:::`;
+    const source = `# Test\n${original}\n::: {width: '50%'}\n${moved}\n::: end\n::: {animate: "fade-in"}\n${original}\n::: end`;
     const compiler = new CompilerService();
     const preview = await compiler.compile(source, undefined, undefined, { previewImagePositions: true });
     assert.ifError(preview.error);

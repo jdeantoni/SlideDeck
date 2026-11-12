@@ -86,7 +86,7 @@ Description of the problem you're addressing
 1. Question 1?
 2. Question 2?
 3. Question 3?
-:::
+::: end
 
 ===
 # Background
@@ -120,7 +120,7 @@ Description of the problem you're addressing
 - Method 2
 - Statistical tests used
 
-:::
+::: end
 
 ===
 # Methodology
@@ -156,7 +156,7 @@ def experiment(data, parameters):
 - Statistical significance: p < 0.01
 - Effect size: Cohen's d = X.XX
 
-:::
+::: end
 
 ===
 # Results
@@ -194,7 +194,7 @@ def experiment(data, parameters):
 1. **Contribution 1** - Brief description
 2. **Contribution 2** - Brief description
 3. **Contribution 3** - Brief description
-:::
+::: end
 
 ===
 # Future Work
@@ -220,7 +220,7 @@ This research can be applied to...
 [Lab/Institution Website]
 
 [Paper DOI/Link]
-:::
+::: end
 
 ===
 # References

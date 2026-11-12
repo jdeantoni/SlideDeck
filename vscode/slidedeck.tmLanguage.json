@@ -48,7 +48,7 @@
       "patterns": [
         { "name": "keyword.control.directive.slidedeck", "match": "^\\s*@import\\b" },
         { "name": "keyword.control.separator.slidedeck", "match": "^\\s*===\\s*$" },
-        { "name": "keyword.control.directive.slidedeck", "match": ":{3,4}(?:quiz|\\[sync-fragments(?:\\s+keep)?\\])?" },
+        { "name": "keyword.control.directive.slidedeck", "match": "::: end\\b|:{3,4}(?:quiz|\\[sync-fragments(?:\\s+keep)?\\])?" },
         { "name": "keyword.control.list.slidedeck", "match": "^\\s*(?:[-+*]|\\d+\\.)\\s+" },
         { "name": "punctuation.definition.heading.slidedeck", "match": "^\\s*#{1,3}(?=\\s)" },
         { "name": "punctuation.definition.quote.slidedeck", "match": "^\\s*>\\s*" }

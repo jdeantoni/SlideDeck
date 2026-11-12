@@ -14,7 +14,7 @@
 Medical AI Research Lab, Stanford University
 
 International Conference on Medical Imaging - January 2026
-:::
+::: end
 
 ===
 # Outline
@@ -38,7 +38,7 @@ Early detection of lung abnormalities is critical but time-consuming for radiolo
 1. Can deep learning match radiologist accuracy?
 2. What architectures work best for chest X-rays?
 3. How to ensure clinical interpretability?
-:::
+::: end
 
 ===
 # Background
@@ -74,7 +74,7 @@ Early detection of lung abnormalities is critical but time-consuming for radiolo
 - Data augmentation
 - 5-fold cross-validation
 
-:::
+::: end
 
 ===
 # Methodology
@@ -115,7 +115,7 @@ class MedicalImageClassifier(nn.Module):
 - Ensemble: 96.1% accuracy
 - Processing: <2s per image
 
-:::
+::: end
 
 ===
 # Results
@@ -137,7 +137,7 @@ class MedicalImageClassifier(nn.Module):
 
 ![Attention Map](https://placehold.co/400x400/c0392b/white?text=Attention+Heatmap)
 
-:::
+::: end
 
 *Figure 2: Original chest X-ray (left) and corresponding attention heatmap (right) highlighting regions the model focuses on*
 
@@ -189,7 +189,7 @@ def clinical_workflow(xray_image):
 2. **Large-scale Validation** - 150K images from 8 hospitals
 3. **Clinical Interpretability** - Explainable predictions aligned with clinical reasoning
 4. **Real-world Deployment** - Currently piloting in 2 hospitals
-:::
+::: end
 
 ===
 # Future Work
@@ -216,7 +216,7 @@ emily.chen@stanford.edu
 Medical AI Lab: https://medai.stanford.edu
 
 Paper DOI: 10.1000/medimg.2026.001
-:::
+::: end
 
 ===
 # References

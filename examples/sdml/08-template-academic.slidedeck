@@ -14,7 +14,7 @@
 Computer Science Department
 
 September 15, 2025
-:::
+::: end
 
 ===
 # Agenda
@@ -46,7 +46,7 @@ Machine Learning is a subset of artificial intelligence that enables systems to 
 
 ::: {background: '#f8f9fa'; padding: '20px'; border-radius: '10px'}
 > Machine learning is the science of getting computers to act without being explicitly programmed. - Andrew Ng
-:::
+::: end
 
 ===
 # Types of Learning
@@ -70,7 +70,7 @@ Learning through trial and error
 - Game playing
 - Robotics
 
-:::
+::: end
 
 ===
 # Key Algorithms
@@ -103,4 +103,4 @@ Learning through trial and error
 sarah.johnson@university.edu
 
 Office Hours: Mon/Wed 2-4pm
-:::
+::: end

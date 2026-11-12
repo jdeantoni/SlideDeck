@@ -135,6 +135,8 @@ export class LineContentHandler {
             if (isFragmentElement(element)) {
                 // Handle nested fragments
                 containerHtml += await this.handleFragmentElement(element) + '\n';
+            } else if (isNestedStyledElement(element)) {
+                containerHtml += await this.handleNestedStyledElement(element) + '\n';
             } else if (isStyledElement(element)) {
                 // Handle nested styled elements
                 containerHtml += await this.handleStyledElement(element) + '\n';
@@ -182,6 +184,8 @@ export class LineContentHandler {
             if (isFragmentElement(element)) {
                 // Handle nested fragments
                 containerHtml += await this.handleFragmentElement(element) + '\n';
+            } else if (isNestedStyledElement(element)) {
+                containerHtml += await this.handleNestedStyledElement(element) + '\n';
             } else if (isStyledElement(element)) {
                 // Handle nested styled elements
                 containerHtml += await this.handleStyledElement(element) + '\n';
@@ -193,6 +197,8 @@ export class LineContentHandler {
                 containerHtml += this.elementGenerator.generateQuote(element, '') + '\n';
             } else if (isMedia(element)) {
                 containerHtml += await this.elementGenerator.generateMedia(element, '') + '\n';
+            } else if (isQrCode(element)) {
+                containerHtml += this.elementGenerator.generateQrCode(element, '') + '\n';
             } else if (isCodeBlock(element)) {
                 containerHtml += this.elementGenerator.generateCodeBlock(element, '') + '\n';
             } else if (isSyncFragments(element)) {
@@ -244,6 +250,9 @@ export class LineContentHandler {
                 containerHtml += await this.handleFragmentElement(element);
                 containerHtml += '\n';
             }
+            else if (isNestedStyledElement(element)) {
+                containerHtml += await this.handleNestedStyledElement(element) + '\n';
+            }
             // Handle nested StyledElement (:::)
             else if (isStyledElement(element)) {
                 // Add default width: 100% to children without explicit width (for flex layout)
@@ -260,6 +269,8 @@ export class LineContentHandler {
                 containerHtml += this.elementGenerator.generateQuote(element, '') + '\n';
             } else if (isMedia(element)) {
                 containerHtml += await this.elementGenerator.generateMedia(element, '') + '\n';
+            } else if (isQrCode(element)) {
+                containerHtml += this.elementGenerator.generateQrCode(element, '') + '\n';
             } else if (isCodeBlock(element)) {
                 containerHtml += this.elementGenerator.generateCodeBlock(element, '') + '\n';
             } else if (isSyncFragments(element)) {

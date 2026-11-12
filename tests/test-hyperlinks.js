@@ -32,7 +32,7 @@ async function main() {
         '> ![Quote] "#/1"',
         '::: {animate: "fade-in"}',
         '![Fragment] "https://example.com"',
-        ':::',
+        '::: end',
         ':::[sync-fragments]',
         '![Sync] "https://example.com"',
         ':::[sync-fragments]',

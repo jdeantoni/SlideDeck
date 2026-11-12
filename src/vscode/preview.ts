@@ -276,7 +276,7 @@ class SlidePreview implements vscode.Disposable {
                     overwrite: false
                 });
                 return ['::: {animate: "fade-in"}', '::: {.sd-annotation-layer}',
-                    `![Annotation](./img/${name})`, ':::', ':::'].join(newline);
+                    `![Annotation](./img/${name})`, '::: end', '::: end'].join(newline);
             });
             edit.insert(this.document.uri, this.document.positionAt(offset), newline + newline + fragments.join(newline + newline));
             this.pendingSlide = message.slide;

@@ -7,22 +7,22 @@
 
 ::: {color: '#e74c3c'; font-size: '28px'; font-weight: 'bold'}
 Red, large, bold text
-:::
+::: end
 
 ::: {background-color: '#3498db'; color: 'white'; padding: '20px'; border-radius: '10px'}
 Box with blue background and white text
-:::
+::: end
 
 ===
 # Border and Padding
 
 ::: {border: '3px solid #2ecc71'; padding: '15px'; border-radius: '8px'}
 Content with green border
-:::
+::: end
 
 ::: {border-left: '6px solid #f39c12'; padding-left: '20px'; background: '#ecf0f1'}
 Left border accent with gray background
-:::
+::: end
 
 ===
 # Text Alignment
@@ -31,11 +31,11 @@ Left border accent with gray background
 ## Centered Heading
 
 This paragraph is centered
-:::
+::: end
 
 ::: {text-align: 'right'; color: '#9b59b6'}
 Right-aligned purple text
-:::
+::: end
 
 ===
 # Styled Lists
@@ -44,20 +44,20 @@ Right-aligned purple text
 - Styled unordered list
 - With custom color
 - And larger font
-:::
+::: end
 
 ::: {background: '#f8f9fa'; padding: '15px'; border-radius: '5px'}
 1. Styled ordered list
 2. With background
 3. And padding
-:::
+::: end
 
 ===
 # Styled Quotes
 
 ::: {border-left: '4px solid #3498db'; padding-left: '20px'; font-style: 'italic'; color: '#7f8c8d'}
 > Important quote with custom styling
-:::
+::: end
 
 ===
 # Styled Images
@@ -67,7 +67,7 @@ Normal image:
 
 ::: {width: '50%'; border: '5px solid #e74c3c'; border-radius: '15px'; box-shadow: '0 4px 8px rgba(0,0,0,0.2)'}
 ![Styled](https://placehold.co/600x400/3498db/white?text=Styled+Image)
-:::
+::: end
 
 ===
 # Styled Code Blocks
@@ -78,7 +78,7 @@ function styledCode() {
     return "Code in styled container";
 }
 ```
-:::
+::: end
 
 ===
 # Multiple Elements in One Style
@@ -92,7 +92,7 @@ This paragraph is also styled
 - List item two
 
 ![Styled](https://placehold.co/300x200/ffffff/667eea?text=In+Gradient)
-:::
+::: end
 
 ===
 # Grid Layout
@@ -103,7 +103,7 @@ Content on the left
 
 ### Right Column
 Content on the right
-:::
+::: end
 
 ===
 # Three Column Grid
@@ -117,7 +117,7 @@ Second
 
 ### Column 3
 Third
-:::
+::: end
 
 ===
 # Flexbox Layout
@@ -128,7 +128,7 @@ Third
 ![Image 2](https://placehold.co/200x150/e74c3c/white?text=2)
 
 ![Image 3](https://placehold.co/200x150/2ecc71/white?text=3)
-:::
+::: end
 
 ===
 # Complex Styling
@@ -140,4 +140,4 @@ This is a paragraph in a dark themed box with custom styling and shadow effect
 
 - Item one in dark box
 - Item two in dark box
-:::
+::: end

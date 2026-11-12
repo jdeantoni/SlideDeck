@@ -16,15 +16,15 @@ Use the simple `{animate: "effect"}` syntax!
 
 ::: {animate: "fade-in"}
 This text will fade in
-:::
+::: end
 
 ::: {animate: "fade-in"}
 This text will also fade in (on next step)
-:::
+::: end
 
 ::: {animate: "fade-in"}
 And this one too!
-:::
+::: end
 
 ===
 
@@ -32,19 +32,19 @@ And this one too!
 
 ::: {animate: "fade-out"}
 This will fade out
-:::
+::: end
 
 ::: {animate: "fade-up"}
 This will slide up while fading in
-:::
+::: end
 
 ::: {animate: "highlight-red"}
 This will turn red
-:::
+::: end
 
 ::: {animate: "grow"}
 This will grow
-:::
+::: end
 
 ===
 
@@ -52,19 +52,19 @@ This will grow
 
 ::: {animate: "fade-in-then-out"}
 Fade in, then out
-:::
+::: end
 
 ::: {animate: "fade-in-then-semi-out"}
 Fade in, then semi out
-:::
+::: end
 
 ::: {animate: "shrink"}
 This will shrink
-:::
+::: end
 
 ::: {animate: "strike"}
 This will be struck through
-:::
+::: end
 
 ===
 
@@ -72,19 +72,19 @@ This will be struck through
 
 ::: {animate: "highlight-blue"}
 Highlight blue
-:::
+::: end
 
 ::: {animate: "highlight-green"}
 Highlight green
-:::
+::: end
 
 ::: {animate: "highlight-current-red"}
 Highlight red, then back
-:::
+::: end
 
 ::: {animate: "semi-fade-out"}
 Semi fade out (50%)
-:::
+::: end
 
 ===
 
@@ -94,9 +94,9 @@ Semi fade out (50%)
 ::: {animate: "highlight-red"}
 ::: {animate: "semi-fade-out"}
 Fade in > Turn red > Semi fade out
-:::
-:::
-:::
+::: end
+::: end
+::: end
 
 ===
 
@@ -106,11 +106,11 @@ You can combine multiple effects in one animation:
 
 ::: {animate: "fade-up highlight-blue"}
 This fades up AND turns blue!
-:::
+::: end
 
 ::: {animate: "grow highlight-green"}
 This grows AND turns green!
-:::
+::: end
 
 ===
 
@@ -118,15 +118,15 @@ This grows AND turns green!
 
 ::: {animate: "fade-in" index: 3}
 Appears last (index 3)
-:::
+::: end
 
 ::: {animate: "fade-in" index: 1}
 Appears first (index 1)
-:::
+::: end
 
 ::: {animate: "fade-in" index: 2}
 Appears second (index 2)
-:::
+::: end
 
 ===
 
@@ -137,12 +137,12 @@ Unordered list with fragments:
 ::: {animate: "fade-in"}
 - First item
 - Second item
-:::
+::: end
 
 ::: {animate: "fade-in"}
 - Third item
 - Fourth item
-:::
+::: end
 
 ===
 
@@ -150,15 +150,15 @@ Unordered list with fragments:
 
 ::: {animate: "fade-in"}
 ## This header appears first
-:::
+::: end
 
 ::: {animate: "highlight-blue"}
 This paragraph appears second and turns blue
-:::
+::: end
 
 ::: {animate: "fade-up"}
 ![Demo Image](https://placehold.co/400x300)
-:::
+::: end
 
 ===
 
@@ -170,20 +170,20 @@ function hello() {
     console.log("This code appears first");
 }
 ```
-:::
+::: end
 
 ::: {animate: "highlight-green"}
 The code will appear, then this text turns green!
-:::
+::: end
 
 ===
 
 ::: {text-align: 'center'; color: '#3498db'; font-size: '64px'}
 # Try It!
-:::
+::: end
 
 ::: {text-align: 'center'; font-size: '24px'; color: '#7f8c8d'}
 ::: {animate: "fade-in"}
 Press **Space** or **Arrow keys** to step through fragments
-:::
-:::
+::: end
+::: end

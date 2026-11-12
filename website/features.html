@@ -70,12 +70,12 @@ This is [important]{color: 'red'; font-weight: 'bold'}.
       </section>
       <section id="styling"><h2>Styles and layout</h2>
         <h3>Styled blocks and list width</h3>
-        <p>Block styles use CSS properties. Set a container width to constrain a whole list.</p>
+        <p>Block styles use CSS properties. Close styled and animated blocks with <code>::: end</code>; blocks can be nested. Set a container width to constrain a whole list. In older files, replace block closing <code>:::</code> or <code>::::</code> with <code>::: end</code>; quiz and synchronized-fragment delimiters are unchanged.</p>
         <pre data-example="styles"><code># A compact list
 ::: {width: '50%'; margin: '0 auto'; color: 'teal'}
 - First point
 - A longer point that wraps within the container
-:::</code></pre>
+::: end</code></pre>
         <p>Use a class such as <code>.callout</code> in a block or inline span and define it in the metadata <code>css</code> field:</p>
         <pre data-example="classes"><code>{
   author: "Ada"
@@ -86,7 +86,7 @@ This is [important]{color: 'red'; font-weight: 'bold'}.
 # Reusable styles
 ::: {.callout}
 This block uses a class.
-:::
+::: end
 This [word]{.callout} uses it too.</code></pre>
         <h3>Columns and nested blocks</h3>
         <p><code>columns</code> and <code>gap</code> create a grid of individual children. Use <code>::::</code> with nested <code>:::</code> blocks to group multiple elements in each column.</p>
@@ -95,23 +95,23 @@ This [word]{.callout} uses it too.</code></pre>
 ::: {.column; width: '50%'}
 ### Left
 First group
-:::
+::: end
 ::: {.column; width: '50%'}
 ### Right
 Second group
-:::
-::::</code></pre>
+::: end
+::: end</code></pre>
         <pre data-example="grid"><code># A simple grid
 ::: {columns: 2; gap: 20}
 ### One
 ### Two
-:::</code></pre>
+::: end</code></pre>
         <h3>Positioning and transforms</h3>
         <p><code>horizontal-margin</code> and <code>vertical-margin</code> position in pixels; <code>calque</code> sets the layer. Transform shortcuts include <code>rotate</code>, <code>scale</code>, <code>translate-x</code>, <code>translate-y</code> and <code>skew</code>.</p>
         <pre data-example="position"><code># Place an element
 ::: {horizontal-margin: 100; vertical-margin: 200; calque: 2; rotate: -5}
 Positioned and rotated
-:::</code></pre>
+::: end</code></pre>
       </section>
       <section id="media"><h2>Images and video</h2>
         <h3>Paste an image in VS Code</h3>
@@ -167,10 +167,10 @@ Inline: $E = mc^2$
 # Reveal ideas
 ::: {animate: "fade-in"}
 First idea
-:::
+::: end
 ::: {animate: "fade-in"}
 Second idea
-:::
+::: end
 ===
 {transition: "fade"}
 # A different transition</code></pre>

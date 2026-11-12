@@ -94,19 +94,19 @@ No transition attribute specified = uses global setting.
 ===
 ::: {text-align: 'center'; color: '#3498db'; font-size: '64px'}
 # Available Transitions
-:::
+::: end
 
 ::: {text-align: 'center'; font-size: '20px'}
 **Basic:** none, fade, slide, convex, concave, zoom
 
 **Mixed:** slide-in fade-out, fade-in slide-out, etc.
-:::
+::: end
 
 ===
 ::: {text-align: 'center'; color: '#3498db'}
 # Thank You!
-:::
+::: end
 
 ::: {text-align: 'center'; font-size: '18px'; color: '#7f8c8d'}
 Navigate through slides to see different transitions
-:::
+::: end

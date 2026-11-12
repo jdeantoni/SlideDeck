@@ -9,7 +9,7 @@ Regular flow content here
 
 ::: {calque: 10; horizontal-margin: 150; vertical-margin: 100; color: '#e74c3c'; font-size: '32px'; font-weight: 'bold'}
 Positioned Text
-:::
+::: end
 
 ===
 # calque (z-index)
@@ -18,34 +18,34 @@ Base layer content
 
 ::: {calque: 1; horizontal-margin: 100; vertical-margin: 150; background: '#ecf0f1'; padding: '15px'}
 Layer 1 (z-index: 1)
-:::
+::: end
 
 ::: {calque: 5; horizontal-margin: 120; vertical-margin: 170; background: '#bdc3c7'; padding: '15px'}
 Layer 2 (z-index: 5)
-:::
+::: end
 
 ::: {calque: 10; horizontal-margin: 140; vertical-margin: 190; background: '#95a5a6'; padding: '15px'; color: 'white'}
 Layer 3 (z-index: 10)
-:::
+::: end
 
 ===
 # horizontal-margin and vertical-margin
 
 ::: {horizontal-margin: 50; vertical-margin: 50; color: '#3498db'; font-size: '24px'}
 Top-left position
-:::
+::: end
 
 ::: {horizontal-margin: 500; vertical-margin: 50; color: '#e74c3c'; font-size: '24px'}
 Top-right position
-:::
+::: end
 
 ::: {horizontal-margin: 50; vertical-margin: 400; color: '#2ecc71'; font-size: '24px'}
 Bottom-left position
-:::
+::: end
 
 ::: {horizontal-margin: 500; vertical-margin: 400; color: '#f39c12'; font-size: '24px'}
 Bottom-right position
-:::
+::: end
 
 ===
 # Positioned Images
@@ -54,11 +54,11 @@ Regular content flows here
 
 ::: {calque: 1; horizontal-margin: 100; vertical-margin: 50}
 ![Image 1](https://placehold.co/300x200/3498db/white?text=Image+1)
-:::
+::: end
 
 ::: {calque: 5; horizontal-margin: 450; vertical-margin: 200}
 ![Image 2](https://placehold.co/250x150/e74c3c/white?text=Image+2)
-:::
+::: end
 
 ===
 # Positioned Lists
@@ -69,13 +69,13 @@ Normal text at the top
 - Positioned list
 - At custom coordinates
 - With styling
-:::
+::: end
 
 ::: {horizontal-margin: 450; vertical-margin: 100; font-size: '20px'; color: '#e74c3c'}
 1. Ordered positioned list
 2. On the right
 3. With custom position
-:::
+::: end
 
 ===
 # Overlay Effect
@@ -84,7 +84,7 @@ Base slide content
 
 ::: {calque: 20; horizontal-margin: 250; vertical-margin: 200; font-size: '48px'; color: '#e74c3c'; font-weight: 'bold'; text-shadow: '2px 2px 4px rgba(0,0,0,0.5)'}
 OVERLAY
-:::
+::: end
 
 ===
 # Floating Boxes
@@ -92,24 +92,24 @@ OVERLAY
 ::: {calque: 1; horizontal-margin: 100; vertical-margin: 100; background: '#3498db'; color: 'white'; padding: '20px'; border-radius: '10px'}
 ### Blue Box
 Content in positioned box
-:::
+::: end
 
 ::: {calque: 5; horizontal-margin: 400; vertical-margin: 250; background: '#e74c3c'; color: 'white'; padding: '20px'; border-radius: '10px'}
 ### Red Box
 Another positioned box
-:::
+::: end
 
 ===
 # Mixed Positioning
 
 ::: {horizontal-margin: 50; vertical-margin: 50}
 > Positioned quote at top-left
-:::
+::: end
 
 ::: {calque: 10; horizontal-margin: 300; vertical-margin: 200; background: '#f39c12'; padding: '15px'; border-radius: '8px'}
 Floating callout in the middle
-:::
+::: end
 
 ::: {horizontal-margin: 550; vertical-margin: 400}
 ![Bottom Right](https://placehold.co/200x150/2ecc71/white?text=Bottom)
-:::
+::: end

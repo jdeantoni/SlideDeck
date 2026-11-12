@@ -71,7 +71,7 @@
 **Roxane • Baptiste L. • Baptiste R. • Theo V.**
 
 *SI5 - Software Engineering*
-:::
+::: end
 
 ===
 {transition: "zoom"}
@@ -82,26 +82,26 @@
 
 ::: {animate: "fade-in"}
 Creating presentations is time-consuming and tedious
-:::
+::: end
 
 ::: {animate: "fade-in"}
 - Writing HTML/CSS manually is complex
 - WYSIWYG tools lack version control
 - Markdown is limited in features
-:::
+::: end
 
 ::: {animate: "fade-in"}
 ## Our Solution
 
 A **Domain-Specific Language** that combines simplicity with power!
-:::
+::: end
 
 ===
 # What is SlideDeckML?
 
 ::: {animate: "fade-up"}
 > A high-level DSL built with **Langium** that compiles to **Reveal.js** presentations
-:::
+::: end
 
 ::: {animate: "fade-up"}
 **Key Features:**
@@ -113,7 +113,7 @@ A **Domain-Specific Language** that combines simplicity with power!
 - Interactive chalkboard for annotations
 - Fragment animations and transitions
 - 5 professional templates ready to use
-:::
+::: end
 
 ===
 {transition: "convex"}
@@ -124,18 +124,18 @@ Writing content should be effortless
 
 ::: {animate: "fade-in"}
 **Headers** create visual hierarchy
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **Lists** organize your thoughts:
 - Bullet points for unordered items
 - Numbers for sequential steps
 - Mix **formatting** for *emphasis*
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **Text styling:** *italic*, **bold**, _underline_, and **_combinations_**
-:::
+::: end
 
 ===
 # Feature 2: Code Highlighting
@@ -160,41 +160,42 @@ Each line appears progressively - perfect for teaching!
 # All 6 Code Highlighting Modes
 
 ::: {display: 'grid'; grid-template-columns: '1fr 1fr'; gap: '20px'; background: '#0055A4'; color: 'white'; padding: '15px'; border-radius: '8px'; animate: 'fade-in'}
+::: {color: 'white'}
 **all**
 
 Everything at once
-:::
+::: end
 
 ::: {background: '#1565C0'; color: 'white'; padding: '15px'; border-radius: '8px'; animate: 'fade-in'}
 **none**
 
 Plain code
-:::
+::: end
 
 ::: {background: '#1976D2'; color: 'white'; padding: '15px'; border-radius: '8px'; animate: 'fade-in'}
 **line-by-line**
 
 Progressive reveal
-:::
+::: end
 
 ::: {background: '#1E88E5'; color: 'white'; padding: '15px'; border-radius: '8px'; animate: 'fade-in'}
 **block**
 
 By code blocks
-:::
+::: end
 
 ::: {background: '#42A5F5'; color: 'white'; padding: '15px'; border-radius: '8px'; animate: 'fade-in'}
 **specific**
 
 Choose exact lines
-:::
+::: end
 
 ::: {background: '#64B5F6'; color: 'white'; padding: '15px'; border-radius: '8px'; animate: 'fade-in'}
 **additive**
 
 Build up highlighting
-:::
-:::
+::: end
+::: end
 
 ===
 # Manual Line Numbers
@@ -235,7 +236,7 @@ Compile to HTML
 Return the generated slide
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 # Advanced Code Explanations
@@ -262,7 +263,7 @@ class Presentation:
 **Step 3:** Add method to append slides to the presentation
 :::[sync-fragments]
 
-:::
+::: end
 
 ===
 {transition: "fade"}
@@ -273,21 +274,21 @@ Perfect for mathematical and scientific presentations
 
 ::: {animate: "fade-in"}
 **Inline equations:** The famous $E = mc^2$ or Pythagoras $a^2 + b^2 = c^2$
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **Display equations:**
 ```latex
 \int_{a}^{b} f(x) \, dx = F(b) - F(a)
 ```
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **Complex formulas:**
 ```latex
 f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} [a_n \cos(nx) + b_n \sin(nx)]
 ```
-:::
+::: end
 
 ===
 # Feature 4: Custom Styling
@@ -299,20 +300,20 @@ Make your slides truly unique
 **Flexible**
 
 Responsive layouts with flexbox
-:::
+::: end
 
 ::: {flex: '1'; background: '#1976D2'; color: 'white'; padding: '30px'; border-radius: '10px'; text-align: 'center'; animate: 'fade-in'}
 **Beautiful**
 
 Modern gradients and shadows
-:::
+::: end
 
 ::: {flex: '1'; background: '#42A5F5'; color: 'white'; padding: '30px'; border-radius: '10px'; text-align: 'center'; animate: 'fade-in'}
 **Simple**
 
 Easy CSS-like syntax
-:::
-:::
+::: end
+::: end
 
 ===
 # Feature 5: Absolute Positioning
@@ -323,19 +324,19 @@ Create professional diagrams and overlays
 **Layer 1**
 
 Base content at z-index 1
-:::
+::: end
 
 ::: {calque: 5; horizontal-margin: 300; vertical-margin: 200; background: 'rgba(30, 136, 229, 0.9)'; color: 'white'; padding: '25px'; border-radius: '12px'; animate: 'fade-up'}
 **Layer 2**
 
 Overlaid at z-index 5
-:::
+::: end
 
 ::: {calque: 10; horizontal-margin: 500; vertical-margin: 250; background: 'rgba(66, 165, 245, 0.9)'; color: 'white'; padding: '25px'; border-radius: '12px'; animate: 'fade-right'}
 **Layer 3**
 
 Top layer at z-index 10
-:::
+::: end
 
 ===
 {transition: "zoom"}
@@ -346,7 +347,7 @@ Perfect for teaching and live presentations
 
 ::: {animate: "fade-in"}
 **Press C or B to activate drawing mode**
-:::
+::: end
 
 ::: {animate: "fade-in"}
 Use cases:
@@ -354,11 +355,11 @@ Use cases:
 - Draw diagrams on the fly
 - Highlight important points
 - Interactive Q&A sessions
-:::
+::: end
 
 ::: {animate: "grow"}
 **Try it now!** Press B to open the chalkboard
-:::
+::: end
 
 ===
 # Feature 7: Fragment Animations
@@ -367,19 +368,19 @@ Control information flow for better engagement
 
 ::: {animate: "fade-in"}
 First, introduce the main concept
-:::
+::: end
 
 ::: {animate: "fade-up"}
 Then, provide supporting details
-:::
+::: end
 
 ::: {animate: "highlight-blue"}
 Emphasize critical information
-:::
+::: end
 
 ::: {animate: "grow"}
 **And finish with impact!**
-:::
+::: end
 
 ===
 # Feature 8: Rich Media Support
@@ -390,7 +391,7 @@ Embed images, videos, and YouTube content seamlessly
 **Images**
 
 ![Demo Image](https://placehold.co/600x350/3498db/white?text=Beautiful+Images)
-:::
+::: end
 
 ===
 # Video Integration
@@ -402,7 +403,7 @@ Embed images, videos, and YouTube content seamlessly
 ![Demo Video](https://www.w3schools.com/html/mov_bbb.mp4)
 
 MP4, WebM, and more
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **YouTube Videos**
@@ -410,8 +411,8 @@ MP4, WebM, and more
 ![Langium Tutorial](https://www.youtube.com/watch?v=Fy3Xn3m34bA)
 
 Direct embedding support
-:::
-:::
+::: end
+::: end
 
 ===
 # Feature 9: Integrated IDE
@@ -436,15 +437,15 @@ def fibonacci(n):
 print(fibonacci(5))    
 ```
 output : "python-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 0, vertical-margin: 420}
 output : "python-output"
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 570, vertical-margin: 100}
 ### Python editor with output at bottom for small exemples
-:::
+::: end
 
 ===
 
@@ -468,11 +469,11 @@ plt.grid(True, alpha=0.3)
 plt.show()
 ```
  output : "python-output-2",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 200}
 output : "python-output-2"
-:::
+::: end
 
 ===
 
@@ -493,11 +494,11 @@ for (let i = 0; i < 5; i++) {
 }
 ```
 output : "javascript-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: -50, vertical-margin: 500}
 output : "javascript-output"
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 130}
 ,,,ide sql 
@@ -507,11 +508,11 @@ INSERT INTO users (id, name) VALUES (1, 'Alice');
 SELECT * FROM users;
 ```
 output : "sql-output",,,
-:::
+::: end
 
 ::: {calque: 1, horizontal-margin: 500, vertical-margin: 500}
 output : "sql-output"
-:::
+::: end
 
 ===
 # Feature 10: Live Preview with Monaco Editor
@@ -523,7 +524,7 @@ Real-time editing and preview for instant feedback!
 ```bash
 slidedeckml dev my-presentation.sdml
 ```
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **Features:**
@@ -533,7 +534,7 @@ slidedeckml dev my-presentation.sdml
 - Automatic slide synchronization
 - Syntax highlighting and IntelliSense
 - Error messages with detailed feedback
-:::
+::: end
 
 ===
 # Live Preview in Action
@@ -548,7 +549,7 @@ Watch the magic happen as you type!
 - Learning the DSL syntax
 - Debugging presentation issues
 - Interactive workshops
-:::
+::: end
 
 ===
 
@@ -604,7 +605,7 @@ Choose from 5 pre-built templates to get started instantly
 
 ::: {animate: "fade-in"}
 Each template includes complete styling, structure, and example content
-:::
+::: end
 
 ===
 # Academic Template
@@ -617,11 +618,11 @@ Perfect for university lectures and educational presentations
 - Structured agenda and sections
 - Citation-ready format
 - Mathematical equation support
-:::
+::: end
 
 ::: {text-align: 'center'; margin-top: '20px'}
 ![Demo Image](https://placehold.co/600x350/3498db/white?text=Academic+Template)
-:::
+::: end
 
 ===
 # Business Template
@@ -634,11 +635,11 @@ Corporate presentations made easy
 - Financial metrics grid
 - Timeline and roadmap sections
 - Professional branding
-:::
+::: end
 
 ::: {text-align: 'center'; margin-top: '20px'}
 ![Demo Image](https://placehold.co/600x350/3498db/white?text=Academic+Template)
-:::
+::: end
 
 ===
 # Technical Template
@@ -651,7 +652,7 @@ Built for developers and architects
 - Enhanced syntax highlighting
 - Architecture diagram layouts
 - API documentation sections
-:::
+::: end
 
 
 ===
@@ -662,18 +663,18 @@ Built for developers and architects
 **Conference**
 
 Speaker-ready slides with timing cues
-:::
+::: end
 
 ::: {background: '#42A5F5'; color: 'white'; padding: '20px'; border-radius: '8px'; animate: 'fade-in'}
 **Minimal**
 
 Clean, distraction-free design
-:::
-:::
+::: end
+::: end
 
 ::: {animate: "fade-in"; margin-top: '30px'}
 All templates are fully customizable - just update the metadata and content!
-:::
+::: end
 
 ===
 # How It Works
@@ -682,19 +683,19 @@ All templates are fully customizable - just update the metadata and content!
 
 ::: {animate: "fade-in"}
 **1. Write** - Create `.sdml` files using our simple syntax
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **2. Parse** - Langium processes your DSL code
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **3. Generate** - Our compiler outputs Reveal.js HTML
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **4. Present** - Open in any browser and present!
-:::
+::: end
 
 ===
 # Technology Stack
@@ -706,26 +707,26 @@ Built with modern, proven technologies
 **Langium**
 
 TypeScript-based DSL framework
-:::
+::: end
 
 ::: {background: '#1565C0'; color: 'white'; padding: '20px'; border-radius: '8px'; animate: 'fade-in'}
 **Reveal.js**
 
 HTML presentation library
-:::
+::: end
 
 ::: {background: '#1976D2'; color: 'white'; padding: '20px'; border-radius: '8px'; animate: 'fade-in'}
 **VS Code**
 
 Syntax highlighting extension
-:::
+::: end
 
 ::: {background: '#1E88E5'; color: 'white'; padding: '20px'; border-radius: '8px'; animate: 'fade-in'}
 **Node.js**
 
 CLI compiler and dev server
-:::
-:::
+::: end
+::: end
 
 ===
 # Use Cases
@@ -737,18 +738,18 @@ Who benefits from SlideDeckML?
 - Progressive code examples
 - Mathematical equations
 - Interactive annotations
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **Developers & Tech Speakers**
 - Version-controlled presentations
 - Code-focused slides
 - Clean, professional design
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **Anyone who values efficiency over complexity!**
-:::
+::: end
 
 ===
 {transition: "concave"}
@@ -783,7 +784,7 @@ Compile with: `slidedeckml compile presentation.sdml`
 - No proprietary formats
 - Faster iteration
 - Terminal-based workflow
-:::
+::: end
 
 ::: {background: '#ecf0f1'; padding: '20px'; border-radius: '10px'; margin-top: '20px'}
 **vs. Plain Markdown:**
@@ -792,7 +793,7 @@ Compile with: `slidedeckml compile presentation.sdml`
 - Absolute positioning
 - Animations and transitions
 - Interactive features
-:::
+::: end
 
 ===
 
@@ -804,23 +805,23 @@ What we accomplished together
 ::: {animate: "fade-in"}
 ### 20+
 Example slides
-:::
+::: end
 
 ::: {animate: "fade-in"}
 ### 6
 Code modes
-:::
+::: end
 
 ::: {animate: "fade-in"}
 ### 100%
 Open source
-:::
+::: end
 
 ::: {animate: "fade-in"}
 ### 4
 Team members
-:::
-:::
+::: end
+::: end
 
 ===
 # Team Members
@@ -830,26 +831,26 @@ Team members
 **Roxane**
 
 DSL Design & Architecture
-:::
+::: end
 
 ::: {background: 'linear-gradient(135deg, #1565C0 0%, #1976D2 100%)'; color: 'white'; padding: '25px'; border-radius: '10px'; text-align: 'center'}
 **Baptiste L.**
 
 Parser & Compiler
-:::
+::: end
 
 ::: {background: 'linear-gradient(135deg, #1976D2 0%, #1E88E5 100%)'; color: 'white'; padding: '25px'; border-radius: '10px'; text-align: 'center'}
 **Baptiste R.**
 
 Code Generation & Testing
-:::
+::: end
 
 ::: {background: 'linear-gradient(135deg, #1E88E5 0%, #42A5F5 100%)'; color: 'white'; padding: '25px'; border-radius: '10px'; text-align: 'center'}
 **Theo V.**
 
 VS Code Extension & UX
-:::
-:::
+::: end
+::: end
 
 ===
 {transition: "zoom"}
@@ -860,23 +861,23 @@ Where we're heading next
 
 ::: {animate: "fade-in"}
 - **Templates gallery** - Pre-built professional themes
-:::
+::: end
 
 ::: {animate: "fade-in"}
 - **Live preview** - Real-time editing in VS Code
-:::
+::: end
 
 ::: {animate: "fade-in"}
 - **Export to PDF** - Share without browsers
-:::
+::: end
 
 ::: {animate: "fade-in"}
 - **Collaborative editing** - Multiple authors
-:::
+::: end
 
 ::: {animate: "fade-in"}
 - **Plugin system** - Extend with custom features
-:::
+::: end
 
 ===
 # Try It Yourself!
@@ -888,26 +889,26 @@ Getting started is easy
 ```bash
 npm install -g slidedeckml
 ```
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **2. Create**
 ```bash
 slidedeckml new my-presentation.sdml
 ```
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **3. Compile**
 ```bash
 slidedeckml compile my-presentation.sdml
 ```
-:::
+::: end
 
 ::: {animate: "fade-in"}
 **4. Present!**
 Open the generated HTML in your browser
-:::
+::: end
 
 ===
 ::: {text-align: 'center'}
@@ -919,9 +920,7 @@ Open the generated HTML in your browser
 
 *SI5 - Software Engineering Project*
 
----
-
 Feel free to use the **chalkboard** (press B) to ask questions!
 
 *Source code available on GitHub*
-:::
+::: end

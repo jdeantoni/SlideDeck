@@ -81,7 +81,7 @@
 - Annual Targets
 - Future Vision
 
-:::
+::: end
 
 ===
 # Market Analysis
@@ -109,7 +109,7 @@
 - Benefit 1: Description
 - Benefit 2: Description
 - Benefit 3: Description
-:::
+::: end
 
 ===
 # Financial Overview
@@ -123,23 +123,23 @@
 **$X.XM**
 
 ↑ XX% YoY
-:::
+::: end
 
 ::: {background: '#e6f2ff'; padding: '20px'; border-radius: '10px'}
 ### Growth
 **XX%**
 
 Target: XX%
-:::
+::: end
 
 ::: {background: '#e6f2ff'; padding: '20px'; border-radius: '10px'}
 ### Customers
 **X,XXX**
 
 ↑ XX% Growth
-:::
+::: end
 
-:::
+::: end
 
 ===
 # Roadmap
@@ -160,4 +160,4 @@ Target: XX%
 [Call to Action]
 
 [Contact Information]
-:::
+::: end

@@ -27,7 +27,7 @@ async function main() {
         '::: {.example}',
         '/* hidden inside style */',
         'Styled text',
-        ':::',
+        '::: end',
         '```js',
         '// comment inside code',
         '/* block comment inside code */',

@@ -7,6 +7,7 @@ import { PreviewManager } from './vscode/preview';
 import { compileHtml } from './vscode/compile';
 import { registerImagePaste } from './vscode/image-paste';
 import { startPresentation } from './vscode/start';
+import { registerFenceHighlighting } from './vscode/fence-highlighting';
 
 let client: LanguageClient;
 
@@ -15,6 +16,7 @@ export function activate(context: vscode.ExtensionContext): void {
     client = startLanguageClient(context);
     const previews = new PreviewManager();
     context.subscriptions.push(previews);
+    context.subscriptions.push(registerFenceHighlighting());
     context.subscriptions.push(vscode.commands.registerCommand('slidedeck.openPreview', () => previews.open()));
     context.subscriptions.push(vscode.commands.registerCommand('slidedeck.compileHtml', compileHtml));
     context.subscriptions.push(vscode.commands.registerCommand('slidedeck.startPresentation', startPresentation));

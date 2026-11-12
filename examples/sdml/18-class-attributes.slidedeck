@@ -13,18 +13,18 @@ CSS classes for Reveal.js and custom styling
 ::: {.r-fit-text}
 ## This Text Will Fit Container
 Using Reveal.js built-in class
-:::
+::: end
 
 ===
 # Multiple Classes
 
 ::: {.fragment .fade-in}
 This will fade in as a fragment when you advance
-:::
+::: end
 
 ::: {.fragment .fade-out}
 This will fade out
-:::
+::: end
 
 ===
 # Class with Inline Styles
@@ -32,7 +32,7 @@ This will fade out
 ::: {.r-stretch; background: '#3498db'; padding: '20px'; color: 'white'}
 ## Stretched Content
 Combined Reveal.js class with custom styles
-:::
+::: end
 
 ===
 # Custom Classes
@@ -40,22 +40,22 @@ Combined Reveal.js class with custom styles
 ::: {.my-custom-class; background: '#2ecc71'; color: 'white'; padding: '25px'; border-radius: '10px'}
 ### Custom Styled Box
 You can add your own class names for custom CSS
-:::
+::: end
 
 ===
 # Reveal.js Fragment Classes
 
 ::: {.fragment .highlight-red}
 This fragment will be highlighted in red
-:::
+::: end
 
 ::: {.fragment .highlight-blue}
 This fragment will be highlighted in blue
-:::
+::: end
 
 ::: {.fragment .highlight-green}
 This fragment will be highlighted in green
-:::
+::: end
 
 ===
 # Multiple Custom Classes
@@ -67,7 +67,7 @@ This fragment will be highlighted in green
 - rounded
 
 (Add corresponding CSS in your theme)
-:::
+::: end
 
 ===
 # Class Names with Hyphens
@@ -75,7 +75,7 @@ This fragment will be highlighted in green
 ::: {.my-special-box; background: '#9b59b6'; color: 'white'; padding: '20px'}
 ### Hyphenated Class Name
 Classes with hyphens work perfectly
-:::
+::: end
 
 ===
 # Class Names with Underscores
@@ -83,14 +83,14 @@ Classes with hyphens work perfectly
 ::: {.my_underscore_class; background: '#e67e22'; color: 'white'; padding: '20px'}
 ### Underscored Class Name
 Classes with underscores also work
-:::
+::: end
 
 ===
 # Reveal.js Stack Classes
 
 ::: {.r-stack}
 ![Layer 1](https://placehold.co/400x300/3498db/white?text=Background)
-:::
+::: end
 
 ===
 # Reveal.js Hstack Class
@@ -99,7 +99,7 @@ Classes with underscores also work
 ### Item 1
 ### Item 2
 ### Item 3
-:::
+::: end
 
 ===
 # Combined: Class + Transform
@@ -107,7 +107,7 @@ Classes with underscores also work
 ::: {.my-rotated-box; rotate: 5; scale: 1.1; background: '#e74c3c'; color: 'white'; padding: '25px'; border-radius: '8px'}
 ### Rotation + Class
 Combining class attributes with transform abstractions
-:::
+::: end
 
 ===
 # Combined: Class + Layout
@@ -116,13 +116,13 @@ Combining class attributes with transform abstractions
 ::: {.column; width: '50%'}
 ### Column 1
 With class attribute
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Column 2
 And layout shortcut
-:::
-::::
+::: end
+::: end
 
 ===
 # Complex Combination
@@ -131,48 +131,48 @@ And layout shortcut
 ::: {.column; width: '33%'}
 ### Feature A
 First feature
-:::
+::: end
 
 ::: {.column; width: '33%'}
 ### Feature B
 Second feature
-:::
+::: end
 
 ::: {.column; width: '34%'}
 ### Feature C
 Third feature
-:::
-::::
+::: end
+::: end
 
 ===
 # Reveal.js Auto-animate
 
 ::: {.fragment .fade-up}
 Content that fades up
-:::
+::: end
 
 ::: {.fragment .fade-down}
 Content that fades down
-:::
+::: end
 
 ::: {.fragment .fade-left}
 Content that fades from left
-:::
+::: end
 
 ::: {.fragment .fade-right}
 Content that fades from right
-:::
+::: end
 
 ===
 # Reveal.js Grow/Shrink
 
 ::: {.fragment .grow}
 This will grow
-:::
+::: end
 
 ::: {.fragment .shrink}
 This will shrink
-:::
+::: end
 
 ===
 # Class for Container Styling
@@ -182,7 +182,7 @@ This will shrink
 Content in a max-width container
 
 This pattern is useful for limiting content width on large screens
-:::
+::: end
 
 ===
 # Class + Full Abstractions
@@ -195,28 +195,28 @@ All features combined:
 - Transforms
 - Layout
 - Transparency
-:::
+::: end
 
 ::: {.column; width: '50%'}
 ### Right Side
 This demonstrates the full power of the abstraction system
-:::
-::::
+::: end
+::: end
 
 ===
 # Practical: Alert Box
 
 ::: {.alert .alert-info; background: '#d1ecf1'; color: '#0c5460'; padding: '20px'; border: '1px solid #bee5eb'; border-radius: '5px'; border-left: '5px solid #17a2b8'}
 **Info:** This is an informational alert box
-:::
+::: end
 
 ::: {.alert .alert-warning; background: '#fff3cd'; color: '#856404'; padding: '20px'; border: '1px solid #ffeaa7'; border-radius: '5px'; border-left: '5px solid #ffc107'}
 **Warning:** This is a warning alert box
-:::
+::: end
 
 ::: {.alert .alert-danger; background: '#f8d7da'; color: '#721c24'; padding: '20px'; border: '1px solid #f5c6cb'; border-radius: '5px'; border-left: '5px solid #dc3545'}
 **Error:** This is an error alert box
-:::
+::: end
 
 ===
 # End
