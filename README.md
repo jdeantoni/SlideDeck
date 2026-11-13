@@ -166,6 +166,11 @@ Questions?
 
 For complete syntax documentation, see the **[User Guide](GUIDE_UTILISATEUR.md)**.
 
+To preview the documentation website locally, run `npm run langium:generate`,
+`npm run build`, then `npm run website:previews` and serve the `website/`
+directory over HTTP. The preview build compiles the site's example snippets
+with SlideDeck; GitHub Pages runs the same step during deployment.
+
 To style part of a line, use an inline span:
 
 ```sdml

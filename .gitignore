@@ -5,6 +5,7 @@ node_modules/
 out/
 dist/
 website/slidedeck.vsix
+website/previews/
 
 # Generated files
 src/language/generated/

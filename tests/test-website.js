@@ -2,12 +2,15 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const { execFileSync } = require('child_process');
 const { CompilerService } = require('../out/services/compiler-service');
 
 async function main() {
     const directory = path.resolve(__dirname, '../website');
     const workflow = fs.readFileSync(path.resolve(__dirname, '../.github/workflows/pages.yml'), 'utf8');
     assert.match(workflow, /npx --yes @vscode\/vsce@4\.1\.0 package --out website\/slidedeck\.vsix/);
+    assert.match(workflow, /npm run website:previews/);
+    execFileSync(process.execPath, [path.join(directory, 'build-previews.js')], { cwd: path.dirname(directory) });
     for (const name of ['index.html', 'guide.html', 'features.html', 'tutorial.html']) {
         const html = fs.readFileSync(path.join(directory, name), 'utf8');
         assert.match(html, /<html lang="en">/);
@@ -36,7 +39,7 @@ async function main() {
     }
     assert.ok(guide.includes('VS Code 1.97 or later'));
     assert.ok(guide.includes('![Image](./img/image-unique-name.png)'));
-    const example = guide.match(/<pre><code>(\{\n  author:[\s\S]*?)<\/code><\/pre>/);
+    const example = guide.match(/<pre data-example="first presentation"><code>(\{\n  author:[\s\S]*?)<\/code><\/pre>/);
     assert.ok(example, 'Missing presentation example');
     const result = await new CompilerService().compile(example[1]);
     assert.ifError(result.error);
@@ -110,6 +113,19 @@ async function main() {
         if (fs.existsSync(assetsDirectory)) fs.rmdirSync(assetsDirectory);
         fs.rmdirSync(temporaryDirectory);
     }
+    for (const page of ['guide', 'features', 'tutorial']) {
+        const html = fs.readFileSync(path.join(directory, `${page}.html`), 'utf8');
+        for (const [, name] of html.matchAll(/<pre data-example="([^"]+)"/g)) {
+            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            const file = path.join(directory, 'previews', `${page}-${slug}.html`);
+            assert.ok(fs.existsSync(file), `Missing rendered ${page}/${name}`);
+            assert.match(fs.readFileSync(file, 'utf8'), /class="reveal"/);
+        }
+    }
+    const templatePreview = fs.readFileSync(path.join(directory, 'previews/features-template-import.html'), 'utf8');
+    assert.ok(templatePreview.includes('<title>My presentation</title>'));
+    assert.ok(templatePreview.includes('.reveal h1 { color: teal; }'));
+    assert.ok(fs.existsSync(path.join(directory, 'previews/features-local-video-assets/Exemple_preview.mp4')));
     console.log('Website tests passed');
 }
 

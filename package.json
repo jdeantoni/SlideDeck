@@ -2,7 +2,7 @@
   "name": "slidedeck",
   "displayName": "SlideDeck",
   "publisher": "slidedeck",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "A DSL for creating reveal.js slides from extended markdown",
   "repository": {
     "type": "git",
@@ -112,6 +112,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "website:previews": "node website/build-previews.js",
     "test": "npm run langium:generate && npm run build && node tests/run-tests.js",
     "watch": "tsc --watch",
     "langium:generate": "langium generate",

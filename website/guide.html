@@ -6,6 +6,7 @@
   <meta name="description" content="Install the SlideDeck VS Code extension and create your first presentation.">
   <title>Getting started — SlideDeck</title>
   <link rel="stylesheet" href="style.css">
+  <script src="examples.js" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -27,7 +28,7 @@
         <p>The extension recognizes <code>.slidedeck</code> and legacy <code>.sdml</code> files. If you have the old <code>slidedeckml.slidedeckml</code> extension, uninstall it to avoid conflicting file associations.</p>
       </section>
       <section id="write"><span class="step">02 / WRITE</span><h2>Write your slides</h2><p>Create and save a file named <code>talk.slidedeck</code> anywhere in your workspace. Separate slides with <code>===</code>:</p>
-        <pre><code>{
+        <pre data-example="first presentation"><code>{
   author: "Your Name"
   title: "My Presentation"
 }
