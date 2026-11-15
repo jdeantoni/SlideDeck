@@ -199,6 +199,13 @@ export class TemplateGenerator {
             display: block; width: 100%; height: 100%; max-width: none; max-height: none;
             margin: 0; border: 0; box-shadow: none;
         }
+        ${this.chalkboardEnabled ? `
+        /* Chalkboard records pointer positions in viewport coordinates. */
+        @media screen {
+            .reveal > #notescanvas, .reveal > #chalkboard {
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            }
+        }` : ''}
         .reveal [data-sd-note]::after {
             content: "i";
             display: inline-block;
