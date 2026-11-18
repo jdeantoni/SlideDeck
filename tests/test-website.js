@@ -31,10 +31,11 @@ async function main() {
     const landing = fs.readFileSync(path.join(directory, 'index.html'), 'utf8');
     assert.match(landing, /href="slidedeck\.vsix" download/);
     assert.match(guide, /href="slidedeck\.vsix" download/);
-    const sections = ['install', 'write', 'paste-image', 'preview', 'compile', 'present', 'source'];
+    const sections = ['install', 'write', 'paste-image', 'preview', 'compile', 'export-pdf', 'present', 'source'];
     const positions = sections.map(id => guide.indexOf(`<section id="${id}">`));
     assert.ok(positions.every((position, index) => position >= 0 && (index === 0 || position > positions[index - 1])));
-    for (const command of ['SlideDeck: Open Preview to the Side', 'SlideDeck: Generate HTML', 'SlideDeck: Start Presentation']) {
+    for (const command of ['SlideDeck: Open Preview to the Side', 'SlideDeck: Generate HTML',
+        'SlideDeck: Export PDF', 'SlideDeck: Start Presentation']) {
         assert.ok(guide.includes(command), `Missing command: ${command}`);
     }
     assert.ok(guide.includes('VS Code 1.97 or later'));

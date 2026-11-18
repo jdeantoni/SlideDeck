@@ -16,6 +16,7 @@
     "onLanguage:slidedeck",
     "onCommand:slidedeck.openPreview",
     "onCommand:slidedeck.compileHtml",
+    "onCommand:slidedeck.exportPdf",
     "onCommand:slidedeck.startPresentation"
   ],
   "contributes": {
@@ -57,6 +58,11 @@
         "icon": "$(export)"
       },
       {
+        "command": "slidedeck.exportPdf",
+        "title": "SlideDeck: Export PDF",
+        "icon": "$(file-pdf)"
+      },
+      {
         "command": "slidedeck.startPresentation",
         "title": "SlideDeck: Start Presentation",
         "icon": "$(play)"
@@ -75,9 +81,14 @@
           "group": "navigation@2"
         },
         {
-          "command": "slidedeck.startPresentation",
+          "command": "slidedeck.exportPdf",
           "when": "editorLangId == slidedeck",
           "group": "navigation@3"
+        },
+        {
+          "command": "slidedeck.startPresentation",
+          "when": "editorLangId == slidedeck",
+          "group": "navigation@4"
         }
       ]
     },
@@ -100,6 +111,12 @@
           ],
           "scope": "machine",
           "description": "Arguments passed to the browser before the presentation URL."
+        },
+        "slidedeck.decktapeExecutable": {
+          "type": "string",
+          "default": "decktape",
+          "scope": "machine",
+          "description": "DeckTape executable or JavaScript entrypoint path used to export presentations to PDF."
         }
       }
     }

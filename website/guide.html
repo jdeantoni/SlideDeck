@@ -16,7 +16,7 @@
     </nav>
   </header>
   <main class="guide-layout wrap">
-    <aside class="guide-sidebar"><p class="eyebrow">ON THIS PAGE</p><nav aria-label="Guide sections"><a href="#install">Install in VS Code</a><a href="#write">Write your slides</a><a href="#paste-image">Paste an image</a><a href="#preview">Open the preview</a><a href="#compile">Generate HTML</a><a href="#present">Start presenting</a><a href="#source">From source and CLI</a><a href="#learn">Learn more</a></nav></aside>
+    <aside class="guide-sidebar"><p class="eyebrow">ON THIS PAGE</p><nav aria-label="Guide sections"><a href="#install">Install in VS Code</a><a href="#write">Write your slides</a><a href="#paste-image">Paste an image</a><a href="#preview">Open the preview</a><a href="#compile">Generate HTML</a><a href="#export-pdf">Export PDF</a><a href="#present">Start presenting</a><a href="#source">From source and CLI</a><a href="#learn">Learn more</a></nav></aside>
     <article class="guide">
       <p class="eyebrow">DOCUMENTATION / GETTING STARTED</p>
       <h1>Your first <em>SlideDeck.</em></h1>
@@ -56,7 +56,11 @@ Your first slide.
         <p>Click <strong>Generate HTML</strong> in the editor title bar, or run <strong>SlideDeck: Generate HTML</strong>. Choose where to save the HTML; the current editor contents, including unsaved edits, are used. Save a new source file first so relative assets can be resolved. Local videos are copied into an assets folder beside the HTML.</p>
         <p>Open the generated file in a browser. It loads reveal.js and other libraries from CDNs, so internet access may be required.</p>
       </section>
-      <section id="present"><span class="step">05 / PRESENT</span><h2>Start your presentation</h2>
+      <section id="export-pdf"><span class="step">05 / SHARE</span><h2>Export PDF</h2>
+        <p>Click <strong>Export PDF</strong> in the editor title bar, or run <strong>SlideDeck: Export PDF</strong>. The export uses DeckTape's reveal.js renderer to capture the slides and fragment steps, preserving the presentation's browser-rendered styling and layout.</p>
+        <p>DeckTape is an optional external tool, not an npm dependency of SlideDeck. Install it separately with <code>npm install -g decktape</code>, then make the <code>decktape</code> executable available on the extension host or set <code>slidedeck.decktapeExecutable</code> to its path. On Windows, set it to DeckTape's <code>decktape.js</code> entrypoint. Its current release requires Node.js 22.12 or later and Puppeteer/Chrome. PDF export loads the presentation's external libraries and may require internet access.</p>
+      </section>
+      <section id="present"><span class="step">06 / PRESENT</span><h2>Start your presentation</h2>
         <p>Click <strong>Start Presentation</strong> in the editor title bar, or run <strong>SlideDeck: Start Presentation</strong>. SlideDeck generates HTML beside the source and opens a new Firefox window. If the HTML already exists, you will be asked before it is overwritten.</p>
         <p>Choose another browser with the VS Code setting <code>slidedeck.browserExecutable</code>; adjust <code>slidedeck.browserArguments</code> if needed. Starting a browser requires a local VS Code extension host. In a remote workspace, generate the HTML and open it locally.</p>
       </section>

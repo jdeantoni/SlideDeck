@@ -16,6 +16,8 @@ async function run() {
         'Expected the HTML compilation command');
     assert.ok((await vscode.commands.getCommands(true)).includes('slidedeck.startPresentation'),
         'Expected the start presentation command');
+    assert.ok((await vscode.commands.getCommands(true)).includes('slidedeck.exportPdf'),
+        'Expected the PDF export command');
     const document = await vscode.workspace.openTextDocument({
         language: 'slidedeck',
         content: '# Example\nsdml-'
