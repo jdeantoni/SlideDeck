@@ -74,6 +74,7 @@ async function main() {
     const expected = {
         basics: '<strong>bold</strong>',
         lists: '<li>Gather ideas</li>',
+        tables: '<td style="text-align: right">42</td>',
         links: 'class="qr-code-standalone"',
         notes: '<span style="color: blue">A styled explanation</span>',
         styles: 'width: 50%; margin: 0 auto',

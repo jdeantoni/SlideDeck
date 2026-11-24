@@ -17,7 +17,7 @@
   </header>
   <main class="guide-layout wrap">
     <aside class="guide-sidebar"><p class="eyebrow">FEATURES</p><nav aria-label="Feature sections">
-      <a href="#basics">Slides and text</a><a href="#lists">Lists and quotes</a><a href="#links">Links and QR</a><a href="#notes">Notes and footnotes</a><a href="#styling">Styles and layout</a><a href="#media">Images and video</a><a href="#code">Code and math</a><a href="#animation">Fragments and transitions</a><a href="#interactive">Editors and quizzes</a><a href="#drawing">Drawing and preview</a><a href="#templates">Themes and templates</a>
+      <a href="#basics">Slides and text</a><a href="#lists">Lists and quotes</a><a href="#tables">Tables</a><a href="#links">Links and QR</a><a href="#notes">Notes and footnotes</a><a href="#styling">Styles and layout</a><a href="#media">Images and video</a><a href="#code">Code and math</a><a href="#animation">Fragments and transitions</a><a href="#interactive">Editors and quizzes</a><a href="#drawing">Drawing and preview</a><a href="#templates">Themes and templates</a>
     </nav></aside>
     <article class="guide reference">
       <p class="eyebrow">DOCUMENTATION / EXAMPLES</p>
@@ -52,6 +52,15 @@ This is **bold**, *italic*, and __underlined__.
 1. Rehearse
 2. Present
 &gt; Keep the message clear.</code></pre>
+      </section>
+      <section id="tables"><h2>Tables</h2>
+        <p>Write a header and a delimiter row with the same number of cells. Colons align columns left, right or center; outer pipes are optional, but the header must contain a pipe. Escape a literal pipe with <code>\|</code>.</p>
+        <pre data-example="tables"><code># Results
+| Name | Score | Status |
+| :--- | ----: | :----: |
+| **Ada** | 42 | Ready |
+| Grace | 37 | A \| B |</code></pre>
+        <p>Cells support inline formatting. Rows continue until a blank line or another slide element. Missing cells are empty and extra cells are ignored. Tables can also appear inside styled blocks and fragments.</p>
       </section>
       <section id="links"><h2>Links and QR codes</h2>
         <p>Links use <code>![label] "destination"</code>; images use parentheses instead. The special <code>QR</code> label generates an image from an online QR service.</p>

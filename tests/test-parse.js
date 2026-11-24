@@ -10,7 +10,8 @@ const result = services.parser.LangiumParser.parse(source);
 assert.deepStrictEqual(result.lexerErrors, []);
 assert.deepStrictEqual(result.parserErrors, []);
 assert.strictEqual(result.value.metadata.title, 'Simple Markdown Test');
-assert.strictEqual(result.value.slides.slides.length, 6);
+assert.strictEqual(result.value.slides.slides.length, 7);
+assert.ok(result.value.slides.slides[6].blocks[0].lines.some(line => line.$type === 'Table'));
 const lines = result.value.slides.slides[0].blocks[0].lines;
 assert.deepStrictEqual(lines.map(line => [line.$type, line.level, line.text]), [
     ['Header', '#', 'Main Title (H1)'],

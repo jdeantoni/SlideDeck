@@ -3,6 +3,7 @@ import {
     isHeader,
     isList,
     isParagraph,
+    isTable,
     isQuote,
     isMedia,
     isStyledElement,
@@ -99,6 +100,9 @@ export class LineContentHandler {
         if (isParagraph(line)) {
             return this.elementGenerator.generateParagraph(line);
         }
+        if (isTable(line)) {
+            return this.elementGenerator.generateTable(line);
+        }
         return '';
     }
 
@@ -162,6 +166,8 @@ export class LineContentHandler {
                 containerHtml += this.ideGenerator.generateOutput(element, '') + '\n';
             } else if (isParagraph(element)) {
                 containerHtml += this.elementGenerator.generateParagraph(element, '') + '\n';
+            } else if (isTable(element)) {
+                containerHtml += this.elementGenerator.generateTable(element) + '\n';
             }
         }
 
@@ -211,6 +217,8 @@ export class LineContentHandler {
                 containerHtml += this.ideGenerator.generateOutput(element, '') + '\n';
             } else if (isParagraph(element)) {
                 containerHtml += this.elementGenerator.generateParagraph(element, '') + '\n';
+            } else if (isTable(element)) {
+                containerHtml += this.elementGenerator.generateTable(element) + '\n';
             }
         }
 
@@ -283,6 +291,8 @@ export class LineContentHandler {
                 containerHtml += this.ideGenerator.generateOutput(element) + '\n';
             } else if (isParagraph(element)) {
                 containerHtml += this.elementGenerator.generateParagraph(element, '') + '\n';
+            } else if (isTable(element)) {
+                containerHtml += this.elementGenerator.generateTable(element) + '\n';
             }
         }
 

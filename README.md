@@ -38,7 +38,7 @@ We selected **reveal.js** as our target framework and **Langium** as our DSL imp
 ## Features
 
 - **Intuitive Syntax**: Write slides with familiar markdown-style syntax
-- **Rich Content**: Support for headings, text formatting, lists, code blocks, math (LaTeX), media (images, videos, YouTube)
+- **Rich Content**: Support for headings, text formatting, lists, tables, code blocks, math (LaTeX), media (images, videos, YouTube)
 - **Advanced Features**: 
   - Multiple presentation themes and templates (academic, business, conference, technical, minimal)
   - Interactive chalkboard and annotations
@@ -272,6 +272,22 @@ Lists can be nested using Markdown-style indentation:
 Indent a child marker at least as far as the start of its parent item's text;
 dedent to return to a previous level. Items are single-line, and blank lines
 alone do not separate consecutive lists.
+
+Tables use a header and a delimiter row:
+
+```sdml
+| Name | Score | Status |
+| :--- | ----: | :----: |
+| **Ada** | 42 | Ready |
+| Grace | 37 | A \| B |
+```
+
+Colons set left, right, or center alignment. Outer pipes are optional; the
+header must contain a pipe and have the same number of cells as the delimiter.
+Escape a literal pipe as `\|`. Cells support SlideDeck's inline formatting.
+Rows continue until a blank line or another slide element; missing cells are
+empty and extra cells are ignored. Tables also work inside styled and fragment
+blocks.
 
 Comments can be written on their own lines with `//`, or as `/* ... */`
 blocks spanning one or more lines. They are omitted from generated slides.
@@ -595,6 +611,14 @@ Configure your presentation at the top of your `.sdml` file:
 
 1. Ordered item 1
 2. Ordered item 2
+```
+
+### Tables
+
+```sdml
+| Name | Score |
+| ---- | ----: |
+| Ada  | 42    |
 ```
 
 ### Code Blocks

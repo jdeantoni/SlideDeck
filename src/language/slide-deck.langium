@@ -40,7 +40,7 @@ Block:
 
 // Inline markup inside text is interpreted by the HTML generator, not this grammar.
 LineContent:
-    FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode;
+    FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Table | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode;
 
 // Fenced code blocks retain their raw text, including optional highlight settings.
 CodeBlock:
@@ -55,13 +55,13 @@ FragmentItem:
 
 // Blocks end explicitly, allowing arbitrary nesting. :::: retains column defaults.
 FragmentElement:
-    STYLE_DELIMITER fragment=FRAGMENT_ATTRS elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
+    STYLE_DELIMITER fragment=FRAGMENT_ATTRS elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Table | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
 
 NestedStyledElement:
-    NESTED_STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
+    NESTED_STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Table | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
 
 StyledElement:
-    STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
+    STYLE_DELIMITER (style=STYLE_ATTRS)? elements+=(FragmentElement | NestedStyledElement | StyledElement | Header | List | Quote | Media | Table | Paragraph | CodeBlock | SyncFragments | Editor | Output | QrCode)+ STYLE_END;
 
 // Indentation is recovered from source positions by the generator for nested lists.
 List:
@@ -78,6 +78,9 @@ OrderedListItem:
 
 Paragraph:
     text=PARAGRAPH_TEXT;
+
+Table:
+    content=TABLE;
 
 Quote:
     marker='>' text=PARAGRAPH_TEXT;
@@ -128,6 +131,10 @@ terminal TEMPLATE_IMPORT returns string:
 
 terminal CODE_BLOCK returns string:
     /```[a-zA-Z0-9_\-]*(?:\s*\[(?:(?:highlight:\s*(?:block|function|class|line-by-line|all|none))|(?:lines:\s*["'][^"']+["'])|(?:start:\s*\d+)|\s)+\])?[\r\n]([\s\S]*?)```/;
+
+// A table starts with a pipe-containing header and a Markdown delimiter row.
+terminal TABLE returns string:
+    /(?![ \t]*(?:#{1,3}[ \t]+|[-+*][ \t]+|\d+\.[ \t]+|>|:::|```|,,,|===|\/\/|\/\*|\!\[[^\]]+\]\(|!\[QR\]|\{transition:|\[\-\-\-\]|output[ \t]*:))[^\r\n]*\|[^\r\n]*\r?\n[ \t]*\|?[ \t]*:?-+:?[ \t]*(?:\|[ \t]*:?-+:?[ \t]*)*\|?[ \t]*(?=\r?\n|(?![\s\S]))(?:\r?\n(?=[ \t]*\S)(?![ \t]*(?:#{1,3}[ \t]+|[-+*][ \t]+|\d+\.[ \t]+|>|:::|```|,,,|===|\/\/|\/\*|\!\[[^\]]+\]\(|!\[QR\]|\{transition:|\[\-\-\-\]|output[ \t]*:))[^\r\n]+)*/;
 
 terminal QUIZ_START: /:::quiz/;
 terminal SYNC_DELIMITER_KEEP: /:::\[sync-fragments\s+keep\]/;

@@ -68,3 +68,11 @@ With formatting:
 > This is a quote with **bold text** and *italic text* or _italic text_
 
 > Another quote with __underlined text__ and **__bold italic__**
+
+===
+# Table Test
+
+| Name | Score | Status |
+| :--- | ----: | :----: |
+| **Ada** | 42 | Ready |
+| Grace | 37 | A \| B |

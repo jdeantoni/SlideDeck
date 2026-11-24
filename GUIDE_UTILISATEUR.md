@@ -214,6 +214,27 @@ Texte **gras et _italique_** en même temps
 
 ---
 
+## Tableaux
+
+Un tableau comporte un en-tête et une ligne de séparation :
+
+```sdml
+| Nom | Score | Statut |
+| :--- | ---: | :---: |
+| **Ada** | 42 | Prête |
+| Grace | 37 | A \| B |
+```
+
+Les deux-points alignent les colonnes à gauche, à droite ou au centre. Les
+barres extérieures sont facultatives ; l'en-tête doit contenir une barre et
+avoir autant de cellules que la ligne de séparation. Échappez une barre dans
+une cellule avec `\|`. Les cellules acceptent le formatage inline de SlideDeck.
+Les lignes continuent jusqu'à une ligne vide ou un autre élément de slide.
+Les cellules manquantes sont vides et les cellules supplémentaires sont ignorées.
+Les tableaux fonctionnent aussi dans les blocs stylés et les fragments.
+
+---
+
 ## Listes
 
 ### Listes non ordonnées

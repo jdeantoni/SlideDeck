@@ -2,7 +2,7 @@ import { ImageConverter } from "./image-converter";
 import { VideoAssetManager } from "./video-asset-manager";
 import { StyleParser } from "./style-parser";
 import { isRootCstNode } from "langium";
-import { List, Media, NestedStyledElement, StyledElement, OrderedListItem, UnorderedListItem, isOrderedListItem } from "../language/generated/ast";
+import { List, Media, NestedStyledElement, StyledElement, Table, OrderedListItem, UnorderedListItem, isOrderedListItem } from "../language/generated/ast";
 import { getImageOffset, getImageSize } from "./image-position";
 import { getBlockOffset } from "./block-position";
 import * as path from 'path';
@@ -88,6 +88,58 @@ export class ElementGenerator {
      */
     public generateParagraph(paragraph: any, style: string = ''): string {
         return `            <p${style}>${this.textProcessor.processInlineText(paragraph.text)}</p>`;
+    }
+
+    public generateTable(table: Table): string {
+        const lines = table.content.split(/\r?\n/);
+        const header = this.splitTableRow(lines[0]);
+        const delimiters = this.splitTableRow(lines[1]);
+        if (!/(?:^|[^\\])(?:\\\\)*\|/.test(lines[0]) || header.length !== delimiters.length) {
+            return lines.map(text => this.generateParagraph({ text })).join('\n');
+        }
+        const alignments = delimiters.map(delimiter => {
+            if (delimiter.startsWith(':') && delimiter.endsWith(':')) return 'center';
+            if (delimiter.startsWith(':')) return 'left';
+            if (delimiter.endsWith(':')) return 'right';
+            return '';
+        });
+        const renderCells = (cells: string[], tag: 'th' | 'td'): string => header.map((_, index) => {
+            const alignment = alignments[index] ? ` style="text-align: ${alignments[index]}"` : '';
+            return `<${tag}${alignment}>${this.textProcessor.processInlineText(cells[index] || '')}</${tag}>`;
+        }).join('');
+        const headerCells = renderCells(header, 'th');
+        const body = lines.slice(2).map(line => `                <tr>${renderCells(this.splitTableRow(line), 'td')}</tr>`).join('\n');
+        return [
+            '            <table>',
+            `                <thead><tr>${headerCells}</tr></thead>`,
+            ...(body ? ['                <tbody>', body, '                </tbody>'] : []),
+            '            </table>'
+        ].join('\n');
+    }
+
+    private splitTableRow(row: string): string[] {
+        const cells: string[] = [];
+        let cell = '';
+        let hasTrailingPipe = false;
+        const text = row.trim();
+        let index = text.startsWith('|') ? 1 : 0;
+        for (; index < text.length; index++) {
+            const char = text[index];
+            if (char === '\\' && index + 1 < text.length && (text[index + 1] === '|' || text[index + 1] === '\\')) {
+                cell += text[index + 1] === '|' ? '|' : '\\\\';
+                index++;
+                hasTrailingPipe = false;
+            } else if (char === '|') {
+                cells.push(cell.trim());
+                cell = '';
+                hasTrailingPipe = true;
+            } else {
+                cell += char;
+                hasTrailingPipe = false;
+            }
+        }
+        if (!hasTrailingPipe) cells.push(cell.trim());
+        return cells;
     }
 
     /**
