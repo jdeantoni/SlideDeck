@@ -30,6 +30,8 @@ async function main() {
         '[literal]{.note} <span class="note">bracket ] text</span>');
     assert.strictEqual(format('[ordinary](url) [bad]{not-css} [unfinished]{color: red'),
         '[ordinary](url) [bad]{not-css} [unfinished]{color: red');
+    assert.strictEqual(format('[ordinary] text [bad] {not-css} [spaced] \t{.note}'),
+        '[ordinary] text [bad] {not-css} <span class="note">spaced</span>');
     assert.strictEqual(
         format('[<unsafe>]{content: \'" onmouseover="evil\'; color: red}'),
         '<span style="content: &quot; onmouseover=&quot;evil; color: red">&lt;unsafe&gt;</span>'

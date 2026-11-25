@@ -13,6 +13,10 @@ export interface FootnoteContent {
     note?: string;
 }
 
+export function isFootnoteQuoteEnd(text: string, index: number): boolean {
+    return /^\s*(?:\]|;\s*note\s*:)/.test(text.slice(index + 1));
+}
+
 /**
  * Style parser for handling CSS style attributes with abstractions
  */
@@ -203,7 +207,7 @@ export class StyleParser {
                 current += char;
                 if (char === '\\' && i + 1 < content.length) {
                     current += content[++i];
-                } else if (char === quote) {
+                } else if (char === quote && (!nestedBraces || bracketDepth === 0 || isFootnoteQuoteEnd(content, i))) {
                     quote = '';
                 }
             } else if (char === "'" || char === '"') {
@@ -288,9 +292,11 @@ export class StyleParser {
                 let classes: string[] = [];
                 let styles: string[] = [];
                 let footnoteNote: string | undefined;
+                let styledFootnote = false;
                 if (property[1] === 'footnote' && value.startsWith('[')) {
-                    const styled = /^\[\s*((?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"))\s*(?:;\s*(note\s*:\s*(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"))\s*)?\]\s*\{([\s\S]*)\}$/.exec(value);
+                    const styled = /^\[\s*((?:'(?:\\.|[^'\\]|'(?!\s*(?:\]|;\s*note\s*:)))*'|"(?:\\.|[^"\\]|"(?!\s*(?:\]|;\s*note\s*:)))*"))\s*(?:;\s*(note\s*:\s*(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"))\s*)?\]\s*\{([\s\S]*)\}$/.exec(value);
                     if (!styled) return undefined;
+                    styledFootnote = true;
                     const attributes = this.parseInlineAttributes(styled[3]);
                     if (!attributes || attributes.footnote !== undefined) return undefined;
                     if (styled[2]) {
@@ -304,7 +310,9 @@ export class StyleParser {
                     styles = attributes.styles;
                     value = styled[1];
                 }
-                const match = /^(?:'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)")$/.exec(value);
+                const match = styledFootnote
+                    ? /^(?:'((?:\\.|[^\\])*)'|"((?:\\.|[^\\])*)")$/.exec(value)
+                    : /^(?:'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)")$/.exec(value);
                 if (!match) return undefined;
                 const quote = value[0];
                 const text = (match[1] ?? match[2]).replace(/\\(.)/g, (original, char: string) =>

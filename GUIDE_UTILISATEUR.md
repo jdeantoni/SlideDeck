@@ -541,8 +541,12 @@ Pour une note numérotée à la fin de la diapositive, utilisez `footnote` :
 
 Le style entre les accolades internes s'applique au texte de la note, pas au
 texte de référence ni au numéro. Définissez les classes comme `.todo` dans le
-CSS de la présentation. Le texte de la note reste du texte brut : le HTML est
-échappé.
+CSS de la présentation. Les notes acceptent le gras, l'italique et le
+soulignement ; le HTML est échappé et les liens et styles inline ne sont pas
+interprétés dans leur texte. Des espaces ou tabulations sont permis entre `]` et `{` de la
+référence. Le texte d'une note stylée peut contenir des guillemets identiques
+à ses délimiteurs ; échappez-les avec `\` s'ils risquent d'être interprétés
+comme une fermeture (par exemple avant `]` ou `; note:`).
 L'attribut `note` entre les crochets (ou dans les accolades internes) ajoute
 une infobulle au texte de la note. Placé dans les accolades externes, il
 s'applique au texte de référence. L'infobulle native peut être inaccessible

@@ -32,6 +32,8 @@ async function main() {
     styled.resetFootnotes();
     styled.processInlineText('[x]{footnote: [\'text\'; note: \'one\']{.todo; note: \'two\'}}');
     assert.strictEqual(styled.renderFootnotes(), '');
+    styled.processInlineText('[x]{footnote: [\'text\'; note: \'one\'; note: \'two\']{.todo}}');
+    assert.strictEqual(styled.renderFootnotes(), '');
     styled.resetFootnotes();
     styled.processInlineText('[x]{footnote: [\'text\'; note: \'" & <hover>; \\\'quoted\\\'\']{.todo; color: red}; note: \'reference\'}');
     assert.ok(styled.renderFootnotes().includes(
@@ -39,6 +41,35 @@ async function main() {
     styled.resetFootnotes();
     styled.processInlineText('[x]{footnote: [\'text\']{note: \'hover\'}}');
     assert.ok(styled.renderFootnotes().includes('<li><span title="hover" data-sd-note>text</span></li>'));
+
+    const example = '- [![**Thesis #4**] "https://edtlab.fr/en/positions/phd-pc1-phd1-formalanalysis"] { footnote: ["The thesis may define a metatheory for composing model characteristics. This theory would then be "realized" or "implemented" in a specific way for particular properties. For example, if the model property is a Protocol State Machine, composition would use a synchronous product based on the connections between the models. If the characteristic is of the WCET/WCTT type, composition would use Max-plus algebra."]{font-size:\'20px\'}} – Understanding how to analyse the characteristics of hybrid models based on the underlying models and their interconnections.';
+    const exampleResult = await new CompilerService().compile(example);
+    assert.ifError(exampleResult.error);
+    assert.ok(exampleResult.html.includes('<li><span><a href="https://edtlab.fr/en/positions/phd-pc1-phd1-formalanalysis"><strong>Thesis #4</strong></a></span><sup class="footnote-marker">[1]</sup> – Understanding'));
+    assert.ok(exampleResult.html.includes('<li><span style="font-size: 20px">The thesis may define a metatheory'));
+    assert.ok(exampleResult.html.includes('be &quot;realized&quot; or &quot;implemented&quot;'));
+    assert.ok(exampleResult.html.includes('use Max-plus algebra.</span></li>'));
+    const italicExample = await new CompilerService().compile(
+        example.replace('"realized" or "implemented"', '*realized* or *implemented*'));
+    assert.ifError(italicExample.error);
+    assert.ok(italicExample.html.includes(
+        'be <em>realized</em> or <em>implemented</em> in a specific way'));
+    assert.ok(italicExample.html.includes('<span style="font-size: 20px">The thesis'));
+    const formattedNotes = await new CompilerService().compile([
+        "[a]{footnote: '**bold**, _italic_, __underlined__, and <script>bad</script>'}",
+        "[b]{footnote: ['*safe* & <b>text</b>']{color: red}; note: 'Reference'}"
+    ].join('\n'));
+    assert.ifError(formattedNotes.error);
+    assert.ok(formattedNotes.html.includes('<li><strong>bold</strong>, <em>italic</em>, <u>underlined</u>, and &lt;script&gt;bad&lt;/script&gt;</li>'));
+    assert.ok(formattedNotes.html.includes('<li><span style="color: red"><em>safe</em> &amp; &lt;b&gt;text&lt;/b&gt;</span></li>'));
+    assert.ok(formattedNotes.html.includes('title="Reference" data-sd-note'));
+    styled.resetFootnotes();
+    assert.strictEqual(styled.processInlineText('[x] {footnote: ["one "quoted; {word}"; note: \'hover\']{color: red}; color: blue}'),
+        '<span style="color: blue">x</span><sup class="footnote-marker">[1]</sup>');
+    assert.ok(styled.renderFootnotes().includes('<span style="color: red" title="hover" data-sd-note>one &quot;quoted; {word}</span>'));
+    styled.resetFootnotes();
+    styled.processInlineText('[x] {footnote: ["a \\" ] and \\"; note: literal"]{color: red}}');
+    assert.ok(styled.renderFootnotes().includes('a &quot; ] and &quot;; note: literal'));
 
     const userText = 'we have no actual reasearch activity dedicated to the way to express the characteristics in a VF. In our  experiments, we may use existing technologies like extending the Asset Administration Shell with a specific metamodel; or similar';
     const source = [

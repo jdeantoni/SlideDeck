@@ -1,6 +1,6 @@
 import { ImageConverter } from "./image-converter";
 import { VideoAssetManager } from "./video-asset-manager";
-import { StyleParser } from "./style-parser";
+import { isFootnoteQuoteEnd, StyleParser } from "./style-parser";
 import { isRootCstNode } from "langium";
 import { List, Media, NestedStyledElement, StyledElement, Table, OrderedListItem, UnorderedListItem, isOrderedListItem } from "../language/generated/ast";
 import { getImageOffset, getImageSize } from "./image-position";
@@ -687,7 +687,7 @@ export class TextProcessor {
             const classes = note.classes.length ? ` class="${this.escapeHtml(note.classes.join(' '))}"` : '';
             const styles = note.styles.length ? ` style="${this.escapeHtml(note.styles.join('; '))}"` : '';
             const title = note.note !== undefined ? ` title="${this.escapeHtml(note.note)}" data-sd-note` : '';
-            const text = this.escapeHtml(note.text);
+            const text = this.processTextFormatting(this.escapeHtml(note.text));
             return `                <li>${classes || styles || title ? `<span${classes}${styles}${title}>${text}</span>` : text}</li>`;
         }).join('\n');
         return `            <aside class="slide-footnotes" aria-label="Footnotes">\n                <ol>\n${items}\n                </ol>\n            </aside>`;
@@ -759,17 +759,15 @@ export class TextProcessor {
             source += text[i];
         }
 
-        let result = this.escapeHtml(source);
-        // Process bold (**text**)
-        result = this.processBold(result);
-        // Process underline (__text__)
-        result = this.processUnderline(result);
-        // Process italic (*text* or _text_)
-        result = this.processItalic(result);
+        let result = this.processTextFormatting(this.escapeHtml(source));
         for (let i = 0; i < replacements.length; i++) {
             result = result.split(`${marker}${i}${marker}`).join(replacements[i]);
         }
         return result;
+    }
+
+    private processTextFormatting(text: string): string {
+        return this.processItalic(this.processUnderline(this.processBold(text)));
     }
 
     private findInlineSpan(text: string, start: number): {content: string, attributes: string, end: number} | undefined {
@@ -784,18 +782,26 @@ export class TextProcessor {
                 break;
             }
         }
-        if (depth !== 0 || text[close + 1] !== '{') return undefined;
+        if (depth !== 0) return undefined;
+        let open = close + 1;
+        while (text[open] === ' ' || text[open] === '\t') open++;
+        if (text[open] !== '{') return undefined;
 
         let quote = '';
         let braceDepth = 0;
-        for (let end = close + 2; end < text.length; end++) {
+        let bracketDepth = 0;
+        for (let end = open + 1; end < text.length; end++) {
             const char = text[end];
             if (quote && char === '\\' && end + 1 < text.length) {
                 end++;
-            } else if (quote && char === quote) {
+            } else if (quote && char === quote && (bracketDepth === 0 || isFootnoteQuoteEnd(text, end))) {
                 quote = '';
             } else if (!quote && (char === "'" || char === '"')) {
                 quote = char;
+            } else if (!quote && char === '[') {
+                bracketDepth++;
+            } else if (!quote && char === ']' && bracketDepth > 0) {
+                bracketDepth--;
             } else if (!quote && char === '{') {
                 braceDepth++;
             } else if (!quote && char === '}' && braceDepth > 0) {
@@ -803,7 +809,7 @@ export class TextProcessor {
             } else if (!quote && char === '}') {
                 return {
                     content: text.slice(start + 1, close),
-                    attributes: text.slice(close + 2, end),
+                    attributes: text.slice(open + 1, end),
                     end
                 };
             }

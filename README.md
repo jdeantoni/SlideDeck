@@ -226,8 +226,12 @@ Style an individual footnote using a quoted text inside a styled span:
 ```
 
 Classes and CSS properties inside the nested braces apply to the footnote
-text, not the reference or its number. Footnote text remains plain text
-(HTML is escaped); define classes such as `.todo` in the presentation CSS.
+text, not the reference or its number. Footnotes support bold, italic and
+underline formatting; HTML is escaped. Links and inline spans in footnote text
+are not interpreted. Define classes such as `.todo` in the presentation CSS.
+Spaces or tabs are allowed between the reference's `]` and `{`. Styled
+footnote text may contain matching quotes, but escape a quote with `\` if it
+could be mistaken for the closing quote (for example before `]` or `; note:`).
 To add a hover tooltip to the footnote text, put `note` inside the brackets:
 
 ```sdml

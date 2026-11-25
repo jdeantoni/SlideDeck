@@ -74,8 +74,8 @@ Read ![the SlideDeck repository] "https://github.com/jdeantoni/SlideDeck".
         <pre data-example="notes"><code># Explain a concept
 This is [important]{color: 'red'; font-weight: 'bold'}.
 [Hover here]{note: 'More context'} for a note.
-[*A term*]{footnote: ['A styled explanation']{color: 'blue'}}</code></pre>
-        <p>Footnotes appear at the end of the slide, even if their reference is inside an unrevealed fragment. Inline styles apply to a span, not to the containing list item.</p>
+[*A term*]{footnote: ['A *styled* explanation']{color: 'blue'}}</code></pre>
+        <p>Footnote text supports bold, italic and underline; HTML is escaped, and links and inline spans are not interpreted. Spaces or tabs are allowed between a reference's <code>]</code> and <code>{</code>. Styled footnote text can contain matching quotes; escape a quote with <code>\</code> if it could be mistaken for the closing quote, such as before <code>]</code> or <code>; note:</code>. Footnotes appear at the end of the slide, even if their reference is inside an unrevealed fragment. Inline styles apply to a span, not to the containing list item.</p>
       </section>
       <section id="styling"><h2>Styles and layout</h2>
         <h3>Styled blocks and list width</h3>

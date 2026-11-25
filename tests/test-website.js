@@ -76,7 +76,7 @@ async function main() {
         lists: '<li>Gather ideas</li>',
         tables: '<td style="text-align: right">42</td>',
         links: 'class="qr-code-standalone"',
-        notes: '<span style="color: blue">A styled explanation</span>',
+        notes: '<span style="color: blue">A <em>styled</em> explanation</span>',
         styles: 'width: 50%; margin: 0 auto',
         classes: '<span class="callout">word</span>',
         columns: '<div class="columns"',
